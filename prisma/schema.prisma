@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  clerkId            String   @unique
+  email              String   @unique
+  name               String
+  avatar             String?
+  subscription       String   @default("free") // "free" | "pro"
+  xp                 Int      @default(0)
+  streak             Int      @default(0)
+  referralCode       String   @unique @default(cuid())
+  referralCount      Int      @default(0)
+  lastActive         DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  enrollments        Enrollment[]
+  completedExercises CompletedExercise[]
+  badges             UserBadge[]
+  dailyActivities    DailyActivity[]
+  codeSubmissions    CodeSubmission[]
+
+  @@index([clerkId])
+  @@index([email])
+}
+
+model Course {
+  id               String   @id
+  title            String
+  description      String   @db.Text
+  shortDescription String   @db.Text
+  category         String
+  difficulty       String   // "beginner" | "intermediate" | "advanced"
+  thumbnail        String?
+  isPremium        Boolean  @default(false)
+  totalXP          Int      @default(0)
+  estimatedHours   Int      @default(0)
+  enrolledCount    Int      @default(0)
+  rating           Float    @default(0)
+  tags             String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  chapters         Chapter[]
+  enrollments      Enrollment[]
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  description String   @db.Text
+  order       Int
+  isPremium   Boolean  @default(false)
+  
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  exercises   Exercise[]
+
+  @@index([courseId])
+}
+
+model Exercise {
+  id               String   @id @default(cuid())
+  chapterId        String
+  courseId         String
+  title            String
+  description      String   @db.Text
+  theory           String   @db.Text
+  problemStatement String   @db.Text
+  inputExample     String?  @db.Text
+  outputExample    String?  @db.Text
+  hints            String[]
+  constraints      String[]
+  starterCode      String   @db.Text
+  solution         String   @db.Text
+  testCases        Json?    // Array of TestCase
+  xpReward         Int      @default(0)
+  difficulty       String   // "easy" | "medium" | "hard"
+  language         String
+  order            Int
+  
+  chapter          Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  completedBy      CompletedExercise[]
+  codeSubmissions  CodeSubmission[]
+
+  @@index([chapterId])
+  @@index([courseId])
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  enrolledAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+model CompletedExercise {
+  id          String   @id @default(cuid())
+  userId      String
+  exerciseId  String
+  courseId    String
+  xpEarned    Int      @default(0)
+  code        String?  @db.Text
+  completedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, exerciseId])
+  @@index([userId])
+  @@index([exerciseId])
+}
+
+model UserBadge {
+  id         String   @id @default(cuid())
+  userId     String
+  badgeId    String
+  unlockedAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model DailyActivity {
+  id                 String   @id @default(cuid())
+  userId             String
+  date               DateTime @db.Date
+  exercisesCompleted Int      @default(0)
+  xpEarned           Int      @default(0)
+  minutesActive      Int      @default(0)
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model CodeSubmission {
+  id          String   @id @default(cuid())
+  userId      String
+  exerciseId  String
+  courseId    String
+  code        String   @db.Text
+  language    String
+  output      String?  @db.Text
+  isCorrect   Boolean  @default(false)
+  submittedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([exerciseId])
+}
+
