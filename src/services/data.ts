@@ -1,4 +1,4 @@
-import { Course, User, Badge, DailyActivity, SubscriptionPlan } from "./types";
+import { Course, User, Badge, DailyActivity, SubscriptionPlan } from "@/types";
 
 // ===== Badge Definitions =====
 export const BADGES: Badge[] = [

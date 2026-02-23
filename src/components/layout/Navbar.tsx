@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useApp } from "@/lib/store";
+import { useApp } from "@/store";
 import { useTheme } from "@/lib/theme";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import {

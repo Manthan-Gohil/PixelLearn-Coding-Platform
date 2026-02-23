@@ -3,8 +3,9 @@
 import { use, useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { AppProvider, useApp } from "@/lib/store";
-import { COURSES } from "@/lib/data";
+import { AppProvider, useApp } from "@/store";
+import { COURSES } from "@/services/data";
+import { Course, Chapter, Exercise } from "@/types";
 import {
     Play,
     RotateCcw,
@@ -50,8 +51,8 @@ function PlaygroundContent({
     exerciseId: string;
 }) {
     const { user, completeExercise, isExerciseCompleted, enrollCourse } = useApp();
-    const [course, setCourse] = useState<any>(null);
-    const [exercise, setExercise] = useState<any>(null);
+    const [course, setCourse] = useState<Course | null>(null);
+    const [exercise, setExercise] = useState<Exercise | null>(null);
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState("");
     const [output, setOutput] = useState("");
@@ -69,11 +70,11 @@ function PlaygroundContent({
         fetch("/api/courses")
             .then((res) => res.json())
             .then((data) => {
-                const foundCourse = data.find((c: any) => c.id === courseId);
+                const foundCourse = data.find((c: Course) => c.id === courseId);
                 if (foundCourse) {
                     setCourse(foundCourse);
-                    const allEx = foundCourse.chapters.flatMap((ch: any) => ch.exercises);
-                    const foundEx = allEx.find((e: any) => e.id === exerciseId);
+                    const allEx = foundCourse.chapters.flatMap((ch: Chapter) => ch.exercises);
+                    const foundEx = allEx.find((e: Exercise) => e.id === exerciseId);
                     if (foundEx) {
                         setExercise(foundEx);
                     }
@@ -83,7 +84,7 @@ function PlaygroundContent({
             .catch(() => setLoading(false));
     }, [courseId, exerciseId]);
 
-    const allExercises = course?.chapters.flatMap((ch: any) => ch.exercises) || [];
+    const allExercises = course?.chapters.flatMap((ch: Chapter) => ch.exercises) || [];
     const exerciseIndex = allExercises.findIndex((e: any) => e.id === exerciseId);
     const prevExercise = exerciseIndex > 0 ? allExercises[exerciseIndex - 1] : null;
     const nextExercise =
@@ -441,7 +442,7 @@ function PlaygroundContent({
                                         </p>
                                     </div>
                                     <div className="space-y-3">
-                                        {exercise.theory.split("\n").map((line, i) => {
+                                        {exercise.theory.split("\n").map((line: string, i: number) => {
                                             if (line.startsWith("### ")) {
                                                 return (
                                                     <h3
@@ -516,7 +517,7 @@ function PlaygroundContent({
                                                 Constraints
                                             </h4>
                                             <ul className="space-y-1">
-                                                {exercise.constraints.map((c, i) => (
+                                                {exercise.constraints.map((c: string, i: number) => (
                                                     <li
                                                         key={i}
                                                         className="flex items-start gap-2 text-sm text-text-secondary"
@@ -549,7 +550,7 @@ function PlaygroundContent({
                                             <div className="mt-3 space-y-2">
                                                 {exercise.hints
                                                     .slice(0, currentHintIndex + 1)
-                                                    .map((hint, i) => (
+                                                    .map((hint: string, i: number) => (
                                                         <div
                                                             key={i}
                                                             className="p-3 rounded-lg bg-warning/5 border border-warning/20 text-sm text-text-secondary animate-fade-in"

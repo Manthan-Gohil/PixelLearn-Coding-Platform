@@ -1,8 +1,8 @@
 "use client";
 
-import { AppProvider } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import DashboardContent from "@/components/DashboardContent";
+import { AppProvider } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import DashboardContent from "@/components/dashboard/DashboardContent";
 
 export default function DashboardPage() {
     return (

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AppProvider, useApp } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { AppProvider, useApp } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import {
     Brain,
     FileText,

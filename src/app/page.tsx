@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AppProvider } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { COURSES, SUBSCRIPTION_PLANS } from "@/lib/data";
+import { AppProvider } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { COURSES, SUBSCRIPTION_PLANS } from "@/services/data";
 import {
   Code2,
   Brain,

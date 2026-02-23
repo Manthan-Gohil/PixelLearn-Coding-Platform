@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AppProvider, useApp } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { SUBSCRIPTION_PLANS } from "@/lib/data";
+import { AppProvider, useApp } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { SUBSCRIPTION_PLANS } from "@/services/data";
 import {
     Check,
     X,

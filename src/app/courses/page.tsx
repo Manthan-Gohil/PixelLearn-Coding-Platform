@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AppProvider, useApp } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { COURSES } from "@/lib/data";
+import { AppProvider, useApp } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { COURSES } from "@/services/data";
+import { Course, Chapter } from "@/types";
 import {
     Search,
     Filter,
@@ -22,7 +23,7 @@ function CoursesContent() {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [difficultyFilter, setDifficultyFilter] = useState("all");
-    const [courses, setCourses] = useState<any[]>([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const { user, enrollCourse } = useApp();
 
@@ -143,7 +144,7 @@ function CoursesContent() {
                     {filteredCourses.map((course) => {
                         const isEnrolled = user.enrolledCourses.includes(course.id);
                         const totalExercises = course.chapters.reduce(
-                            (sum: number, ch: any) => sum + ch.exercises.length,
+                            (sum: number, ch: Chapter) => sum + ch.exercises.length,
                             0
                         );
 

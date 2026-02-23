@@ -2,9 +2,10 @@
 
 import { use } from "react";
 import Link from "next/link";
-import { AppProvider, useApp } from "@/lib/store";
-import Navbar from "@/components/Navbar";
-import { COURSES } from "@/lib/data";
+import { AppProvider, useApp } from "@/store";
+import Navbar from "@/components/layout/Navbar";
+import { COURSES } from "@/services/data";
+import { Course, Chapter, Exercise } from "@/types";
 import { useState, useEffect } from "react";
 import {
     BookOpen,
@@ -25,7 +26,7 @@ import {
 
 function CourseDetailContent({ courseId }: { courseId: string }) {
     const { user, enrollCourse, getUserProgress, isExerciseCompleted } = useApp();
-    const [course, setCourse] = useState<any>(null);
+    const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
     const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
 
@@ -33,7 +34,7 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
         fetch("/api/courses")
             .then((res) => res.json())
             .then((data) => {
-                const found = data.find((c: any) => c.id === courseId);
+                const found = data.find((c: Course) => c.id === courseId);
                 if (found) {
                     setCourse(found);
                 }
@@ -66,11 +67,11 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
     const isEnrolled = user.enrolledCourses.includes(course.id);
     const progress = getUserProgress(course.id);
     const totalExercises = course.chapters.reduce(
-        (sum: number, ch: any) => sum + ch.exercises.length,
+        (sum: number, ch: Chapter) => sum + ch.exercises.length,
         0
     );
     const totalXPEarnable = course.chapters.reduce(
-        (sum: number, ch: any) => sum + ch.exercises.reduce((s: number, ex: any) => s + ex.xpReward, 0),
+        (sum: number, ch: Chapter) => sum + ch.exercises.reduce((s: number, ex: Exercise) => s + ex.xpReward, 0),
         0
     );
 
@@ -163,9 +164,9 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
                             <h2 className="text-xl font-bold text-text-primary mb-4">
                                 Course Curriculum
                             </h2>
-                            {course.chapters.map((chapter: any) => {
+                            {course.chapters.map((chapter: Chapter) => {
                                 const isExpanded = expandedChapters.includes(chapter.id);
-                                const chapterCompleted = chapter.exercises.filter((ex: any) =>
+                                const chapterCompleted = chapter.exercises.filter((ex: Exercise) =>
                                     isExerciseCompleted(ex.id)
                                 ).length;
                                 const chapterTotal = chapter.exercises.length;
@@ -236,7 +237,7 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
                                         {/* Exercises List */}
                                         {isExpanded && (
                                             <div className="border-t border-border">
-                                                {chapter.exercises.map((exercise: any) => {
+                                                {chapter.exercises.map((exercise: Exercise) => {
                                                     const completed = isExerciseCompleted(exercise.id);
                                                     const canAccess = isEnrolled && !isLocked;
 

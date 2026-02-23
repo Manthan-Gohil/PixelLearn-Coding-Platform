@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import { useUser as useClerkUser } from "@clerk/nextjs";
-import { User, Badge } from "./types";
-import { MOCK_USER, BADGES, COURSES } from "./data";
+import { User, Badge } from "@/types";
+import { MOCK_USER, BADGES, COURSES } from "@/services/data";
 
 interface AppState {
     user: User;

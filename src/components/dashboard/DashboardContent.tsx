@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useApp } from "@/lib/store";
-import { COURSES, WEEKLY_ACTIVITY } from "@/lib/data";
+import { useApp } from "@/store";
+import { COURSES, WEEKLY_ACTIVITY } from "@/services/data";
 import {
     BookOpen,
     Compass,
