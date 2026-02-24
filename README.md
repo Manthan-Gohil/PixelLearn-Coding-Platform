@@ -8,21 +8,16 @@
 - Node.js 18+ installed
 - npm installed
 
-### Frontend (Next.js)
+### Setup & Run
 ```bash
-cd pixellearn
+# Install dependencies
 npm install
+
+# Run the development server
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Backend (Express.js) - Optional
-```bash
-cd pixellearn/server
-npm install
-node index.js
-```
-Backend runs on [http://localhost:5000](http://localhost:5000).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📁 Project Structure
 
@@ -43,21 +38,25 @@ pixellearn/
 │   │   ├── pricing/page.tsx      # Subscription pricing
 │   │   └── api/
 │   │       ├── ai/route.ts       # AI API (Groq integration)
-│   │       └── execute/route.ts  # Code execution API (Piston)
+│   │       ├── execute/route.ts  # Code execution API (Piston)
+│   │       ├── courses/route.ts   # Course data API
+│   │       └── user/             # User & Progress APIs
 │   ├── components/
 │   │   ├── Navbar.tsx            # Navigation bar
 │   │   ├── Footer.tsx            # Footer
 │   │   └── DashboardContent.tsx  # Dashboard content
-│   └── lib/
-│       ├── types.ts              # TypeScript types
-│       ├── data.ts               # Mock data & courses
-│       └── store.tsx             # Global state management
-├── server/
-│   ├── index.js                  # Express.js backend
-│   ├── package.json              # Server dependencies
-│   └── .env                      # Server config
-├── .env.local                    # Frontend config
-└── package.json                  # Frontend dependencies
+│   ├── lib/
+│   │   ├── prisma.ts             # Prisma client
+│   │   └── types.ts              # TypeScript types
+│   ├── services/
+│   │   └── data.ts               # Mock data & courses
+│   └── store/
+│       └── index.tsx             # Global state management
+├── prisma/
+│   ├── schema.prisma             # Database schema
+│   └── seed.ts                   # Database seeder
+├── .env.local                    # Environment variables
+└── package.json                  # Dependencies & scripts
 ```
 
 ## ✨ Features
@@ -96,7 +95,7 @@ pixellearn/
 - **Monthly/Yearly billing toggle**
 
 ### 🔐 Authentication & Authorization
-- Simulated Clerk-based auth
+- Clerk-based authentication
 - Protected routes and API middleware
 - Session management
 - Role-based access (Free/Pro)
@@ -119,28 +118,26 @@ Add to `.env.local`:
 GROQ_API_KEY=your_key_here
 ```
 
-Without the key, AI features use comprehensive mock responses.
-
-### Clerk Authentication (Production)
-For production auth, add Clerk keys:
-```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
-CLERK_SECRET_KEY=your_secret
+### Database Setup
+The project uses PostgreSQL with Prisma. Update `DATABASE_URL` in `.env.local` and run:
+```bash
+npx prisma migrate dev
+npx prisma db seed
 ```
 
 ## 🛠 Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 15, React 19, TypeScript |
+| Full Stack Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Database | PostgreSQL + Prisma ORM |
+| Auth | Clerk |
 | Styling | Tailwind CSS 4 |
 | Code Editor | Monaco Editor |
-| Backend | Express.js, Node.js |
 | AI | Groq API (Llama 3.3 70B) |
 | Code Execution | Piston API (sandboxed) |
 | Icons | Lucide React |
-| Animations | CSS animations |
-| State | React Context |
 
 ## 📄 License
 
