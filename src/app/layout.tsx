@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import SmoothScroll from "@/components/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +33,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <TransitionProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            <SmoothScroll>{children}</SmoothScroll>
+          </Providers>
         </TransitionProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { AppProvider } from "@/store";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { COURSES, SUBSCRIPTION_PLANS } from "@/services/data";
+import LandingReveal from "@/components/LandingReveal";
 import {
   Code2,
   Brain,
@@ -569,10 +570,28 @@ function CTASection() {
   );
 }
 
+
+
+// This variable persists during client-side navigation but resets on full page reload
+let hasShownRevealInThisSession = false;
+
 export default function Home() {
+  const [showReveal, setShowReveal] = useState(!hasShownRevealInThisSession);
+
+  useEffect(() => {
+    if (!hasShownRevealInThisSession) {
+      const timer = setTimeout(() => {
+        setShowReveal(false);
+        hasShownRevealInThisSession = true;
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <AppProvider>
-      <main className="overflow-x-hidden">
+      {showReveal && <LandingReveal />}
+      <main className={`overflow-x-hidden transition-opacity duration-1000 ${showReveal ? 'h-screen overflow-hidden opacity-0' : 'opacity-100'}`}>
         <Navbar />
         <HeroSection />
         <FeaturesSection />
