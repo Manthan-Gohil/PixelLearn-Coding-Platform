@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Providers from "@/components/Providers";
+import TransitionProvider from "@/components/TransitionProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,8 +30,11 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <TransitionProvider>
+          <Providers>{children}</Providers>
+        </TransitionProvider>
       </body>
     </html>
   );
 }
+

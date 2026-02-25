@@ -190,16 +190,37 @@ export async function POST(request: NextRequest) {
         break;
 
       case "resume-analyze":
-        systemPrompt = `You are an expert ATS resume analyzer. Analyze the resume text and return a JSON object with this exact structure:
+        systemPrompt = `You are an advanced AI Resume Analyzer Agent.
+Your task is to evaluate a candidate's resume and return a detailed analysis in the following structured JSON schema format.
+The schema must match the layout and structure of a visual UI that includes overall score, section scores, summary feedback, improvement tips, strengths, and weaknesses.
+
 {
-  "atsScore": number (0-100),
-  "overallFeedback": "string",
-  "skillsGap": ["string array of missing skills"],
-  "formattingFeedback": ["string array of formatting suggestions"],
-  "missingKeywords": ["string array of missing keywords"],
-  "improvements": [{"section": "string", "suggestion": "string", "priority": "high|medium|low"}]
+  "overall_score": number (0-100),
+  "overall_feedback": "string (short message e.g., 'Excellent', 'Needs improvement')",
+  "summary_comment": "string (1-2 sentence evaluation summary)",
+  "sections": {
+    "contact_info": {
+      "score": number (0-100),
+      "comment": "string"
+    },
+    "experience": {
+      "score": number (0-100),
+      "comment": "string"
+    },
+    "education": {
+      "score": number (0-100),
+      "comment": "string"
+    },
+    "skills": {
+      "score": number (0-100),
+      "comment": "string"
+    }
+  },
+  "tips_for_improvement": ["string (3-5 tips)"],
+  "whats_good": ["string (1-3 strengths)"],
+  "needs_improvement": ["string (1-3 weaknesses)"]
 }
-Return ONLY the JSON, no additional text.`;
+Return ONLY the JSON. No additional text.`;
         userMessage = `Analyze this resume:\n\n${data.resumeText}`;
         break;
 
