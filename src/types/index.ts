@@ -58,6 +58,19 @@ export interface Chapter {
   exercises: Exercise[];
 }
 
+// ===== Flowchart Types =====
+export interface FlowchartNode {
+  id: string;
+  label: string;
+  type: "start" | "end" | "process" | "decision" | "io";
+}
+
+export interface FlowchartEdge {
+  from: string;
+  to: string;
+  label?: string;
+}
+
 export interface Exercise {
   id: string;
   chapterId: string;
@@ -77,6 +90,10 @@ export interface Exercise {
   difficulty: "easy" | "medium" | "hard";
   language: string;
   order: number;
+  flowchart?: {
+    nodes: FlowchartNode[];
+    edges: FlowchartEdge[];
+  };
 }
 
 export interface TestCase {
