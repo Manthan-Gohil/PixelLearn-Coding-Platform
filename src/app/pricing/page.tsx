@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AppProvider, useApp } from "@/store";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import FloatingParticles from "@/components/ui/FloatingParticles";
+import GlowOrbs from "@/components/ui/GlowOrbs";
 import { SUBSCRIPTION_PLANS } from "@/services/data";
 import { Shield } from "lucide-react";
 
@@ -22,8 +24,11 @@ function PricingContent() {
     );
 
     return (
-        <main className="min-h-screen bg-surface pt-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <main className="min-h-screen bg-surface pt-16 relative overflow-hidden">
+            <GlowOrbs />
+            <FloatingParticles count={18} />
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <PricingHeader
                     billing={billing}
                     onBillingChange={setBilling}
@@ -40,9 +45,9 @@ function PricingContent() {
                 <PricingFAQ />
 
                 {/* Trust Section */}
-                <div className="text-center">
-                    <div className="inline-flex items-center gap-2 text-text-muted text-sm">
-                        <Shield className="w-4 h-4" />
+                <div className="text-center animate-fade-in">
+                    <div className="inline-flex items-center gap-2 text-text-muted text-sm glass px-4 py-2 rounded-full">
+                        <Shield className="w-4 h-4 text-success" />
                         30-day money-back guarantee · SSL encrypted · Cancel anytime
                     </div>
                 </div>

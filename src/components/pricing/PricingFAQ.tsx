@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { HelpCircle, ArrowRight } from "lucide-react";
+import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
 const faqItems = [
     {
@@ -33,17 +34,24 @@ const faqItems = [
 
 export default function PricingFAQ() {
     const [showFAQ, setShowFAQ] = useState<number | null>(null);
+    const headerRef = useScrollReveal<HTMLHeadingElement>({ direction: "up", distance: 30 });
+    const listRef = useStaggerReveal<HTMLDivElement>(".faq-item", {
+        direction: "up",
+        distance: 30,
+        stagger: 0.08,
+        duration: 0.5,
+    });
 
     return (
         <div className="max-w-3xl mx-auto mb-16">
-            <h2 className="text-2xl font-bold text-text-primary mb-8 text-center">
+            <h2 ref={headerRef} className="text-2xl font-bold text-text-primary mb-8 text-center">
                 Frequently Asked Questions
             </h2>
-            <div className="space-y-3">
+            <div ref={listRef} className="space-y-3">
                 {faqItems.map((faq, i) => (
                     <div
                         key={i}
-                        className="glass rounded-xl overflow-hidden transition-all"
+                        className="faq-item glass rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/20"
                     >
                         <button
                             onClick={() => setShowFAQ(showFAQ === i ? null : i)}
@@ -54,17 +62,22 @@ export default function PricingFAQ() {
                                 {faq.question}
                             </span>
                             <span
-                                className={`transform transition-transform ${showFAQ === i ? "rotate-180" : ""
+                                className={`transform transition-transform duration-300 ${showFAQ === i ? "rotate-180" : ""
                                     }`}
                             >
                                 <ArrowRight className="w-4 h-4 text-text-muted rotate-90" />
                             </span>
                         </button>
-                        {showFAQ === i && (
-                            <div className="px-4 pb-4 pt-0 text-sm text-text-secondary animate-fade-in">
-                                <div className="pl-6">{faq.answer}</div>
+                        <div
+                            className={`grid transition-all duration-300 ease-out ${showFAQ === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                                }`}
+                        >
+                            <div className="overflow-hidden">
+                                <div className="px-4 pb-4 pt-0 text-sm text-text-secondary">
+                                    <div className="pl-6">{faq.answer}</div>
+                                </div>
                             </div>
-                        )}
+                        </div>
                     </div>
                 ))}
             </div>
