@@ -20,7 +20,7 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
                 </span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-bold text-text-primary mb-4">
-                Choose Your <span className="animate-gradient-text">Learning Plan</span>
+                Choose Your <span className="gradient-text">Learning Plan</span>
             </h1>
             <p className="text-text-secondary text-lg max-w-2xl mx-auto">
                 Start free, upgrade when you need more. No hidden fees, cancel

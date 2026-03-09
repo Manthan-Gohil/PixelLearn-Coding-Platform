@@ -32,7 +32,7 @@ export default function DashboardContent() {
                 {/* Header */}
                 <div ref={headerRef} className="mb-8">
                     <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-                        Welcome back, <span className="animate-gradient-text">{user.name}</span>
+                        Welcome back, <span className="gradient-text">{user.name}</span>
                     </h1>
                     <p className="text-text-secondary">
                         Continue your learning journey. You&apos;re on a{" "}

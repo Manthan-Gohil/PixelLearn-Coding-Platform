@@ -99,7 +99,7 @@ function CoursesContent() {
                         <span className="text-sm font-medium text-primary-light">Learn by Building</span>
                     </div>
                     <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-                        Explore <span className="animate-gradient-text">Courses</span>
+                        Explore <span className="gradient-text">Courses</span>
                     </h1>
                     <p className="text-text-secondary text-lg">
                         Master programming with hands-on, practice-first courses

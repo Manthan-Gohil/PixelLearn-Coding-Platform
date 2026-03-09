@@ -52,7 +52,7 @@ function AIToolsContent() {
                     <div className="glass rounded-2xl p-12 animate-glow-pulse">
                         <Lock className="w-16 h-16 text-primary-light mx-auto mb-6 animate-float-subtle" />
                         <h1 className="text-3xl font-bold text-text-primary mb-4">
-                            AI Tools are <span className="animate-gradient-text">Pro Only</span>
+                            AI Tools are <span className="gradient-text">Pro Only</span>
                         </h1>
                         <p className="text-text-secondary mb-8 max-w-lg mx-auto">
                             Upgrade to Pro to access AI Career Q&A, Resume Analyzer, and Career
@@ -85,7 +85,7 @@ function AIToolsContent() {
                         <span className="text-sm font-medium text-primary-light">AI-Powered</span>
                     </div>
                     <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-                        AI Career <span className="animate-gradient-text">Intelligence</span>
+                        AI Career <span className="gradient-text">Intelligence</span>
                     </h1>
                     <p className="text-text-secondary text-lg">
                         Get personalized career guidance, resume analysis, and roadmap generation

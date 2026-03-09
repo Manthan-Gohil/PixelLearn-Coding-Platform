@@ -66,7 +66,7 @@ function HeroSection() {
               pauseDuration={1800}
             />
             <br />
-            <span className="animate-gradient-text">by Doing It</span>
+            <span className="gradient-text">by Doing It</span>
           </h1>
 
           {/* Subtitle */}
@@ -488,7 +488,7 @@ function AIToolsHighlight() {
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
             AI Career{" "}
-            <span className="animate-gradient-text">Intelligence</span>
+            <span className="gradient-text">Intelligence</span>
           </h2>
           <p className="text-text-secondary max-w-2xl mx-auto text-lg">
             Get personalized career guidance powered by advanced AI models.
@@ -626,7 +626,7 @@ function CTASection() {
         <h2 className="text-3xl sm:text-5xl font-bold text-text-primary mb-6">
           Ready to Start Your
           <br />
-          <span className="animate-gradient-text">Coding Journey?</span>
+          <span className="gradient-text">Coding Journey?</span>
         </h2>
         <p className="text-lg text-text-secondary mb-10 max-w-2xl mx-auto">
           Join thousands of developers who are mastering programming through
