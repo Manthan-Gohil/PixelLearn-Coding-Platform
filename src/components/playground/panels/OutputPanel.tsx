@@ -9,7 +9,7 @@ interface OutputPanelProps {
 
 export default function OutputPanel({ output, setOutput }: OutputPanelProps) {
     return (
-        <div className="h-48 border-t border-border bg-surface-alt flex flex-col shrink-0">
+        <div className="flex-1 border-border bg-surface-alt flex flex-col min-h-0">
             <div className="flex items-center justify-between px-4 py-2 border-b border-border">
                 <div className="flex items-center gap-2 text-xs text-text-muted">
                     <Terminal className="w-4 h-4" />

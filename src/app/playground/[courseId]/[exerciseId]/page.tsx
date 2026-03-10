@@ -35,6 +35,7 @@ function PlaygroundContent({
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState("");
     const [output, setOutput] = useState("");
+    const [input, setInput] = useState("");
     const [isRunning, setIsRunning] = useState(false);
     const [showHints, setShowHints] = useState(false);
     const [currentHintIndex, setCurrentHintIndex] = useState(0);
@@ -81,6 +82,7 @@ function PlaygroundContent({
             setCode(exercise.starterCode);
             setLanguage(exercise.language);
             setOutput("");
+            setInput("");
             setPreviewHtml("");
             setShowHints(false);
             setCurrentHintIndex(0);
@@ -141,11 +143,11 @@ function PlaygroundContent({
         try {
             const response = await fetch("/api/execute", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code, language: exercise.language }),
+                body: JSON.stringify({ code, language: exercise.language, input }),
             });
             const result = await response.json();
-            if (result.error && result.error.trim()) setOutput(`Error: ${result.error}\n\n⏱ Execution time: ${result.executionTime}ms`);
-            else if (result.output !== undefined) setOutput(`${result.output}\n\n✓ Execution time: ${result.executionTime}ms`);
+            if (result.error && result.error.trim()) setOutput(result.error);
+            else if (result.output !== undefined) setOutput(result.output);
             else setOutput("(No output)");
         } catch {
             setOutput("⚠ Execution service unavailable.");
@@ -158,7 +160,7 @@ function PlaygroundContent({
     }, [exercise, completed, completeExercise]);
 
     const resetCode = useCallback(() => {
-        if (exercise) { setCode(exercise.starterCode); setOutput(""); setPreviewHtml(""); }
+        if (exercise) { setCode(exercise.starterCode); setOutput(""); setInput(""); setPreviewHtml(""); }
     }, [exercise]);
 
     useEffect(() => {
@@ -179,7 +181,27 @@ function PlaygroundContent({
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
                 <EditorPanel language={language} setLanguage={setLanguage} code={code} setCode={setCode} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
-                {!isFrontend && <OutputPanel output={output} setOutput={setOutput} />}
+                {!isFrontend && (
+                    <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
+                        <div className="flex-1 flex flex-col min-h-0">
+                            <OutputPanel output={output} setOutput={setOutput} />
+                            <div className="flex-1 flex flex-col border-t border-border min-h-0">
+                                <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
+                                    <div className="flex items-center gap-2 text-xs text-text-muted">
+                                        <Loader2 className="w-3.5 h-3.5" />
+                                        Input (stdin)
+                                    </div>
+                                </div>
+                                <textarea
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="Enter program input here (if needed)..."
+                                    className="flex-1 w-full bg-transparent p-4 font-mono text-sm resize-none focus:outline-none text-text-secondary"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {isFrontend && <PreviewPanel showTheoryPanel={showTheoryPanel} previewHtml={previewHtml} />}
             </div>
         </div>
