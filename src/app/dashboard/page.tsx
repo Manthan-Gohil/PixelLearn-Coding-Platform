@@ -1,14 +1,12 @@
 "use client";
 
-import { AppProvider } from "@/store";
-import Navbar from "@/components/layout/Navbar";
+import StandardLayout from "@/components/layout/StandardLayout";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 
 export default function DashboardPage() {
     return (
-        <AppProvider>
-            <Navbar />
+        <StandardLayout particlesCount={12} showFooter={false}>
             <DashboardContent />
-        </AppProvider>
+        </StandardLayout>
     );
 }

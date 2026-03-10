@@ -1,11 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AppProvider, useApp } from "@/store";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import FloatingParticles from "@/components/ui/FloatingParticles";
-import GlowOrbs from "@/components/ui/GlowOrbs";
+import { useApp } from "@/store";
+import StandardLayout from "@/components/layout/StandardLayout";
 import { SUBSCRIPTION_PLANS } from "@/services/data";
 import { Shield } from "lucide-react";
 
@@ -24,44 +21,36 @@ function PricingContent() {
     );
 
     return (
-        <main className="min-h-screen bg-surface pt-16 relative overflow-hidden">
-            <GlowOrbs />
-            <FloatingParticles count={18} />
+        <StandardLayout
+            particlesCount={18}
+            containerClassName="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+        >
+            <PricingHeader
+                billing={billing}
+                onBillingChange={setBilling}
+            />
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <PricingHeader
-                    billing={billing}
-                    onBillingChange={setBilling}
-                />
+            <PricingCards
+                plans={activePlans}
+                user={user}
+                updateSubscription={updateSubscription}
+            />
 
-                <PricingCards
-                    plans={activePlans}
-                    user={user}
-                    updateSubscription={updateSubscription}
-                />
+            <ComparisonTable />
 
-                <ComparisonTable />
+            <PricingFAQ />
 
-                <PricingFAQ />
-
-                {/* Trust Section */}
-                <div className="text-center animate-fade-in">
-                    <div className="inline-flex items-center gap-2 text-text-muted text-sm glass px-4 py-2 rounded-full">
-                        <Shield className="w-4 h-4 text-success" />
-                        30-day money-back guarantee · SSL encrypted · Cancel anytime
-                    </div>
+            {/* Trust Section */}
+            <div className="text-center animate-fade-in">
+                <div className="inline-flex items-center gap-2 text-text-muted text-sm glass px-4 py-2 rounded-full">
+                    <Shield className="w-4 h-4 text-success" />
+                    30-day money-back guarantee · SSL encrypted · Cancel anytime
                 </div>
             </div>
-            <Footer />
-        </main>
+        </StandardLayout>
     );
 }
 
 export default function PricingPage() {
-    return (
-        <AppProvider>
-            <Navbar />
-            <PricingContent />
-        </AppProvider>
-    );
+    return <PricingContent />;
 }

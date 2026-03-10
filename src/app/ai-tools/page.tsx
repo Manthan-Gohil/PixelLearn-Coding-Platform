@@ -1,11 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AppProvider, useApp } from "@/store";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import FloatingParticles from "@/components/ui/FloatingParticles";
-import GlowOrbs from "@/components/ui/GlowOrbs";
+import { useApp } from "@/store";
+import StandardLayout from "@/components/layout/StandardLayout";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import {
     Brain,
@@ -45,10 +42,8 @@ function AIToolsContent() {
 
     if (!isPro) {
         return (
-            <main className="min-h-screen bg-surface pt-16 relative overflow-hidden">
-                <GlowOrbs />
-                <FloatingParticles count={15} />
-                <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <StandardLayout particlesCount={15} showFooter={false}>
+                <div className="relative max-w-4xl mx-auto py-20 text-center">
                     <div className="glass rounded-2xl p-12 animate-glow-pulse">
                         <Lock className="w-16 h-16 text-primary-light mx-auto mb-6 animate-float-subtle" />
                         <h1 className="text-3xl font-bold text-text-primary mb-4">
@@ -68,77 +63,69 @@ function AIToolsContent() {
                         </a>
                     </div>
                 </div>
-            </main>
+            </StandardLayout>
         );
     }
 
     return (
-        <main className="min-h-screen bg-surface pt-16 relative overflow-hidden">
-            <GlowOrbs />
-            <FloatingParticles count={15} />
-
-            <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header */}
-                <div ref={headerRef} className="mb-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3 animate-shimmer">
-                        <Sparkles className="w-4 h-4 text-primary-light animate-float-subtle" />
-                        <span className="text-sm font-medium text-primary-light">AI-Powered</span>
-                    </div>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-                        AI Career <span className="gradient-text">Intelligence</span>
-                    </h1>
-                    <p className="text-text-secondary text-lg">
-                        Get personalized career guidance, resume analysis, and roadmap generation
-                    </p>
+        <StandardLayout
+            particlesCount={15}
+            containerClassName="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        >
+            {/* Header */}
+            <div ref={headerRef} className="mb-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3 animate-shimmer">
+                    <Sparkles className="w-4 h-4 text-primary-light animate-float-subtle" />
+                    <span className="text-sm font-medium text-primary-light">AI-Powered</span>
                 </div>
-
-                {/* Tabs */}
-                <div ref={tabsRef} className="grid grid-cols-3 gap-4 mb-8">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`ai-tab p-4 rounded-xl border transition-all duration-300 text-left spotlight-card hover-bounce ${activeTab === tab.id
-                                ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10 animate-glow-pulse"
-                                : "border-border glass hover:border-primary/20"
-                                }`}
-                            onMouseMove={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
-                                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-                            }}
-                        >
-                            <tab.icon
-                                className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
-                                    ? "text-primary-light scale-110"
-                                    : "text-text-muted"
-                                    }`}
-                            />
-                            <div className="font-semibold text-text-primary text-sm">
-                                {tab.label}
-                            </div>
-                            <div className="text-xs text-text-muted">{tab.description}</div>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Content with animation */}
-                <div key={activeTab} className="animate-slide-up" style={{ animationDuration: "0.4s" }}>
-                    {activeTab === "career-qa" && <CareerQA />}
-                    {activeTab === "resume" && <ResumeAnalyser />}
-                    {activeTab === "roadmap" && <RoadmapGenerator />}
-                </div>
+                <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
+                    AI Career <span className="gradient-text">Intelligence</span>
+                </h1>
+                <p className="text-text-secondary text-lg">
+                    Get personalized career guidance, resume analysis, and roadmap generation
+                </p>
             </div>
-            <Footer />
-        </main>
+
+            {/* Tabs */}
+            <div ref={tabsRef} className="grid grid-cols-3 gap-4 mb-8">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`ai-tab p-4 rounded-xl border transition-all duration-300 text-left spotlight-card hover-bounce ${activeTab === tab.id
+                            ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10 animate-glow-pulse"
+                            : "border-border glass hover:border-primary/20"
+                            }`}
+                        onMouseMove={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                            e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+                        }}
+                    >
+                        <tab.icon
+                            className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
+                                ? "text-primary-light scale-110"
+                                : "text-text-muted"
+                                }`}
+                        />
+                        <div className="font-semibold text-text-primary text-sm">
+                            {tab.label}
+                        </div>
+                        <div className="text-xs text-text-muted">{tab.description}</div>
+                    </button>
+                ))}
+            </div>
+
+            {/* Content with animation */}
+            <div key={activeTab} className="animate-slide-up" style={{ animationDuration: "0.4s" }}>
+                {activeTab === "career-qa" && <CareerQA />}
+                {activeTab === "resume" && <ResumeAnalyser />}
+                {activeTab === "roadmap" && <RoadmapGenerator />}
+            </div>
+        </StandardLayout>
     );
 }
 
 export default function AIToolsPage() {
-    return (
-        <AppProvider>
-            <Navbar />
-            <AIToolsContent />
-        </AppProvider>
-    );
+    return <AIToolsContent />;
 }
