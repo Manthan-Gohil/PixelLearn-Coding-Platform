@@ -14,7 +14,6 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 
 interface EditorPanelProps {
     language: string;
-    setLanguage: (lang: string) => void;
     code: string;
     setCode: (code: string) => void;
     isRunning: boolean;
@@ -29,7 +28,6 @@ interface EditorPanelProps {
 
 export default function EditorPanel({
     language,
-    setLanguage,
     code,
     setCode,
     isRunning,
@@ -57,20 +55,9 @@ export default function EditorPanel({
             {/* Editor Toolbar */}
             <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
                 <div className="flex items-center gap-2">
-                    <select
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                        className="px-2 py-1 rounded bg-surface-hover border border-border text-xs text-text-primary focus:outline-none"
-                    >
-                        <option value="python">Python</option>
-                        <option value="javascript">JavaScript</option>
-                        <option value="jsx">React (JSX)</option>
-                        <option value="tsx">React (TSX)</option>
-                        <option value="html">HTML</option>
-                        <option value="css">CSS</option>
-                        <option value="java">Java</option>
-                        <option value="cpp">C++</option>
-                    </select>
+                    <div className="px-3 py-1 rounded-md bg-primary/10 border border-primary/20 text-[11px] font-bold text-primary-light uppercase tracking-wider">
+                        {language === "cpp" ? "C++" : language === "jsx" ? "React (JSX)" : language === "tsx" ? "React (TSX)" : language === "reactjs" ? "React (JS)" : language}
+                    </div>
                     <button
                         onClick={resetCode}
                         className="flex items-center gap-1 px-2 py-1 rounded text-xs text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"

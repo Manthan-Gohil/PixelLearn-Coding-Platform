@@ -205,7 +205,7 @@ function PlaygroundContent({
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
-                <EditorPanel language={language} setLanguage={setLanguage} code={code} setCode={setCode} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
+                <EditorPanel language={language} code={code} setCode={setCode} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
                 {!isFrontend && (
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">
