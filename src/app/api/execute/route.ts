@@ -12,8 +12,8 @@ const WANDBOX_URL = "https://wandbox.org/api/compile.json";
 
 const WANDBOX_MAP: Record<string, { compiler: string; filename: string }> = {
   python: { compiler: "cpython-3.12.7", filename: "solution.py" },
-  javascript: { compiler: "nodejs-head", filename: "solution.js" },
-  typescript: { compiler: "typescript-head", filename: "solution.ts" },
+  javascript: { compiler: "nodejs-20.17.0", filename: "solution.js" },
+  typescript: { compiler: "typescript-5.6.2", filename: "solution.ts" },
   java: { compiler: "openjdk-jdk-21+35", filename: "Main.java" },
   cpp: { compiler: "gcc-head", filename: "solution.cpp" },
   "c++": { compiler: "gcc-head", filename: "solution.cpp" },

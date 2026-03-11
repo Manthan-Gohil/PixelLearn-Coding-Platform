@@ -98,10 +98,34 @@ function PlaygroundContent({
             fullHtml = htmlCode.includes("<html") || htmlCode.includes("<!DOCTYPE") ? htmlCode : `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><style>body { font-family: 'Inter', system-ui, sans-serif; padding: 20px; margin: 0; background: #fff; color: #1a1a1a; } * { box-sizing: border-box; }</style></head><body>${htmlCode}</body></html>`;
         } else if (normalizedLang === "css") {
             fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><style>body { font-family: 'Inter', system-ui, sans-serif; padding: 20px; margin: 0; background: #fff; color: #1a1a1a; } ${htmlCode}</style></head><body><div class="container"><header><h1>CSS Preview</h1><p>Mastering Layouts</p></header><main><section class="card"><h2>Card Title</h2><p>This is a preview element to test your CSS.</p><button>Action Button</button></section></main></div></body></html>`;
-        } else if (["jsx", "tsx", "javascript", "typescript"].includes(normalizedLang)) {
-            const isReact = htmlCode.includes("React") || htmlCode.includes("<") || normalizedLang === "jsx" || normalizedLang === "tsx";
+        } else if (["jsx", "tsx", "javascript", "typescript", "reactjs"].includes(normalizedLang)) {
+            const isReact = htmlCode.includes("React") || htmlCode.includes("<") || ["jsx", "tsx", "reactjs"].includes(normalizedLang);
             if (isReact) {
-                fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><script src="https://unpkg.com/react@18/umd/react.production.min.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><script src="https://cdn.tailwindcss.com"></script><style>body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; }</style></head><body><div id="root"></div><script type="text/babel">/** @jsx React.createElement */ /** @jsxFrag React.Fragment */ try { window.parent.postMessage({ type: 'console', method: 'clear' }, '*'); const originalLog = console.log; console.log = (...args) => { window.parent.postMessage({ type: 'console', method: 'log', content: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') }, '*'); originalLog.apply(console, args); }; ${htmlCode.replace(/import\s+React.*\s+from\s+['"]react['"];?/g, '').replace(/export\s+default\s+/g, 'const App = ')} if (typeof App !== 'undefined') { const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />); } else { document.getElementById('root').innerHTML = 'No export default App found.'; } } catch (err) { console.error(err); document.getElementById('root').innerHTML = err.message; }</script></body></html>`;
+                // Pre-process code for Babel-standalone
+                // 1. Remove imports (not supported in Babel standalone)
+                let cleanCode = htmlCode.replace(/import\s+.*?\s+from\s+['"].*?['"];?/g, '');
+                
+                // 2. Transform the default export into a global variable so we can find it
+                let componentName = "App"; // Default fallback
+                const funcMatch = cleanCode.match(/export\s+default\s+function\s+([a-zA-Z0-9_$]+)/);
+                const classMatch = cleanCode.match(/export\s+default\s+class\s+([a-zA-Z0-9_$]+)/);
+                const identMatch = cleanCode.match(/export\s+default\s+([a-zA-Z0-9_$]+);?$/);
+
+                if (funcMatch) {
+                    componentName = funcMatch[1];
+                    cleanCode = cleanCode.replace(/export\s+default\s+function/, 'function');
+                } else if (classMatch) {
+                    componentName = classMatch[1];
+                    cleanCode = cleanCode.replace(/export\s+default\s+class/, 'class');
+                } else if (identMatch) {
+                    componentName = identMatch[1];
+                    cleanCode = cleanCode.replace(/export\s+default\s+[a-zA-Z0-9_$]+;?$/, '');
+                } else {
+                    // It might be an anonymous default export: export default () => ...
+                    cleanCode = cleanCode.replace(/export\s+default\s+/, 'const App = ');
+                }
+
+                fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><script src="https://unpkg.com/react@18/umd/react.development.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><script src="https://cdn.tailwindcss.com"></script><style>body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #fff; }</style></head><body><div id="root"></div><script type="text/babel">const { useState, useEffect, useMemo, useCallback, useRef, useReducer, useContext } = React; try { ${cleanCode} const Root = (typeof ${componentName} !== 'undefined') ? ${componentName} : (typeof App !== 'undefined' ? App : null); if (Root) { ReactDOM.createRoot(document.getElementById('root')).render(<Root />); } else { document.getElementById('root').innerHTML = '<div style="color:red;padding:20px;">No default export or "${componentName}" component found.</div>'; } } catch (err) { document.getElementById('root').innerHTML = '<div style="color:red;padding:20px;">' + err.message + '</div>'; console.error(err); }</script></body></html>`;
             } else {
                 fullHtml = `<!DOCTYPE html><html><body><div id="root"></div><script>${htmlCode}<\/script></body></html>`;
             }
@@ -151,8 +175,9 @@ function PlaygroundContent({
             else setOutput("(No output)");
         } catch {
             setOutput("⚠ Execution service unavailable.");
+        } finally {
+            setIsRunning(false);
         }
-        setIsRunning(false);
     }, [code, exercise, isRunning, isFrontend, language, input, updatePreview]);
 
     const handleMarkComplete = useCallback(() => {

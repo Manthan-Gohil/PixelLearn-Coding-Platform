@@ -39,7 +39,7 @@ export default function PreviewPanel({ showTheoryPanel, previewHtml }: PreviewPa
                         srcDoc={previewHtml}
                         className="w-full h-full border-none"
                         title="preview"
-                        sandbox="allow-scripts"
+                        sandbox="allow-scripts allow-same-origin"
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full text-text-muted text-sm italic">
