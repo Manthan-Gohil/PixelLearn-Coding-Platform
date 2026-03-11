@@ -153,7 +153,7 @@ function PlaygroundContent({
             setOutput("⚠ Execution service unavailable.");
         }
         setIsRunning(false);
-    }, [code, exercise, isRunning, isFrontend, language, updatePreview]);
+    }, [code, exercise, isRunning, isFrontend, language, input, updatePreview]);
 
     const handleMarkComplete = useCallback(() => {
         if (exercise && !completed) completeExercise(exercise.id, exercise.xpReward);

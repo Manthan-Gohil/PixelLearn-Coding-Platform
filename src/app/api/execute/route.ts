@@ -10,19 +10,26 @@ const PISTON_APIS = [
 // Industry Standard Fallbacks (Wandbox is highly robust for C++/Python)
 const WANDBOX_URL = "https://wandbox.org/api/compile.json";
 
-const WANDBOX_MAP: Record<string, { compiler: string }> = {
-  python: { compiler: "cpython-head" },
-  javascript: { compiler: "nodejs-head" },
-  typescript: { compiler: "typescript-head" },
-  java: { compiler: "openjdk-head" },
-  cpp: { compiler: "gcc-head" },
-  "c++": { compiler: "gcc-head" },
-  c: { compiler: "gcc-head" },
+const WANDBOX_MAP: Record<string, { compiler: string; filename: string }> = {
+  python: { compiler: "cpython-3.12.7", filename: "solution.py" },
+  javascript: { compiler: "nodejs-head", filename: "solution.js" },
+  typescript: { compiler: "typescript-head", filename: "solution.ts" },
+  java: { compiler: "openjdk-jdk-21+35", filename: "Main.java" },
+  cpp: { compiler: "gcc-head", filename: "solution.cpp" },
+  "c++": { compiler: "gcc-head", filename: "solution.cpp" },
+  c: { compiler: "gcc-head", filename: "solution.c" },
 };
 
 async function tryWandbox(code: string, langKey: string, input: string) {
   const config = WANDBOX_MAP[langKey];
   if (!config) return null;
+
+  // HACK: Java requires the filename to match the public class name.
+  // To avoid naming conflicts in the sandbox, we strip 'public' from the class declaration.
+  let processedCode = code;
+  if (langKey === "java") {
+    processedCode = code.replace(/public\s+class\s+Main/g, "class Main");
+  }
 
   try {
     const response = await fetch(WANDBOX_URL, {
@@ -30,19 +37,18 @@ async function tryWandbox(code: string, langKey: string, input: string) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         compiler: config.compiler,
-        code: code,
+        code: processedCode,
         stdin: input || "",
-        "compiler-option-raw": langKey.includes("c") ? "-O2\n-std=c++20" : "",
+        "compiler-option-raw": langKey === "cpp" || langKey === "c++" || langKey === "c" ? "-O2\n-std=c++20" : "",
       }),
     });
 
     if (response.ok) {
       const result = await response.json();
       return {
-        output: result.program_output || "",
-        error: result.compiler_error || result.program_error || "",
+        output: (result.program_output || "").trim(),
+        error: (result.compiler_error || result.program_error || "").trim(),
         success: result.status === "0",
-        compilerOutput: result.compiler_output || "",
       };
     }
   } catch (e) {
