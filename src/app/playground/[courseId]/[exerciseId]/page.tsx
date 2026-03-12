@@ -45,6 +45,7 @@ function PlaygroundContent({
     const [previewHtml, setPreviewHtml] = useState("");
     const [showPasteAlert, setShowPasteAlert] = useState(false);
     const [showFlowchart, setShowFlowchart] = useState(false);
+    const [tabSwitchCount, setTabSwitchCount] = useState(0);
     const editorRef = useRef<any>(null);
 
     useEffect(() => {
@@ -142,19 +143,71 @@ function PlaygroundContent({
 
     const handleEditorDidMount = useCallback((editor: any, monaco: any) => {
         editorRef.current = editor;
+        // Block Paste commands
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV, () => setShowPasteAlert(true));
         editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Insert, () => setShowPasteAlert(true));
+        // Block Copy/Cut commands
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, () => { });
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX, () => { });
+    }, []);
+
+    // Proctoring: Tab Visibility and Focus Detection
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                setTabSwitchCount(prev => prev + 1);
+            }
+        };
+
+        const handleBlur = () => {
+            // Optional: detect when window loses focus (e.g. ALT+TAB)
+            // setTabSwitchCount(prev => prev + 1);
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        window.addEventListener("blur", handleBlur);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("blur", handleBlur);
+        };
     }, []);
 
     useEffect(() => {
-        const handlePaste = (e: ClipboardEvent) => {
+        const handleClipboard = (e: ClipboardEvent) => {
             const target = e.target as HTMLElement;
             if (target.closest('.monaco-editor')) {
-                e.preventDefault(); e.stopPropagation(); setShowPasteAlert(true);
+                if (e.type === 'paste') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPasteAlert(true);
+                } else if (e.type === 'copy' || e.type === 'cut') {
+                    // Optionally prevent copy/cut as well
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             }
         };
-        document.addEventListener("paste", handlePaste, true);
-        return () => document.removeEventListener("paste", handlePaste, true);
+
+        const handleDrop = (e: DragEvent) => {
+            const target = e.target as HTMLElement;
+            if (target.closest('.monaco-editor')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
+
+        document.addEventListener("paste", handleClipboard, true);
+        document.addEventListener("copy", handleClipboard, true);
+        document.addEventListener("cut", handleClipboard, true);
+        document.addEventListener("drop", handleDrop, true);
+
+        return () => {
+            document.removeEventListener("paste", handleClipboard, true);
+            document.removeEventListener("copy", handleClipboard, true);
+            document.removeEventListener("cut", handleClipboard, true);
+            document.removeEventListener("drop", handleDrop, true);
+        };
     }, []);
 
     const runCode = useCallback(async () => {
@@ -197,8 +250,13 @@ function PlaygroundContent({
     if (!course || !exercise) return <main className="min-h-screen bg-surface flex items-center justify-center"><div className="text-center"><h1 className="text-2xl font-bold text-text-primary mb-2">Exercise Not Found</h1><Link href="/courses" className="text-primary-light hover:underline">← Back to Courses</Link></div></main>;
 
     return (
-        <div className="h-screen bg-surface flex flex-col overflow-hidden">
+        <div className="h-screen bg-surface flex flex-col overflow-hidden select-none">
             <PasteBlockedAlert show={showPasteAlert} onClose={() => setShowPasteAlert(false)} />
+            {tabSwitchCount > 0 && tabSwitchCount % 3 === 0 && (
+                <div className="fixed top-4 right-4 z-[110] bg-danger/90 backdrop-blur text-white px-4 py-2 rounded-lg shadow-xl animate-bounce-short text-xs font-bold border border-white/20">
+                    ⚠️ Tab switching detected! ({tabSwitchCount} times)
+                </div>
+            )}
             <FlowchartHintModal show={showFlowchart} onClose={() => setShowFlowchart(false)} exercise={exercise} flowchart={exerciseFlowchart} />
             <PlaygroundHeader courseId={courseId} courseTitle={course.title} exerciseTitle={exercise.title} completed={completed} exerciseXp={exercise.xpReward} showTheoryPanel={showTheoryPanel} setShowTheoryPanel={setShowTheoryPanel} prevExerciseId={prevExercise?.id} nextExerciseId={nextExercise?.id} exerciseIndex={exerciseIndex} totalExercises={allExercises.length} />
             <div className="flex-1 flex overflow-hidden">

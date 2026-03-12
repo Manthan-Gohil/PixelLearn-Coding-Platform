@@ -116,6 +116,8 @@ export default function EditorPanel({
                         smoothScrolling: true,
                         cursorBlinking: "smooth",
                         cursorSmoothCaretAnimation: "on",
+                        contextmenu: false,
+                        dragAndDrop: false,
                     }}
                 />
             </div>
