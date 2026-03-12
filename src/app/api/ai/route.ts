@@ -19,12 +19,19 @@ async function callGroqAPI(messages: { role: string; content: string }[]) {
         model: "llama-3.3-70b-versatile",
         messages,
         temperature: 0.7,
-        max_tokens: 2048,
+        max_tokens: 4096,
       }),
     });
 
     const data = await res.json();
-    return data.choices?.[0]?.message?.content || "No response generated.";
+    let content: string =
+      data.choices?.[0]?.message?.content || "No response generated.";
+    // Strip markdown code fences that LLMs often wrap JSON responses in
+    const codeFenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (codeFenceMatch) {
+      content = codeFenceMatch[1].trim();
+    }
+    return content;
   } catch {
     return generateMockResponse(messages[messages.length - 1].content);
   }
@@ -61,17 +68,20 @@ function generateMockResponse(query: string): string {
       improvements: [
         {
           section: "Summary",
-          suggestion: "Add a compelling professional summary with years of experience and key technologies",
+          suggestion:
+            "Add a compelling professional summary with years of experience and key technologies",
           priority: "high",
         },
         {
           section: "Experience",
-          suggestion: "Quantify achievements with metrics (e.g., 'Improved performance by 40%')",
+          suggestion:
+            "Quantify achievements with metrics (e.g., 'Improved performance by 40%')",
           priority: "high",
         },
         {
           section: "Skills",
-          suggestion: "Organize skills by category and include proficiency levels",
+          suggestion:
+            "Organize skills by category and include proficiency levels",
           priority: "medium",
         },
         {
@@ -93,7 +103,8 @@ function generateMockResponse(query: string): string {
       {
         step: 1,
         title: "Foundation Building",
-        description: "Master core programming fundamentals and web development basics",
+        description:
+          "Master core programming fundamentals and web development basics",
         duration: "2-3 months",
         skills: ["HTML/CSS", "JavaScript", "Git", "Command Line"],
         resources: ["freeCodeCamp", "MDN Web Docs", "The Odin Project"],
@@ -190,38 +201,80 @@ export async function POST(request: NextRequest) {
         break;
 
       case "resume-analyze":
-        systemPrompt = `You are an advanced AI Resume Analyzer Agent.
-Your task is to evaluate a candidate's resume and return a detailed analysis in the following structured JSON schema format.
-The schema must match the layout and structure of a visual UI that includes overall score, section scores, summary feedback, improvement tips, strengths, and weaknesses.
+        systemPrompt = `You are an expert AI Resume Analyst. Your job is to deeply read the provided resume and return a HIGHLY SPECIFIC, PERSONALISED analysis.
 
+CRITICAL RULES:
+- Read every word of the resume carefully.
+- Reference exact project names, company names, technologies, dates, CGPA, percentages, and achievements as they appear in the resume. Never give generic advice.
+- Do NOT fabricate information. Only reference what is actually written.
+- Return ONLY a raw JSON object. No markdown, no code fences, no extra text before or after the JSON.
+
+Return this exact JSON schema:
 {
-  "overall_score": number (0-100),
-  "overall_feedback": "string (short message e.g., 'Excellent', 'Needs improvement')",
-  "summary_comment": "string (1-2 sentence evaluation summary)",
+  "overall_score": number (0-100, honest and calibrated),
+  "overall_feedback": "string (3-6 word verdict e.g. 'Strong junior developer profile')",
+  "summary_comment": "string (2-3 sentences summarising the candidate using their real name, degree, and standout qualities from the resume)",
   "sections": {
     "contact_info": {
-      "score": number (0-100),
-      "comment": "string"
+      "score": number,
+      "comment": "string (list which contact details are present: phone, email, LinkedIn, GitHub, Portfolio. Note what is missing if anything.)"
     },
     "experience": {
-      "score": number (0-100),
-      "comment": "string"
+      "score": number,
+      "comment": "string (name exact companies and roles, e.g. 'Careerwill Full Stack Intern May-Jul 2025 and USTART Web Dev Intern Mar-Sep 2025 — good production exposure. Add quantifiable metrics beyond the 45% load time reduction already mentioned.')"
     },
     "education": {
-      "score": number (0-100),
-      "comment": "string"
+      "score": number,
+      "comment": "string (mention exact degree, specialisation, CGPA/percentage, and years)"
     },
     "skills": {
-      "score": number (0-100),
-      "comment": "string"
+      "score": number,
+      "comment": "string (list skills found in resume, highlight strong ones, and name specific gaps like Cloud/DevOps, testing frameworks, system design)"
     }
   },
-  "tips_for_improvement": ["string (3-5 tips)"],
-  "whats_good": ["string (1-3 strengths)"],
-  "needs_improvement": ["string (1-3 weaknesses)"]
-}
-Return ONLY the JSON. No additional text.`;
-        userMessage = `Analyze this resume:\n\n${data.resumeText}`;
+  "projects": [
+    {
+      "name": "string (exact project name from resume)",
+      "tech": ["string (each technology used)"],
+      "duration": "string (exact dates from resume)",
+      "comment": "string (2-3 sentences: what was built, what is technically impressive, what is missing — e.g. no tests, no CI/CD, no live demo link)"
+    }
+  ],
+  "internships": [
+    {
+      "company": "string (exact company name)",
+      "role": "string (exact role title)",
+      "duration": "string (exact dates)",
+      "comment": "string (2-3 sentences: what they did, what was impressive, what metrics or outcomes are missing)"
+    }
+  ],
+  "achievements": ["string (each achievement with full context, e.g. '1st place DevXpo Hackathon at NSUT Delhi organised by GDSC')"],
+  "skill_gaps": [
+    {
+      "skill": "string (exact skill or technology name that is missing or weak)",
+      "reason": "string (why this skill matters for this candidate's profile and career goals — reference their projects/internships)",
+      "priority": "high | medium | low"
+    }
+  ],
+  "focus_areas": [
+    {
+      "area": "string (concise area title, e.g. 'Cloud & DevOps', 'Testing & Quality', 'System Design')",
+      "why": "string (why this is the most important thing for this specific candidate to focus on — reference their actual resume content)",
+      "how": "string (concrete steps to improve: specific courses, projects to add, skills to learn — be precise)"
+    }
+  ],
+  "action_plan": [
+    {
+      "title": "string (short action title)",
+      "action": "string (specific actionable step — name actual skills, project ideas, or platforms relevant to this candidate)",
+      "timeframe": "string (e.g. 'Next 2 weeks', '1 month', '3 months')"
+    }
+  ],
+  "tips_for_improvement": ["string (4-5 specific, actionable tips that directly reference this candidate's resume — mention actual project or skill names)"],
+  "whats_good": ["string (3-4 specific strengths with evidence from the resume)"],
+  "needs_improvement": ["string (3-4 specific gaps with context from the resume)"]
+}`;
+        userMessage = `Analyze this resume and return ONLY the JSON, no code fences:\n\n${data.resumeText}`;
         break;
 
       case "roadmap":
@@ -246,7 +299,7 @@ Return ONLY the JSON array, no additional text.`;
   } catch {
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
