@@ -2,142 +2,135 @@
 
 import Link from "next/link";
 import { Star, Users, BookOpen, Clock, ArrowRight, Lock, Zap } from "lucide-react";
-import { Course } from "@/types";
-import { DIFFICULTY_COLORS, CATEGORY_ICONS } from "@/constants/ui";
+import { DIFFICULTY_COLORS } from "@/constants/ui";
+import { getCategoryIcon, getCourseExerciseCount, isPremiumLocked } from "@/utils/courses";
+import type { Course, SubscriptionTier } from "@/types/courses";
 
 interface CourseCardProps {
-    course: Course;
-    isEnrolled: boolean;
-    userSubscription: string;
-    onEnroll: (id: string) => void;
+  course: Course;
+  isEnrolled: boolean;
+  userSubscription: SubscriptionTier;
+  onEnroll: (id: string) => void;
 }
 
 export default function CourseCard({
-    course,
-    isEnrolled,
-    userSubscription,
-    onEnroll,
+  course,
+  isEnrolled,
+  userSubscription,
+  onEnroll,
 }: CourseCardProps) {
-    const totalExercises = course.chapters.reduce(
-        (sum, ch) => sum + ch.exercises.length,
-        0
-    );
+  const totalExercises = getCourseExerciseCount(course);
+  const isLocked = isPremiumLocked(course.isPremium, userSubscription);
 
-    return (
-        <div
-            className="course-item group glass rounded-2xl overflow-hidden hover:border-primary/20 transition-all duration-300 card-hover-glow spotlight-card flex flex-col"
-            onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-            }}
-        >
-            {/* Thumbnail */}
-            <div className="h-44 gradient-card flex items-center justify-center relative overflow-hidden">
-                <span className="text-6xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 ease-out">
-                    {CATEGORY_ICONS[course.category] || "📚"}
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-t from-surface/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute top-3 right-3 flex gap-2">
-                    {course.isPremium && (
-                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold gradient-primary text-white shadow-lg animate-shimmer">
-                            PRO
-                        </span>
-                    )}
-                </div>
-                <div className="absolute bottom-3 left-3">
-                    <span
-                        className={`px-2.5 py-1 rounded-full text-xs font-medium ${DIFFICULTY_COLORS[course.difficulty]}`}
-                    >
-                        {course.difficulty}
-                    </span>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-5 flex flex-col flex-1">
-                <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-primary-light transition-colors duration-300">
-                    {course.title}
-                </h3>
-                <p className="text-sm text-text-secondary mb-4 line-clamp-2 flex-1">
-                    {course.shortDescription}
-                </p>
-
-                {/* Meta */}
-                <div className="flex items-center justify-between text-xs text-text-muted mb-4">
-                    <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-warning fill-warning" />
-                            {course.rating.toFixed(1)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {course.enrolledCount.toLocaleString()}
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1">
-                            <BookOpen className="w-3 h-3" />
-                            {totalExercises} exercises
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {course.estimatedHours}h
-                        </span>
-                    </div>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                    {course.tags.slice(0, 3).map((tag) => (
-                        <span
-                            key={tag}
-                            className="px-2 py-0.5 rounded-md bg-surface-hover text-xs text-text-muted hover:bg-primary/10 hover:text-primary-light transition-colors duration-200"
-                        >
-                            {tag}
-                        </span>
-                    ))}
-                </div>
-
-                {/* Action */}
-                <div className="flex items-center gap-2">
-                    <Link
-                        href={`/courses/${course.id}`}
-                        className="flex-1 text-center py-2.5 rounded-lg border border-border text-sm font-medium text-text-primary hover:bg-surface-hover hover:border-primary/30 transition-all flex items-center justify-center gap-1 hover-bounce"
-                    >
-                        View Details
-                        <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                    {!isEnrolled && (
-                        <button
-                            onClick={() => onEnroll(course.id)}
-                            disabled={course.isPremium && userSubscription === "free"}
-                            className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-1 hover-bounce ${course.isPremium && userSubscription === "free"
-                                ? "border border-border text-text-muted cursor-not-allowed"
-                                : "gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/20"
-                                }`}
-                        >
-                            {course.isPremium && userSubscription === "free" ? (
-                                <>
-                                    <Lock className="w-3.5 h-3.5" /> Pro Only
-                                </>
-                            ) : (
-                                <>
-                                    <Zap className="w-3.5 h-3.5" /> Enroll
-                                </>
-                            )}
-                        </button>
-                    )}
-                    {isEnrolled && (
-                        <Link
-                            href={`/courses/${course.id}`}
-                            className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-success/30 text-success hover:bg-success/10 transition-all text-center hover-bounce"
-                        >
-                            Continue
-                        </Link>
-                    )}
-                </div>
-            </div>
+  return (
+    <div
+      className="course-item group glass rounded-2xl overflow-hidden hover:border-primary/20 transition-all duration-300 card-hover-glow spotlight-card flex flex-col"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+        e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      }}
+    >
+      <div className="h-44 gradient-card flex items-center justify-center relative overflow-hidden">
+        <span className="text-6xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 ease-out">
+          {getCategoryIcon(course.category)}
+        </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-surface/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute top-3 right-3 flex gap-2">
+          {course.isPremium && (
+            <span className="px-2.5 py-1 rounded-full text-xs font-semibold gradient-primary text-white shadow-lg animate-shimmer">
+              PRO
+            </span>
+          )}
         </div>
-    );
+        <div className="absolute bottom-3 left-3">
+          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${DIFFICULTY_COLORS[course.difficulty]}`}>
+            {course.difficulty}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-primary-light transition-colors duration-300">
+          {course.title}
+        </h3>
+        <p className="text-sm text-text-secondary mb-4 line-clamp-2 flex-1">{course.shortDescription}</p>
+
+        <div className="flex items-center justify-between text-xs text-text-muted mb-4">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1">
+              <Star className="w-3 h-3 text-warning fill-warning" />
+              {course.rating.toFixed(1)}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {course.enrolledCount.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1">
+              <BookOpen className="w-3 h-3" />
+              {totalExercises} exercises
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {course.estimatedHours}h
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {course.tags.slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="px-2 py-0.5 rounded-md bg-surface-hover text-xs text-text-muted hover:bg-primary/10 hover:text-primary-light transition-colors duration-200"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/courses/${course.id}`}
+            className="flex-1 text-center py-2.5 rounded-lg border border-border text-sm font-medium text-text-primary hover:bg-surface-hover hover:border-primary/30 transition-all flex items-center justify-center gap-1 hover-bounce"
+          >
+            View Details
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+
+          {!isEnrolled && (
+            <button
+              onClick={() => onEnroll(course.id)}
+              disabled={isLocked}
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-1 hover-bounce ${
+                isLocked
+                  ? "border border-border text-text-muted cursor-not-allowed"
+                  : "gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/20"
+              }`}
+            >
+              {isLocked ? (
+                <>
+                  <Lock className="w-3.5 h-3.5" /> Pro Only
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5" /> Enroll
+                </>
+              )}
+            </button>
+          )}
+
+          {isEnrolled && (
+            <Link
+              href={`/courses/${course.id}`}
+              className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-success/30 text-success hover:bg-success/10 transition-all text-center hover-bounce"
+            >
+              Continue
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
