@@ -3,8 +3,11 @@
 import { use, useState, useCallback, useRef, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useApp } from "@/store";
+import { PREVIEW_DEBOUNCE_MS, PROCTOR_ALERT_FREQUENCY } from "@/constants/playground";
 import { generateFlowchart } from "@/utils/generateFlowchart";
+import { buildPreviewHtml, getExerciseNavigation, isFrontendLanguage } from "@/utils/playground";
 import { Course, Chapter, Exercise } from "@/types";
+import { PlaygroundEditorDidMount } from "@/types/playground";
 import { Loader2 } from "lucide-react";
 
 // Extracted Components
@@ -15,12 +18,6 @@ import OutputPanel from "@/components/playground/panels/OutputPanel";
 import PreviewPanel from "@/components/playground/panels/PreviewPanel";
 import PasteBlockedAlert from "@/components/playground/PasteBlockedAlert";
 import FlowchartHintModal from "@/components/playground/FlowchartHintModal";
-
-// Constants & Helpers
-const FRONTEND_LANGUAGES = ["html", "css", "jsx", "tsx", "reactjs"];
-function isFrontendLanguage(lang: string) {
-    return FRONTEND_LANGUAGES.includes(lang.toLowerCase());
-}
 
 function PlaygroundContent({
     courseId,
@@ -46,7 +43,7 @@ function PlaygroundContent({
     const [showPasteAlert, setShowPasteAlert] = useState(false);
     const [showFlowchart, setShowFlowchart] = useState(false);
     const [tabSwitchCount, setTabSwitchCount] = useState(0);
-    const editorRef = useRef<any>(null);
+    const editorRef = useRef<Parameters<PlaygroundEditorDidMount>[0] | null>(null);
 
     useEffect(() => {
         fetch("/api/courses")
@@ -64,10 +61,11 @@ function PlaygroundContent({
             .catch(() => setLoading(false));
     }, [courseId, exerciseId]);
 
-    const allExercises = course?.chapters.flatMap((ch: Chapter) => ch.exercises) || [];
-    const exerciseIndex = allExercises.findIndex((e: any) => e.id === exerciseId);
-    const prevExercise = exerciseIndex > 0 ? allExercises[exerciseIndex - 1] : null;
-    const nextExercise = exerciseIndex < allExercises.length - 1 ? allExercises[exerciseIndex + 1] : null;
+    const allExercises = course?.chapters.flatMap((chapter: Chapter) => chapter.exercises) || [];
+    const { exerciseIndex, prevExercise, nextExercise } = useMemo(
+        () => getExerciseNavigation(allExercises, exerciseId),
+        [allExercises, exerciseId]
+    );
 
     const completed = exercise ? isExerciseCompleted(exercise.id) : false;
     const isFrontend = exercise ? isFrontendLanguage(exercise.language) : false;
@@ -92,56 +90,17 @@ function PlaygroundContent({
     }, [exercise?.id]);
 
     const updatePreview = useCallback((htmlCode: string, lang: string) => {
-        let fullHtml = "";
-        const normalizedLang = lang.toLowerCase();
-
-        if (normalizedLang === "html") {
-            fullHtml = htmlCode.includes("<html") || htmlCode.includes("<!DOCTYPE") ? htmlCode : `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><style>body { font-family: 'Inter', system-ui, sans-serif; padding: 20px; margin: 0; background: #fff; color: #1a1a1a; } * { box-sizing: border-box; }</style></head><body>${htmlCode}</body></html>`;
-        } else if (normalizedLang === "css") {
-            fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><style>body { font-family: 'Inter', system-ui, sans-serif; padding: 20px; margin: 0; background: #fff; color: #1a1a1a; } ${htmlCode}</style></head><body><div class="container"><header><h1>CSS Preview</h1><p>Mastering Layouts</p></header><main><section class="card"><h2>Card Title</h2><p>This is a preview element to test your CSS.</p><button>Action Button</button></section></main></div></body></html>`;
-        } else if (["jsx", "tsx", "javascript", "typescript", "reactjs"].includes(normalizedLang)) {
-            const isReact = htmlCode.includes("React") || htmlCode.includes("<") || ["jsx", "tsx", "reactjs"].includes(normalizedLang);
-            if (isReact) {
-                // Pre-process code for Babel-standalone
-                // 1. Remove imports (not supported in Babel standalone)
-                let cleanCode = htmlCode.replace(/import\s+.*?\s+from\s+['"].*?['"];?/g, '');
-                
-                // 2. Transform the default export into a global variable so we can find it
-                let componentName = "App"; // Default fallback
-                const funcMatch = cleanCode.match(/export\s+default\s+function\s+([a-zA-Z0-9_$]+)/);
-                const classMatch = cleanCode.match(/export\s+default\s+class\s+([a-zA-Z0-9_$]+)/);
-                const identMatch = cleanCode.match(/export\s+default\s+([a-zA-Z0-9_$]+);?$/);
-
-                if (funcMatch) {
-                    componentName = funcMatch[1];
-                    cleanCode = cleanCode.replace(/export\s+default\s+function/, 'function');
-                } else if (classMatch) {
-                    componentName = classMatch[1];
-                    cleanCode = cleanCode.replace(/export\s+default\s+class/, 'class');
-                } else if (identMatch) {
-                    componentName = identMatch[1];
-                    cleanCode = cleanCode.replace(/export\s+default\s+[a-zA-Z0-9_$]+;?$/, '');
-                } else {
-                    // It might be an anonymous default export: export default () => ...
-                    cleanCode = cleanCode.replace(/export\s+default\s+/, 'const App = ');
-                }
-
-                fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><script src="https://unpkg.com/react@18/umd/react.development.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><script src="https://cdn.tailwindcss.com"></script><style>body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #fff; }</style></head><body><div id="root"></div><script type="text/babel">const { useState, useEffect, useMemo, useCallback, useRef, useReducer, useContext } = React; try { ${cleanCode} const Root = (typeof ${componentName} !== 'undefined') ? ${componentName} : (typeof App !== 'undefined' ? App : null); if (Root) { ReactDOM.createRoot(document.getElementById('root')).render(<Root />); } else { document.getElementById('root').innerHTML = '<div style="color:red;padding:20px;">No default export or "${componentName}" component found.</div>'; } } catch (err) { document.getElementById('root').innerHTML = '<div style="color:red;padding:20px;">' + err.message + '</div>'; console.error(err); }</script></body></html>`;
-            } else {
-                fullHtml = `<!DOCTYPE html><html><body><div id="root"></div><script>${htmlCode}<\/script></body></html>`;
-            }
-        }
-        setPreviewHtml(fullHtml);
+        setPreviewHtml(buildPreviewHtml(htmlCode, lang));
     }, []);
 
     useEffect(() => {
         if (isFrontend && code) {
-            const timer = setTimeout(() => updatePreview(code, language), 500);
+            const timer = setTimeout(() => updatePreview(code, language), PREVIEW_DEBOUNCE_MS);
             return () => clearTimeout(timer);
         }
     }, [code, isFrontend, language, updatePreview]);
 
-    const handleEditorDidMount = useCallback((editor: any, monaco: any) => {
+    const handleEditorDidMount = useCallback<PlaygroundEditorDidMount>((editor, monaco) => {
         editorRef.current = editor;
         // Block Paste commands
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV, () => setShowPasteAlert(true));
@@ -252,8 +211,8 @@ function PlaygroundContent({
     return (
         <div className="h-screen bg-surface flex flex-col overflow-hidden select-none">
             <PasteBlockedAlert show={showPasteAlert} onClose={() => setShowPasteAlert(false)} />
-            {tabSwitchCount > 0 && tabSwitchCount % 3 === 0 && (
-                <div className="fixed top-4 right-4 z-[110] bg-danger/90 backdrop-blur text-white px-4 py-2 rounded-lg shadow-xl animate-bounce-short text-xs font-bold border border-white/20">
+            {tabSwitchCount > 0 && tabSwitchCount % PROCTOR_ALERT_FREQUENCY === 0 && (
+                <div className="fixed top-4 right-4 z-110 bg-danger/90 backdrop-blur text-white px-4 py-2 rounded-lg shadow-xl animate-bounce-short text-xs font-bold border border-white/20">
                     ⚠️ Tab switching detected! ({tabSwitchCount} times)
                 </div>
             )}

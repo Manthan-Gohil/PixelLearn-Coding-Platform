@@ -20,10 +20,10 @@ export default function FlowchartHintModal({
     if (!show || !flowchart) return null;
 
     return (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-90 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="relative max-w-3xl w-full mx-4 max-h-[85vh] animate-scale-in flex flex-col">
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-2xl opacity-20 blur-lg" />
+                <div className="absolute -inset-1 bg-linear-to-r from-primary via-accent to-primary rounded-2xl opacity-20 blur-lg" />
                 <div className="relative rounded-2xl bg-surface-alt border border-primary/20 shadow-2xl flex flex-col max-h-[85vh]">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
@@ -63,13 +63,13 @@ export default function FlowchartHintModal({
                             Decision
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-muted whitespace-nowrap">
-                            <div className="w-3 h-3 skew-x-[-12deg] bg-accent/20 border border-accent/50" />
+                            <div className="w-3 h-3 -skew-x-12 bg-accent/20 border border-accent/50" />
                             I/O
                         </div>
                     </div>
 
                     {/* Flowchart */}
-                    <div className="flex-1 overflow-auto p-4 min-h-[300px]">
+                    <div className="flex-1 overflow-auto p-4 min-h-75">
                         <FlowchartDiagram
                             nodes={flowchart.nodes}
                             edges={flowchart.edges}

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Loader2, RotateCcw, CheckCircle2, Play } from "lucide-react";
+import type { PlaygroundEditorDidMount } from "@/types/playground";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
     ssr: false,
@@ -20,7 +21,7 @@ interface EditorPanelProps {
     completed: boolean;
     isFrontend: boolean;
     showTheoryPanel: boolean;
-    handleEditorDidMount: (editor: any, monaco: any) => void;
+    handleEditorDidMount: PlaygroundEditorDidMount;
     handleMarkComplete: () => void;
     runCode: () => void;
     resetCode: () => void;
