@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { BookOpen, CheckCircle2, Clock, ChevronRight } from "lucide-react";
 import { Course } from "@/store";
+import { CourseProgressSummary, DashboardTabId } from "@/types/dashboard";
+import { getCourseCategoryIcon } from "@/utils/dashboard";
 
 interface EnrolledCoursesTabProps {
     enrolledCourses: Course[];
-    getUserProgress: (courseId: string) => any;
-    setActiveTab: (tab: any) => void;
+    getUserProgress: (courseId: string) => CourseProgressSummary;
+    setActiveTab: (tab: DashboardTabId) => void;
 }
 
 export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, setActiveTab }: EnrolledCoursesTabProps) {
@@ -42,13 +44,7 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                         className="group glass rounded-xl p-5 flex items-center gap-5 hover:border-primary/20 transition-all"
                     >
                         <div className="w-16 h-16 rounded-xl gradient-card flex items-center justify-center text-3xl shrink-0 border border-border">
-                            {course.category === "Python"
-                                ? "🐍"
-                                : course.category === "JavaScript"
-                                    ? "⚡"
-                                    : course.category === "Web Development"
-                                        ? "🌐"
-                                        : "📚"}
+                            {getCourseCategoryIcon(course.category)}
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">

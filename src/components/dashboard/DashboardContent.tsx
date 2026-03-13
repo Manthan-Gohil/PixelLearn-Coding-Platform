@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useApp } from "@/store";
 import { COURSES, WEEKLY_ACTIVITY } from "@/services/data";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -13,17 +14,28 @@ export default function DashboardContent() {
     const { user, getUserProgress, enrollCourse } = useApp();
     const headerRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 25, duration: 0.5 });
 
-    const enrolledCourses = COURSES.filter((c) =>
-        user.enrolledCourses.includes(c.id)
+    const enrolledCourses = useMemo(
+        () => COURSES.filter((c) => user.enrolledCourses.includes(c.id)),
+        [user.enrolledCourses]
     );
 
-    const totalExercisesCompleted = user.completedExercises.length;
-    const weeklyXP = WEEKLY_ACTIVITY.reduce((sum, d) => sum + d.xpEarned, 0);
-    const maxActivityXP = Math.max(...WEEKLY_ACTIVITY.map((d) => d.xpEarned));
+    const totalExercisesCompleted = useMemo(
+        () => user.completedExercises.length,
+        [user.completedExercises]
+    );
+
+    const weeklyXP = useMemo(
+        () => WEEKLY_ACTIVITY.reduce((sum, day) => sum + day.xpEarned, 0),
+        []
+    );
+
+    const maxActivityXP = useMemo(
+        () => Math.max(...WEEKLY_ACTIVITY.map((day) => day.xpEarned)),
+        []
+    );
 
     return (
         <>
-            {/* Header */}
             {/* Header */}
             <div ref={headerRef} className="mb-8">
                 <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">

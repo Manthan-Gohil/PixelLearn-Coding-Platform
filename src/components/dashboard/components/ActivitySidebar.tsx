@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import { User } from "@/store";
 import { WEEKLY_ACTIVITY } from "@/services/data";
+import { ACTIVE_STREAK_DAYS, DASHBOARD_QUICK_ACTIONS, STREAK_DAYS } from "@/constants/dashboard";
+import { DashboardQuickActionIconName } from "@/types/dashboard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
-import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 interface ActivitySidebarProps {
     user: User;
@@ -24,6 +26,12 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
     const activityRef = useScrollReveal<HTMLDivElement>({ direction: "right", distance: 40, duration: 0.6 });
     const streakRef = useScrollReveal<HTMLDivElement>({ direction: "right", distance: 40, duration: 0.6, delay: 0.1 });
     const quickRef = useScrollReveal<HTMLDivElement>({ direction: "right", distance: 40, duration: 0.6, delay: 0.2 });
+
+    const quickActionIcons: Record<DashboardQuickActionIconName, typeof BookOpen> = {
+        BookOpen,
+        BarChart3,
+        Zap,
+    };
 
     return (
         <div className="space-y-6">
@@ -37,7 +45,7 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
                     {WEEKLY_ACTIVITY.map((day, i) => (
                         <div key={day.date} className="flex-1 flex flex-col items-center gap-1">
                             <div
-                                className="w-full rounded-t-md gradient-primary transition-all duration-500 hover:opacity-80 min-h-[4px] animate-fill-bar"
+                                className="w-full rounded-t-md gradient-primary transition-all duration-500 hover:opacity-80 min-h-1 animate-fill-bar"
                                 style={{
                                     height: `${(day.xpEarned / maxActivityXP) * 100}%`,
                                     animationDelay: `${0.3 + i * 0.1}s`,
@@ -69,7 +77,7 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
                         days in a row
                     </div>
                     <div className="flex justify-center gap-1">
-                        {Array.from({ length: 7 }).map((_, i) => (
+                        {Array.from({ length: STREAK_DAYS }).map((_, i) => (
                             <div
                                 key={i}
                                 className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium stagger-fade-up ${i < 5
@@ -78,7 +86,7 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
                                     }`}
                                 style={{ animationDelay: `${0.5 + i * 0.06}s` }}
                             >
-                                {i < 5 ? "🔥" : "·"}
+                                {i < ACTIVE_STREAK_DAYS ? "🔥" : "·"}
                             </div>
                         ))}
                     </div>
@@ -91,27 +99,22 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
                     Quick Actions
                 </h3>
                 <div className="space-y-2">
-                    {[
-                        {
-                            href: "/courses",
-                            label: "Browse Courses",
-                            icon: BookOpen,
-                        },
-                        { href: "/ai-tools", label: "AI Career Tools", icon: BarChart3 },
-                        { href: "/pricing", label: "Upgrade to Pro", icon: Zap },
-                    ].map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-hover transition-all duration-200 group hover-bounce"
-                        >
-                            <link.icon className="w-4 h-4 text-text-muted group-hover:text-primary-light transition-colors" />
-                            <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
-                                {link.label}
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-text-muted ml-auto group-hover:text-primary-light group-hover:translate-x-1 transition-all" />
-                        </Link>
-                    ))}
+                    {DASHBOARD_QUICK_ACTIONS.map((link) => {
+                        const Icon = quickActionIcons[link.icon];
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-hover transition-all duration-200 group hover-bounce"
+                            >
+                                <Icon className="w-4 h-4 text-text-muted group-hover:text-primary-light transition-colors" />
+                                <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                                    {link.label}
+                                </span>
+                                <ArrowRight className="w-4 h-4 text-text-muted ml-auto group-hover:text-primary-light group-hover:translate-x-1 transition-all" />
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </div>

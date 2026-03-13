@@ -2,6 +2,7 @@
 
 import { Trophy, TrendingUp } from "lucide-react";
 import { User } from "@/store";
+import { LOCKED_ACHIEVEMENT_BADGES, XP_MILESTONES } from "@/constants/dashboard";
 
 interface AchievementsTabProps {
     user: User;
@@ -18,38 +19,7 @@ export default function AchievementsTab({ user }: AchievementsTabProps) {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {[
                         ...user.badges.map((b) => ({ ...b, unlocked: true })),
-                        ...[
-                            {
-                                id: "xp-5000",
-                                name: "Elite Coder",
-                                description: "Earn 5000 XP",
-                                icon: "💎",
-                                unlocked: false,
-                                requirement: { type: "xp" as const, value: 5000 },
-                            },
-                            {
-                                id: "streak-30",
-                                name: "Monthly Warrior",
-                                description: "30-day streak",
-                                icon: "🛡️",
-                                unlocked: false,
-                                requirement: {
-                                    type: "streak" as const,
-                                    value: 30,
-                                },
-                            },
-                            {
-                                id: "exercises-50",
-                                name: "Problem Solver",
-                                description: "Complete 50 exercises",
-                                icon: "🧩",
-                                unlocked: false,
-                                requirement: {
-                                    type: "exercises" as const,
-                                    value: 50,
-                                },
-                            },
-                        ].filter(
+                        ...LOCKED_ACHIEVEMENT_BADGES.map((badge) => ({ ...badge, unlocked: false })).filter(
                             (b) => !user.badges.some((ub) => ub.id === b.id)
                         ),
                     ].map((badge) => (
@@ -84,12 +54,7 @@ export default function AchievementsTab({ user }: AchievementsTabProps) {
                     XP Milestones
                 </h3>
                 <div className="space-y-4">
-                    {[
-                        { target: 1000, label: "Beginner" },
-                        { target: 2500, label: "Intermediate" },
-                        { target: 5000, label: "Advanced" },
-                        { target: 10000, label: "Master" },
-                    ].map((milestone) => {
+                    {XP_MILESTONES.map((milestone) => {
                         const progress = Math.min(
                             (user.xp / milestone.target) * 100,
                             100

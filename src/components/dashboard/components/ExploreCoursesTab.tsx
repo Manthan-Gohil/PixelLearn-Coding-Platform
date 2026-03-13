@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Star, Users, Zap, Play, Lock } from "lucide-react";
 import { User } from "@/store";
 import { COURSES } from "@/services/data";
+import { getCourseCategoryIcon } from "@/utils/dashboard";
 
 interface ExploreCoursesTabProps {
     user: User;
@@ -22,15 +23,7 @@ export default function ExploreCoursesTab({ user, enrollCourse }: ExploreCourses
                     >
                         <div className="h-32 gradient-card flex items-center justify-center relative">
                             <span className="text-4xl group-hover:scale-110 transition-transform">
-                                {course.category === "Python"
-                                    ? "🐍"
-                                    : course.category === "JavaScript"
-                                        ? "⚡"
-                                        : course.category === "Web Development"
-                                            ? "🌐"
-                                            : course.category === "React"
-                                                ? "⚛️"
-                                                : "🧮"}
+                                {getCourseCategoryIcon(course.category, "🧮")}
                             </span>
                             {course.isPremium && (
                                 <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold gradient-primary text-white">
