@@ -13,56 +13,21 @@ import {
     Download,
 } from "lucide-react";
 import * as pdfjs from "pdfjs-dist";
+import { AI_ANALYSIS_STEPS } from "@/constants/ai-tools";
+import { useAIApi } from "@/hooks/useAIApi";
+import type { ResumeResult } from "@/types/ai-tools";
 
 // Set worker source for pdfjs-dist
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
-interface ResumeResult {
-    overall_score: number;
-    overall_feedback: string;
-    summary_comment: string;
-    sections: {
-        contact_info: { score: number; comment: string };
-        experience: { score: number; comment: string };
-        education: { score: number; comment: string };
-        skills: { score: number; comment: string };
-    };
-    projects?: { name: string; tech: string[]; duration: string; comment: string }[];
-    internships?: { company: string; role: string; duration: string; comment: string }[];
-    achievements?: string[];
-    skill_gaps?: { skill: string; reason: string; priority: "high" | "medium" | "low" }[];
-    focus_areas?: { area: string; why: string; how: string }[];
-    action_plan?: { title: string; action: string; timeframe: string }[];
-    tips_for_improvement: string[];
-    whats_good: string[];
-    needs_improvement: string[];
-}
-
 export default function ResumeAnalyser() {
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, callAI } = useAIApi();
     const [resumeText, setResumeText] = useState("");
     const [resumeFile, setResumeFile] = useState<File | null>(null);
     const [resumePreviewUrl, setResumePreviewUrl] = useState<string | null>(null);
     const [resumeResult, setResumeResult] = useState<ResumeResult | null>(null);
     const [analysisStep, setAnalysisStep] = useState<number>(0);
     const [isParsing, setIsParsing] = useState(false);
-
-    async function callAI(type: string, data: Record<string, unknown>) {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/ai", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type, data }),
-            });
-            const result = await res.json();
-            return result.result;
-        } catch {
-            return "Error: Unable to process request. Please try again.";
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
     const extractTextFromPDF = async (file: File) => {
         setIsParsing(true);
@@ -75,7 +40,9 @@ export default function ResumeAnalyser() {
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const textContent = await page.getTextContent();
-                const pageText = textContent.items.map((item: any) => item.str).join(" ");
+                const pageText = textContent.items
+                    .map((item) => ("str" in item ? item.str : ""))
+                    .join(" ");
                 fullText += pageText + "\n";
             }
 
@@ -111,7 +78,6 @@ export default function ResumeAnalyser() {
         if (!resumeResult) return;
         const r = resumeResult;
 
-        const scoreColor = (s: number) => s >= 80 ? "#22c55e" : s >= 60 ? "#f59e0b" : "#ef4444";
         const priorityBadge = (p: string) =>
             p === "high" ? "background:#fee2e2;color:#dc2626" :
                 p === "medium" ? "background:#fef9c3;color:#ca8a04" :
@@ -297,13 +263,13 @@ export default function ResumeAnalyser() {
         if (!resumeText.trim()) return;
         setResumeResult(null);
 
-        setAnalysisStep(1);
+        setAnalysisStep(AI_ANALYSIS_STEPS.verify);
         await new Promise(r => setTimeout(r, 800));
 
-        setAnalysisStep(2);
+        setAnalysisStep(AI_ANALYSIS_STEPS.synthesize);
         await new Promise(r => setTimeout(r, 1200));
 
-        setAnalysisStep(3);
+        setAnalysisStep(AI_ANALYSIS_STEPS.generate);
         const result = await callAI("resume-analyze", { resumeText });
 
         try {
@@ -408,15 +374,15 @@ export default function ResumeAnalyser() {
                                         <div className="flex flex-col items-center gap-4">
                                             <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
                                             <h4 className="text-lg font-semibold text-text-primary text-center">
-                                                {analysisStep === 1 && "Verifying Document Integrity..."}
-                                                {analysisStep === 2 && "Synthesizing Professional Profile..."}
-                                                {analysisStep === 3 && "AI Agent Generating Career Insights..."}
+                                                {analysisStep === AI_ANALYSIS_STEPS.verify && "Verifying Document Integrity..."}
+                                                {analysisStep === AI_ANALYSIS_STEPS.synthesize && "Synthesizing Professional Profile..."}
+                                                {analysisStep === AI_ANALYSIS_STEPS.generate && "AI Agent Generating Career Insights..."}
                                             </h4>
                                         </div>
                                         <div className="space-y-2">
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= 1 ? 'w-1/3' : 'w-0'}`} />
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= 2 ? 'w-2/3' : 'w-0'}`} />
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= 3 ? 'w-full' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.verify ? 'w-1/3' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.synthesize ? 'w-2/3' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.generate ? 'w-full' : 'w-0'}`} />
                                         </div>
                                     </div>
                                 ) : (
@@ -574,7 +540,7 @@ export default function ResumeAnalyser() {
                                 )}
 
                                 {/* Tips for Improvement */}
-                                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+                                <div className="p-6 rounded-2xl bg-linear-to-br from-primary/10 to-accent/10 border border-primary/20">
                                     <h5 className="text-sm font-bold text-text-primary mb-4 flex items-center gap-2">
                                         <Sparkles className="w-4 h-4 text-primary-light" />
                                         Pro Tips to Master Your Resume

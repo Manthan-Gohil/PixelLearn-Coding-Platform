@@ -3,6 +3,13 @@
 import { useState } from "react";
 import { useApp } from "@/store";
 import StandardLayout from "@/components/layout/StandardLayout";
+import {
+    AI_TOOL_TABS,
+    AI_TOOLS_PRO_ONLY_DESCRIPTION,
+    AI_TOOLS_PRO_ONLY_TITLE_HIGHLIGHT,
+    AI_TOOLS_PRO_ONLY_TITLE_PREFIX,
+    AI_TOOLS_UPGRADE_HREF,
+} from "@/constants/ai-tools";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import {
     Brain,
@@ -13,17 +20,16 @@ import {
     Lock,
     Zap,
 } from "lucide-react";
+import type { AITabId, AIToolTabIconName } from "@/types/ai-tools";
 
 // Components
 import CareerQA from "@/components/ai-tools/CareerQA";
 import ResumeAnalyser from "@/components/ai-tools/ResumeAnalyser";
 import RoadmapGenerator from "@/components/ai-tools/RoadmapGenerator";
 
-type AITab = "career-qa" | "resume" | "roadmap";
-
 function AIToolsContent() {
     const { user } = useApp();
-    const [activeTab, setActiveTab] = useState<AITab>("career-qa");
+    const [activeTab, setActiveTab] = useState<AITabId>("career-qa");
     const isPro = user.subscription === "pro";
 
     const headerRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 30, duration: 0.6 });
@@ -34,11 +40,11 @@ function AIToolsContent() {
         duration: 0.5,
     });
 
-    const tabs = [
-        { id: "career-qa" as AITab, label: "Career Q&A", icon: Brain, description: "Ask career questions" },
-        { id: "resume" as AITab, label: "Resume Analyzer", icon: FileText, description: "Analyze your resume" },
-        { id: "roadmap" as AITab, label: "Career Roadmap", icon: Rocket, description: "Generate a roadmap" },
-    ];
+    const tabIcons: Record<AIToolTabIconName, typeof Brain> = {
+        Brain,
+        FileText,
+        Rocket,
+    };
 
     if (!isPro) {
         return (
@@ -47,14 +53,13 @@ function AIToolsContent() {
                     <div className="glass rounded-2xl p-12 animate-glow-pulse">
                         <Lock className="w-16 h-16 text-primary-light mx-auto mb-6 animate-float-subtle" />
                         <h1 className="text-3xl font-bold text-text-primary mb-4">
-                            AI Tools are <span className="gradient-text">Pro Only</span>
+                            {AI_TOOLS_PRO_ONLY_TITLE_PREFIX}<span className="gradient-text">{AI_TOOLS_PRO_ONLY_TITLE_HIGHLIGHT}</span>
                         </h1>
                         <p className="text-text-secondary mb-8 max-w-lg mx-auto">
-                            Upgrade to Pro to access AI Career Q&A, Resume Analyzer, and Career
-                            Roadmap Generator. Get personalized insights powered by advanced AI.
+                            {AI_TOOLS_PRO_ONLY_DESCRIPTION}
                         </p>
                         <a
-                            href="/pricing"
+                            href={AI_TOOLS_UPGRADE_HREF}
                             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 transition-all shadow-xl shadow-primary/25 hover-bounce"
                         >
                             <Zap className="w-5 h-5" />
@@ -88,32 +93,35 @@ function AIToolsContent() {
 
             {/* Tabs */}
             <div ref={tabsRef} className="grid grid-cols-3 gap-4 mb-8">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`ai-tab p-4 rounded-xl border transition-all duration-300 text-left spotlight-card hover-bounce ${activeTab === tab.id
-                            ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10 animate-glow-pulse"
-                            : "border-border glass hover:border-primary/20"
-                            }`}
-                        onMouseMove={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                            e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-                        }}
-                    >
-                        <tab.icon
-                            className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
-                                ? "text-primary-light scale-110"
-                                : "text-text-muted"
+                {AI_TOOL_TABS.map((tab) => {
+                    const Icon = tabIcons[tab.icon];
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`ai-tab p-4 rounded-xl border transition-all duration-300 text-left spotlight-card hover-bounce ${activeTab === tab.id
+                                ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10 animate-glow-pulse"
+                                : "border-border glass hover:border-primary/20"
                                 }`}
-                        />
-                        <div className="font-semibold text-text-primary text-sm">
-                            {tab.label}
-                        </div>
-                        <div className="text-xs text-text-muted">{tab.description}</div>
-                    </button>
-                ))}
+                            onMouseMove={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+                            }}
+                        >
+                            <Icon
+                                className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
+                                    ? "text-primary-light scale-110"
+                                    : "text-text-muted"
+                                    }`}
+                            />
+                            <div className="font-semibold text-text-primary text-sm">
+                                {tab.label}
+                            </div>
+                            <div className="text-xs text-text-muted">{tab.description}</div>
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Content with animation */}

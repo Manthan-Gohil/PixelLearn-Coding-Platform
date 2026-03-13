@@ -7,40 +7,16 @@ import {
     Clock,
     Star,
 } from "lucide-react";
-
-interface RoadmapStepData {
-    step: number;
-    title: string;
-    description: string;
-    duration: string;
-    skills: string[];
-    resources: string[];
-    milestone: string;
-}
+import { ROADMAP_EXPERIENCE_LEVELS } from "@/constants/ai-tools";
+import { useAIApi } from "@/hooks/useAIApi";
+import type { ExperienceLevel, RoadmapStepData } from "@/types/ai-tools";
 
 export default function RoadmapGenerator() {
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, callAI } = useAIApi();
     const [desiredRole, setDesiredRole] = useState("");
     const [currentSkills, setCurrentSkills] = useState("");
-    const [experienceLevel, setExperienceLevel] = useState("beginner");
+    const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>("beginner");
     const [roadmapSteps, setRoadmapSteps] = useState<RoadmapStepData[]>([]);
-
-    async function callAI(type: string, data: Record<string, unknown>) {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/ai", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type, data }),
-            });
-            const result = await res.json();
-            return result.result;
-        } catch {
-            return "Error: Unable to process request. Please try again.";
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
     async function handleRoadmap() {
         if (!desiredRole.trim()) return;
@@ -95,12 +71,14 @@ export default function RoadmapGenerator() {
                         </label>
                         <select
                             value={experienceLevel}
-                            onChange={(e) => setExperienceLevel(e.target.value)}
+                            onChange={(e) => setExperienceLevel(e.target.value as ExperienceLevel)}
                             className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary focus:outline-none focus:border-primary/50"
                         >
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
+                            {ROADMAP_EXPERIENCE_LEVELS.map((level) => (
+                                <option key={level} value={level}>
+                                    {level.charAt(0).toUpperCase() + level.slice(1)}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>

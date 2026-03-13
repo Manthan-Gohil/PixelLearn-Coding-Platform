@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useApp } from "@/store";
 import StandardLayout from "@/components/layout/StandardLayout";
 import { SUBSCRIPTION_PLANS } from "@/services/data";
+import { DEFAULT_BILLING_CYCLE, PRICING_TRUST_MESSAGE } from "@/constants/pricing";
+import { getActivePricingPlans } from "@/utils/pricing";
+import type { BillingCycle } from "@/types/pricing";
 import { Shield } from "lucide-react";
 
 // Components
@@ -14,11 +17,9 @@ import PricingFAQ from "@/components/pricing/PricingFAQ";
 
 function PricingContent() {
     const { user, updateSubscription } = useApp();
-    const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+    const [billing, setBilling] = useState<BillingCycle>(DEFAULT_BILLING_CYCLE);
 
-    const activePlans = SUBSCRIPTION_PLANS.filter(
-        (p) => p.interval === billing || p.price === 0
-    );
+    const activePlans = getActivePricingPlans(SUBSCRIPTION_PLANS, billing);
 
     return (
         <StandardLayout
@@ -44,7 +45,7 @@ function PricingContent() {
             <div className="text-center animate-fade-in">
                 <div className="inline-flex items-center gap-2 text-text-muted text-sm glass px-4 py-2 rounded-full">
                     <Shield className="w-4 h-4 text-success" />
-                    30-day money-back guarantee · SSL encrypted · Cancel anytime
+                    {PRICING_TRUST_MESSAGE.label}
                 </div>
             </div>
         </StandardLayout>

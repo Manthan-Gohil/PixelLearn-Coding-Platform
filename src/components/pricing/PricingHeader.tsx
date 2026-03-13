@@ -2,10 +2,12 @@
 
 import { Sparkles } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { PRICING_BILLING_LABELS, PRICING_YEARLY_SAVE_TEXT } from "@/constants/pricing";
+import type { BillingCycle } from "@/types/pricing";
 
 interface PricingHeaderProps {
-    billing: "monthly" | "yearly";
-    onBillingChange: (billing: "monthly" | "yearly") => void;
+    billing: BillingCycle;
+    onBillingChange: (billing: BillingCycle) => void;
 }
 
 export default function PricingHeader({ billing, onBillingChange }: PricingHeaderProps) {
@@ -36,7 +38,7 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
                         : "text-text-muted hover:text-text-primary"
                         }`}
                 >
-                    Monthly
+                    {PRICING_BILLING_LABELS.monthly}
                 </button>
                 <button
                     onClick={() => onBillingChange("yearly")}
@@ -45,8 +47,8 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
                         : "text-text-muted hover:text-text-primary"
                         }`}
                 >
-                    Yearly
-                    <span className="ml-1 text-xs text-success">Save 35%</span>
+                    {PRICING_BILLING_LABELS.yearly}
+                    <span className="ml-1 text-xs text-success">{PRICING_YEARLY_SAVE_TEXT}</span>
                 </button>
             </div>
         </div>

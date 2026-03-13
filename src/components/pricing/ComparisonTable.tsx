@@ -2,27 +2,7 @@
 
 import { Check, X, Crown } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
-
-interface Feature {
-    name: string;
-    free: boolean | string;
-    pro: boolean | string;
-}
-
-const comparisonFeatures: Feature[] = [
-    { name: "Free Courses", free: true, pro: true },
-    { name: "Basic Coding Playground", free: true, pro: true },
-    { name: "Progress Tracking", free: true, pro: true },
-    { name: "Community Support", free: true, pro: true },
-    { name: "Daily Exercise Limit", free: "5/day", pro: "Unlimited" },
-    { name: "Premium Courses", free: false, pro: true },
-    { name: "AI Career Q&A", free: false, pro: true },
-    { name: "AI Resume Analyzer", free: false, pro: true },
-    { name: "AI Career Roadmap", free: false, pro: true },
-    { name: "Certificate of Completion", free: false, pro: true },
-    { name: "Priority Support", free: false, pro: true },
-    { name: "Advanced Analytics", free: false, pro: true },
-];
+import { PRICING_COMPARISON_FEATURES } from "@/constants/pricing";
 
 export default function ComparisonTable() {
     const headerRef = useScrollReveal<HTMLHeadingElement>({ direction: "up", distance: 30 });
@@ -50,7 +30,7 @@ export default function ComparisonTable() {
                         <Crown className="w-4 h-4" /> Pro
                     </div>
                 </div>
-                {comparisonFeatures.map((feature, i) => (
+                {PRICING_COMPARISON_FEATURES.map((feature, i) => (
                     <div
                         key={i}
                         className={`comparison-row grid grid-cols-3 gap-0 p-4 ${i % 2 === 0 ? "bg-surface-alt/20" : ""

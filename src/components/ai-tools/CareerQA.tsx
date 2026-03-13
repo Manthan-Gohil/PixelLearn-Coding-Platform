@@ -7,28 +7,13 @@ import {
     Loader2,
     ChevronRight,
 } from "lucide-react";
+import { CAREER_QA_SUGGESTED_QUESTIONS } from "@/constants/ai-tools";
+import { useAIApi } from "@/hooks/useAIApi";
 
 export default function CareerQA() {
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, callAI } = useAIApi();
     const [question, setQuestion] = useState("");
     const [careerAnswer, setCareerAnswer] = useState("");
-
-    async function callAI(type: string, data: Record<string, unknown>) {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/ai", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type, data }),
-            });
-            const result = await res.json();
-            return result.result;
-        } catch {
-            return "Error: Unable to process request. Please try again.";
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
     async function handleCareerQA() {
         if (!question.trim()) return;
@@ -66,11 +51,7 @@ export default function CareerQA() {
                 <div className="mt-6">
                     <p className="text-xs text-text-muted mb-2">Try asking:</p>
                     <div className="space-y-2">
-                        {[
-                            "What skills do I need for a frontend developer role?",
-                            "How to transition from non-tech to software engineering?",
-                            "Is it better to learn React or Vue.js in 2026?",
-                        ].map((q) => (
+                        {CAREER_QA_SUGGESTED_QUESTIONS.map((q) => (
                             <button
                                 key={q}
                                 onClick={() => setQuestion(q)}

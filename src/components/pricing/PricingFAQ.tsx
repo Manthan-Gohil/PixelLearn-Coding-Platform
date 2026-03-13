@@ -3,34 +3,7 @@
 import { useState } from "react";
 import { HelpCircle, ArrowRight } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
-
-const faqItems = [
-    {
-        question: "Can I switch between plans?",
-        answer:
-            "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and billing is prorated.",
-    },
-    {
-        question: "Is there a free trial for Pro?",
-        answer:
-            "We offer a 14-day free trial for Pro. No credit card required to start. Cancel anytime during the trial.",
-    },
-    {
-        question: "What payment methods do you accept?",
-        answer:
-            "We accept all major credit cards (Visa, MasterCard, Amex), PayPal, and UPI. All payments are processed securely.",
-    },
-    {
-        question: "Can I get a refund?",
-        answer:
-            "Yes, we offer a 30-day money-back guarantee. If you're not satisfied, contact us for a full refund.",
-    },
-    {
-        question: "Do you offer team/student discounts?",
-        answer:
-            "Yes! We offer 50% discount for students with a valid .edu email and custom pricing for teams of 5+. Contact us for details.",
-    },
-];
+import { PRICING_FAQ_ITEMS } from "@/constants/pricing";
 
 export default function PricingFAQ() {
     const [showFAQ, setShowFAQ] = useState<number | null>(null);
@@ -48,7 +21,7 @@ export default function PricingFAQ() {
                 Frequently Asked Questions
             </h2>
             <div ref={listRef} className="space-y-3">
-                {faqItems.map((faq, i) => (
+                {PRICING_FAQ_ITEMS.map((faq, i) => (
                     <div
                         key={i}
                         className="faq-item glass rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/20"
