@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { Star, Users, Zap, Play, Lock } from "lucide-react";
-import type { User } from "@/types";
-import { COURSES } from "@/services/data";
+import type { Course, User } from "@/types";
 import { getCategoryIcon } from "@/utils/courses";
 
 interface ExploreCoursesTabProps {
     user: User;
+    courses: Course[];
     enrollCourse: (courseId: string) => void;
 }
 
-export default function ExploreCoursesTab({ user, enrollCourse }: ExploreCoursesTabProps) {
+export default function ExploreCoursesTab({ user, courses, enrollCourse }: ExploreCoursesTabProps) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {COURSES.map((course) => {
+            {courses.map((course) => {
                 const isEnrolled = user.enrolledCourses.includes(course.id);
                 return (
                     <div

@@ -6,6 +6,7 @@ import {
   filterCourses,
   getCourseCategories,
 } from "@/utils/courses";
+import { COURSES } from "@/services/data";
 import type { Course, CourseDifficultyFilter } from "@/types/courses";
 
 interface UseCoursesDataParams {
@@ -16,6 +17,9 @@ interface UseCoursesDataParams {
 
 async function fetchCourses(): Promise<Course[]> {
   const response = await fetch("/api/courses");
+  if (!response.ok) {
+    throw new Error("Failed to fetch courses");
+  }
   const data: unknown = await response.json();
   return Array.isArray(data) ? (data as Course[]) : [];
 }
@@ -39,6 +43,7 @@ export function useCoursesData({
       })
       .catch(() => {
         if (!isMounted) return;
+        setCourses(COURSES);
         setLoading(false);
       });
 
@@ -83,6 +88,7 @@ export function useCourseById(courseId: string) {
       })
       .catch(() => {
         if (!isMounted) return;
+        setCourse(COURSES.find((item) => item.id === courseId) ?? null);
         setLoading(false);
       });
 

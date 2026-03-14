@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { useApp } from "@/store";
-import { COURSES, WEEKLY_ACTIVITY } from "@/services/data";
+import { WEEKLY_ACTIVITY } from "@/services/data";
+import { useCoursesData } from "@/hooks/useCoursesData";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 // Components
@@ -12,11 +13,21 @@ import ActivitySidebar from "./components/ActivitySidebar";
 
 export default function DashboardContent() {
     const { user, getUserProgress, enrollCourse } = useApp();
+    const { courses: allCourses } = useCoursesData({
+        search: "",
+        categoryFilter: "all",
+        difficultyFilter: "all",
+    });
     const headerRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 25, duration: 0.5 });
 
     const enrolledCourses = useMemo(
-        () => COURSES.filter((c) => user.enrolledCourses.includes(c.id)),
-        [user.enrolledCourses]
+        () => allCourses.filter((c) => user.enrolledCourses.includes(c.id)),
+        [allCourses, user.enrolledCourses]
+    );
+
+    const exploreCourses = useMemo(
+        () => allCourses.filter((c) => !user.enrolledCourses.includes(c.id)),
+        [allCourses, user.enrolledCourses]
     );
 
     const totalExercisesCompleted = useMemo(
@@ -59,6 +70,7 @@ export default function DashboardContent() {
                 <DashboardTabs
                     user={user}
                     enrolledCourses={enrolledCourses}
+                    exploreCourses={exploreCourses}
                     getUserProgress={getUserProgress}
                     enrollCourse={enrollCourse}
                 />

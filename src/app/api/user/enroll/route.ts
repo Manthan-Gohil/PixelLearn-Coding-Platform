@@ -30,7 +30,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, enrollment });
+    const enrollments = await prisma.enrollment.findMany({
+      where: { userId: user.id },
+      select: { courseId: true },
+    });
+
+    return NextResponse.json({
+      success: true,
+      enrollment,
+      enrolledCourses: enrollments.map((item) => item.courseId),
+    });
   } catch (error) {
     console.error("Enroll error:", error);
     return NextResponse.json({ error: "Failed to enroll" }, { status: 500 });

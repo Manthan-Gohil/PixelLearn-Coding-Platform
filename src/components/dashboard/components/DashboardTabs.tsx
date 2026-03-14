@@ -13,11 +13,12 @@ import ReferralTab from "./ReferralTab";
 interface DashboardTabsProps {
     user: User;
     enrolledCourses: Course[];
+    exploreCourses: Course[];
     getUserProgress: (courseId: string) => CourseProgressSummary;
     enrollCourse: (courseId: string) => void;
 }
 
-export default function DashboardTabs({ user, enrolledCourses, getUserProgress, enrollCourse }: DashboardTabsProps) {
+export default function DashboardTabs({ user, enrolledCourses, exploreCourses, getUserProgress, enrollCourse }: DashboardTabsProps) {
     const [activeTab, setActiveTab] = useState<DashboardTabId>("enrolled");
 
     const tabIcons: Record<DashboardTabIconName, typeof BookOpen> = {
@@ -61,6 +62,7 @@ export default function DashboardTabs({ user, enrolledCourses, getUserProgress, 
                 {activeTab === "explore" && (
                     <ExploreCoursesTab
                         user={user}
+                        courses={exploreCourses}
                         enrollCourse={enrollCourse}
                     />
                 )}
