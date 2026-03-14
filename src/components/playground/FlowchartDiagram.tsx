@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { FlowchartNode, FlowchartEdge } from "@/types";
+import type { FlowchartEdge, FlowchartNode } from "@/types";
 
 interface FlowchartDiagramProps {
     nodes: FlowchartNode[];
@@ -231,7 +231,7 @@ export default function FlowchartDiagram({
     }, [nodes, edges, dimensions, layout]);
 
     return (
-        <div ref={containerRef} className="w-full h-full min-h-[300px] overflow-auto">
+        <div ref={containerRef} className="w-full h-full min-h-75 overflow-auto">
             <canvas ref={canvasRef} className="block" />
         </div>
     );

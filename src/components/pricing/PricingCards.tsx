@@ -1,7 +1,7 @@
 "use client";
 
 import { Crown, Zap, Check } from "lucide-react";
-import { SubscriptionPlan, User } from "@/types";
+import type { SubscriptionPlan, User } from "@/types";
 import { useStaggerReveal } from "@/hooks/useScrollReveal";
 
 interface PricingCardsProps {

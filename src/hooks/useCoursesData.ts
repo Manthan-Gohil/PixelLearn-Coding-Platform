@@ -6,11 +6,7 @@ import {
   filterCourses,
   getCourseCategories,
 } from "@/utils/courses";
-import type {
-  Course,
-  CourseDifficultyFilter,
-  CoursesFilterState,
-} from "@/types/courses";
+import type { Course, CourseDifficultyFilter } from "@/types/courses";
 
 interface UseCoursesDataParams {
   search: string;

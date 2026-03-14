@@ -6,7 +6,7 @@ import { useApp } from "@/store";
 import { PREVIEW_DEBOUNCE_MS, PROCTOR_ALERT_FREQUENCY } from "@/constants/playground";
 import { generateFlowchart } from "@/utils/generateFlowchart";
 import { buildPreviewHtml, getExerciseNavigation, isFrontendLanguage } from "@/utils/playground";
-import { Course, Chapter, Exercise } from "@/types";
+import type { Chapter, Course, Exercise } from "@/types";
 import { PlaygroundEditorDidMount } from "@/types/playground";
 import { Loader2 } from "lucide-react";
 

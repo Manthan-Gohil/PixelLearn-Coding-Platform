@@ -1,4 +1,5 @@
 import type { AIToolTabConfig, ExperienceLevel } from "@/types/ai-tools";
+import { COURSE_DIFFICULTIES } from "@/constants/courses";
 
 export const AI_TOOL_TABS: AIToolTabConfig[] = [
   {
@@ -36,11 +37,8 @@ export const CAREER_QA_SUGGESTED_QUESTIONS: string[] = [
   "Is it better to learn React or Vue.js in 2026?",
 ];
 
-export const ROADMAP_EXPERIENCE_LEVELS: ExperienceLevel[] = [
-  "beginner",
-  "intermediate",
-  "advanced",
-];
+export const ROADMAP_EXPERIENCE_LEVELS: ReadonlyArray<ExperienceLevel> =
+  COURSE_DIFFICULTIES;
 
 export const AI_ANALYSIS_STEPS = {
   verify: 1,

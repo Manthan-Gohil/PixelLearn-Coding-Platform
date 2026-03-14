@@ -1,26 +1,20 @@
-export type SubscriptionTier = "free" | "pro";
+import type {
+  CourseDifficulty,
+  CourseDifficultyFilter,
+  ExerciseDifficulty,
+  FlowchartEdge,
+  FlowchartNode,
+  SubscriptionTier,
+  TestCase,
+} from "./index";
 
-export type CourseDifficulty = "beginner" | "intermediate" | "advanced";
-export type ExerciseDifficulty = "easy" | "medium" | "hard";
-export type CourseDifficultyFilter = "all" | CourseDifficulty;
-
-export interface FlowchartNode {
-  id: string;
-  label: string;
-  type: "start" | "end" | "process" | "decision" | "io";
-}
-
-export interface FlowchartEdge {
-  from: string;
-  to: string;
-  label?: string;
-}
-
-export interface TestCase {
-  input: string;
-  expectedOutput: string;
-  description: string;
-}
+export type {
+  CourseDifficulty,
+  CourseDifficultyFilter,
+  ExerciseDifficulty,
+  SubscriptionTier,
+  TestCase,
+};
 
 export interface Exercise {
   id: string;

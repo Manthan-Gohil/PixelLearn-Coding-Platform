@@ -9,7 +9,7 @@ import {
     Zap,
     ArrowRight
 } from "lucide-react";
-import { User } from "@/store";
+import type { User } from "@/types";
 import { WEEKLY_ACTIVITY } from "@/services/data";
 import { ACTIVE_STREAK_DAYS, DASHBOARD_QUICK_ACTIONS, STREAK_DAYS } from "@/constants/dashboard";
 import { DashboardQuickActionIconName } from "@/types/dashboard";

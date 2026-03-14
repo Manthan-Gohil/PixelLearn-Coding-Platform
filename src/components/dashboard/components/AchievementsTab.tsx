@@ -1,7 +1,7 @@
 "use client";
 
 import { Trophy, TrendingUp } from "lucide-react";
-import { User } from "@/store";
+import type { User } from "@/types";
 import { LOCKED_ACHIEVEMENT_BADGES, XP_MILESTONES } from "@/constants/dashboard";
 
 interface AchievementsTabProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Zap, Flame, Target, Award } from "lucide-react";
-import { User } from "@/store";
+import type { User } from "@/types";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { useStaggerReveal } from "@/hooks/useScrollReveal";
 

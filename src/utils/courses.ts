@@ -13,8 +13,15 @@ import type {
 
 const normalize = (value: string) => value.toLowerCase();
 
-export function getCategoryIcon(category: string): string {
-  return CATEGORY_ICONS[category] ?? DEFAULT_CATEGORY_ICON;
+export function getCategoryIcon(
+  category?: string,
+  fallback = DEFAULT_CATEGORY_ICON,
+): string {
+  if (!category) {
+    return fallback;
+  }
+
+  return CATEGORY_ICONS[category] ?? fallback;
 }
 
 export function isPremiumLocked(

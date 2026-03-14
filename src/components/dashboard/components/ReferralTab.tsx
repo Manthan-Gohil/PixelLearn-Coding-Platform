@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Share2, CheckCircle2, Copy } from "lucide-react";
-import { User } from "@/store";
+import type { User } from "@/types";
 
 interface ReferralTabProps {
     user: User;

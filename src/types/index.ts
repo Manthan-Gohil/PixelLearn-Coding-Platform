@@ -17,6 +17,8 @@ export interface User {
   lastActive: string;
 }
 
+export type SubscriptionTier = User["subscription"];
+
 export interface Badge {
   id: string;
   name: string;
@@ -29,14 +31,33 @@ export interface Badge {
   };
 }
 
+// ===== Shared Flowchart Types =====
+export interface FlowchartNode {
+  id: string;
+  label: string;
+  type: "start" | "end" | "process" | "decision" | "io";
+}
+
+export interface FlowchartEdge {
+  from: string;
+  to: string;
+  label?: string;
+}
+
+export type CourseDifficulty = "beginner" | "intermediate" | "advanced";
+export type ExerciseDifficulty = "easy" | "medium" | "hard";
+export type CourseDifficultyFilter = "all" | CourseDifficulty;
+export type ExperienceLevel = CourseDifficulty;
+
 // ===== Course Types =====
+
 export interface Course {
   id: string;
   title: string;
   description: string;
   shortDescription: string;
   category: string;
-  difficulty: "beginner" | "intermediate" | "advanced";
+  difficulty: CourseDifficulty;
   thumbnail: string;
   isPremium: boolean;
   totalXP: number;
@@ -58,19 +79,6 @@ export interface Chapter {
   exercises: Exercise[];
 }
 
-// ===== Flowchart Types =====
-export interface FlowchartNode {
-  id: string;
-  label: string;
-  type: "start" | "end" | "process" | "decision" | "io";
-}
-
-export interface FlowchartEdge {
-  from: string;
-  to: string;
-  label?: string;
-}
-
 export interface Exercise {
   id: string;
   chapterId: string;
@@ -87,7 +95,7 @@ export interface Exercise {
   solution: string;
   testCases: TestCase[];
   xpReward: number;
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: ExerciseDifficulty;
   language: string;
   order: number;
   flowchart?: {
@@ -151,7 +159,7 @@ export interface Improvement {
 export interface RoadmapInput {
   desiredRole: string;
   currentSkills: string[];
-  experienceLevel: "beginner" | "intermediate" | "advanced";
+  experienceLevel: ExperienceLevel;
 }
 
 export interface RoadmapStep {

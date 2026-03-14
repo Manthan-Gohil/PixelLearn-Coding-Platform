@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BookOpen, Compass, Trophy, Share2 } from "lucide-react";
-import { User, Course } from "@/store";
+import type { Course, User } from "@/types";
 import { DASHBOARD_TABS } from "@/constants/dashboard";
 import { CourseProgressSummary, DashboardTabId, DashboardTabIconName } from "@/types/dashboard";
 import EnrolledCoursesTab from "./EnrolledCoursesTab";

@@ -1,4 +1,4 @@
-import { FlowchartNode, FlowchartEdge } from "@/types";
+import type { FlowchartEdge, FlowchartNode } from "@/types";
 
 /**
  * Dynamically generates a flowchart from exercise data.
@@ -25,13 +25,21 @@ export function generateFlowchart(exercise: {
   const theorySteps = extractTheorySteps(exercise.theory, exercise.language);
 
   // Parse the problem statement for action steps
-  const problemSteps = extractProblemSteps(exercise.problemStatement, exercise.language);
+  const problemSteps = extractProblemSteps(
+    exercise.problemStatement,
+    exercise.language,
+  );
 
   // Parse the hints
-  const hintSteps = exercise.hints.map((h) => h.replace(/^Hint \d+:\s*/, "").trim());
+  const hintSteps = exercise.hints.map((h) =>
+    h.replace(/^Hint \d+:\s*/, "").trim(),
+  );
 
   // Parse the solution for structural steps
-  const solutionSteps = extractSolutionSteps(exercise.solution, exercise.language);
+  const solutionSteps = extractSolutionSteps(
+    exercise.solution,
+    exercise.language,
+  );
 
   // Build flowchart from combined analysis
   const allSteps = buildFlowchartSteps(
@@ -39,7 +47,7 @@ export function generateFlowchart(exercise: {
     problemSteps,
     hintSteps,
     solutionSteps,
-    exercise.language
+    exercise.language,
   );
 
   // Add process nodes
@@ -125,7 +133,12 @@ function extractProblemSteps(problem: string, language: string): string[] {
 
 function extractSolutionSteps(solution: string, language: string): string[] {
   const steps: string[] = [];
-  const lines = solution.split("\n").filter((l) => l.trim() && !l.trim().startsWith("//") && !l.trim().startsWith("#"));
+  const lines = solution
+    .split("\n")
+    .filter(
+      (l) =>
+        l.trim() && !l.trim().startsWith("//") && !l.trim().startsWith("#"),
+    );
 
   // Identify key structural elements
   for (const line of lines) {
@@ -139,7 +152,10 @@ function extractSolutionSteps(solution: string, language: string): string[] {
       }
     }
     // Variable assignments
-    else if (/^(let |const |var |\w+ = )/.test(trimmed) && !trimmed.includes("=>")) {
+    else if (
+      /^(let |const |var |\w+ = )/.test(trimmed) &&
+      !trimmed.includes("=>")
+    ) {
       const match = trimmed.match(/(?:let |const |var )?(\w+)\s*=/);
       if (match && !["i", "j", "k", "x", "y"].includes(match[1])) {
         steps.push(`Set up ${match[1]}`);
@@ -154,7 +170,9 @@ function extractSolutionSteps(solution: string, language: string): string[] {
       steps.push("Check condition");
     }
     // Print/output
-    else if (/^(print|console\.log|System\.out|std::cout|return )/.test(trimmed)) {
+    else if (
+      /^(print|console\.log|System\.out|std::cout|return )/.test(trimmed)
+    ) {
       steps.push("Output result");
     }
   }
@@ -168,14 +186,12 @@ function buildFlowchartSteps(
   problemSteps: string[],
   hintSteps: string[],
   solutionSteps: string[],
-  language: string
+  language: string,
 ): { label: string; type?: FlowchartNode["type"] }[] {
   const steps: { label: string; type?: FlowchartNode["type"] }[] = [];
 
   // Step 1: Read/understand inputs (from problem statement)
-  const inputStep = problemSteps.find(
-    (s) => /given|input|take|read/i.test(s)
-  );
+  const inputStep = problemSteps.find((s) => /given|input|take|read/i.test(s));
   if (inputStep) {
     steps.push({ label: truncate(inputStep, 35), type: "io" });
   }
@@ -199,7 +215,12 @@ function buildFlowchartSteps(
   // Add hint-based steps if still not enough
   if (steps.length < 3) {
     for (const hint of hintSteps) {
-      if (hint.length > 5 && !steps.some((s) => s.label.toLowerCase().includes(hint.toLowerCase().slice(0, 10)))) {
+      if (
+        hint.length > 5 &&
+        !steps.some((s) =>
+          s.label.toLowerCase().includes(hint.toLowerCase().slice(0, 10)),
+        )
+      ) {
         steps.push({ label: truncate(hint, 35), type: "process" });
       }
     }
@@ -222,21 +243,31 @@ function buildFlowchartSteps(
 
 function inferNodeType(label: string): FlowchartNode["type"] {
   const lower = label.toLowerCase();
-  if (/^(if|check|is |does |has |compare|condition|decide|whether)/i.test(lower)) return "decision";
-  if (/loop|iterate|for each|while|repeat|traverse/i.test(lower)) return "decision";
-  if (/print|output|display|log|console|return|read|input|given/i.test(lower)) return "io";
+  if (
+    /^(if|check|is |does |has |compare|condition|decide|whether)/i.test(lower)
+  )
+    return "decision";
+  if (/loop|iterate|for each|while|repeat|traverse/i.test(lower))
+    return "decision";
+  if (/print|output|display|log|console|return|read|input|given/i.test(lower))
+    return "io";
   return "process";
 }
 
 function getOutputVerb(language: string): string {
   switch (language.toLowerCase()) {
-    case "python": return "Print";
+    case "python":
+      return "Print";
     case "javascript":
     case "jsx":
-    case "tsx": return "console.log";
-    case "java": return "System.out.println";
-    case "cpp": return "cout <<";
-    default: return "Print";
+    case "tsx":
+      return "console.log";
+    case "java":
+      return "System.out.println";
+    case "cpp":
+      return "cout <<";
+    default:
+      return "Print";
   }
 }
 

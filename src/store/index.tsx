@@ -10,8 +10,6 @@ interface AppState {
     user: User;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: () => void;
-    logout: () => void;
     enrollCourse: (courseId: string) => void;
     completeExercise: (exerciseId: string, xpReward: number) => void;
     getUserProgress: (courseId: string) => { completed: number; total: number; percentage: number };
@@ -80,14 +78,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
             setDbSynced(false);
         }
     }, [isLoaded, isSignedIn, clerkUser, dbSynced]);
-
-    const login = useCallback(() => {
-        setIsAuthenticated(true);
-    }, []);
-
-    const logout = useCallback(() => {
-        setIsAuthenticated(false);
-    }, []);
 
     const enrollCourse = useCallback((courseId: string) => {
         // Optimistic update
@@ -213,8 +203,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 user,
                 isAuthenticated,
                 isLoading: !isLoaded,
-                login,
-                logout,
                 enrollCourse,
                 completeExercise,
                 getUserProgress,

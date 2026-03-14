@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ShieldAlert, PanelLeftClose, PanelRightClose, ArrowRight, Zap } from "lucide-react";
-import { Course, Exercise } from "@/types";
 
 interface PlaygroundHeaderProps {
     courseId: string;

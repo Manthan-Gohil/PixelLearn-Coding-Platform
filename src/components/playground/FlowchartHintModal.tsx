@@ -1,7 +1,7 @@
 "use client";
 
 import { GitBranch, X } from "lucide-react";
-import { Exercise, FlowchartNode, FlowchartEdge } from "@/types";
+import type { Exercise, FlowchartEdge, FlowchartNode } from "@/types";
 import FlowchartDiagram from "./FlowchartDiagram";
 
 interface FlowchartHintModalProps {

@@ -3,12 +3,7 @@ export type DashboardTabId =
   | "explore"
   | "achievements"
   | "referral";
-
-export interface CourseProgressSummary {
-  completed: number;
-  total: number;
-  percentage: number;
-}
+export type { CourseProgressSummary } from "@/types/courses";
 
 export type DashboardTabIconName = "BookOpen" | "Compass" | "Trophy" | "Share2";
 

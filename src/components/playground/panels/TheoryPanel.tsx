@@ -1,7 +1,7 @@
 "use client";
 
 import { BookOpen, Code2, GitBranch, EyeOff, Eye, Lightbulb } from "lucide-react";
-import { Exercise, FlowchartNode, FlowchartEdge } from "@/types";
+import type { Exercise, FlowchartEdge, FlowchartNode } from "@/types";
 
 interface TheoryPanelProps {
     exercise: Exercise;

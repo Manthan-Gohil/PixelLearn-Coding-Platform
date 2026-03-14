@@ -1,3 +1,5 @@
+import type { ExperienceLevel } from "./index";
+
 export type AITabId = "career-qa" | "resume" | "roadmap";
 
 export type AIToolTabIconName = "Brain" | "FileText" | "Rocket";
@@ -46,7 +48,7 @@ export interface ResumeResult {
   needs_improvement: string[];
 }
 
-export type ExperienceLevel = "beginner" | "intermediate" | "advanced";
+export type { ExperienceLevel };
 
 export interface RoadmapStepData {
   step: number;
