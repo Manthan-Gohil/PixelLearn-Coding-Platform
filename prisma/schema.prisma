@@ -17,6 +17,8 @@ model User {
   streak             Int      @default(0)
   referralCode       String   @unique @default(cuid())
   referralCount      Int      @default(0)
+  lastStreakDate     DateTime?
+  lastDailyBonusDate DateTime?
   lastActive         DateTime @default(now())
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

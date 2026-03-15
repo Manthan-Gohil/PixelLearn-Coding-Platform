@@ -9,9 +9,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { exerciseId, xpReward, courseId, code } = await request.json();
+    const { exerciseId, xpReward, courseId, code, newlyUnlockedBadgeIds } =
+      await request.json();
     if (!exerciseId) {
-      return NextResponse.json({ error: "exerciseId required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "exerciseId required" },
+        { status: 400 },
+      );
     }
 
     const user = await prisma.user.findUnique({ where: { clerkId: userId } });
@@ -35,11 +39,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Update user XP and streak
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         xp: { increment: xpReward || 0 },
-        streak: { increment: 1 },
         lastActive: new Date(),
       },
     });
@@ -65,7 +68,40 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true });
+    if (
+      Array.isArray(newlyUnlockedBadgeIds) &&
+      newlyUnlockedBadgeIds.length > 0
+    ) {
+      await Promise.all(
+        newlyUnlockedBadgeIds
+          .filter(
+            (badgeId): badgeId is string =>
+              typeof badgeId === "string" && badgeId.length > 0,
+          )
+          .map((badgeId) =>
+            prisma.userBadge.upsert({
+              where: {
+                userId_badgeId: {
+                  userId: user.id,
+                  badgeId,
+                },
+              },
+              update: {},
+              create: {
+                userId: user.id,
+                badgeId,
+              },
+            }),
+          ),
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      xp: updatedUser.xp,
+      streak: updatedUser.streak,
+      lastActive: updatedUser.lastActive.toISOString(),
+    });
   } catch (error) {
     console.error("Complete exercise error:", error);
     return NextResponse.json({ error: "Failed to complete" }, { status: 500 });

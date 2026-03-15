@@ -15,6 +15,8 @@ function serializeUser(user: {
   referralCount: number;
   createdAt: Date;
   lastActive: Date;
+  lastStreakDate?: Date | null;
+  lastDailyBonusDate?: Date | null;
   enrollments: { courseId: string }[];
   completedExercises: { exerciseId: string }[];
   badges: { badgeId: string; unlockedAt: Date }[];
@@ -32,6 +34,12 @@ function serializeUser(user: {
     referralCount: user.referralCount,
     createdAt: user.createdAt.toISOString(),
     lastActive: user.lastActive.toISOString(),
+    lastStreakDate: user.lastStreakDate
+      ? user.lastStreakDate.toISOString()
+      : null,
+    lastDailyBonusDate: user.lastDailyBonusDate
+      ? user.lastDailyBonusDate.toISOString()
+      : null,
     enrolledCourses: user.enrollments.map((e) => e.courseId),
     completedExercises: user.completedExercises.map((e) => e.exerciseId),
     badges: user.badges.map((b) => ({

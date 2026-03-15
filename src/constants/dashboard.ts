@@ -12,6 +12,7 @@ export const DASHBOARD_TABS: Array<{
 }> = [
   { id: "enrolled", label: "My Courses", icon: "BookOpen" },
   { id: "explore", label: "Explore", icon: "Compass" },
+  { id: "leaderboard", label: "Leaderboard", icon: "Medal" },
   { id: "achievements", label: "Achievements", icon: "Trophy" },
   { id: "referral", label: "Refer & Earn", icon: "Share2" },
 ];
@@ -32,11 +33,32 @@ export const LOCKED_ACHIEVEMENT_BADGES: Badge[] = [
     requirement: { type: "streak", value: 30 },
   },
   {
+    id: "streak-100",
+    name: "Century Streak",
+    description: "100-day streak",
+    icon: "👑",
+    requirement: { type: "streak", value: 100 },
+  },
+  {
     id: "exercises-50",
     name: "Problem Solver",
     description: "Complete 50 exercises",
     icon: "🧩",
     requirement: { type: "exercises", value: 50 },
+  },
+  {
+    id: "exercises-100",
+    name: "Algorithm Athlete",
+    description: "Complete 100 exercises",
+    icon: "🚀",
+    requirement: { type: "exercises", value: 100 },
+  },
+  {
+    id: "xp-10000",
+    name: "Legendary Architect",
+    description: "Earn 10000 XP",
+    icon: "🌟",
+    requirement: { type: "xp", value: 10000 },
   },
 ];
 

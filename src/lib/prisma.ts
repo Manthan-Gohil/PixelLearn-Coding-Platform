@@ -4,13 +4,14 @@ import pg from "pg";
 import path from "path";
 import dotenv from "dotenv";
 
-// Explicitly load .env from the project root
+// Prefer the Next.js local env file and fall back to .env for non-local setups.
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-    console.error("DATABASE_URL is not defined in environment variables!");
+  console.error("DATABASE_URL is not defined in environment variables!");
 }
 
 const pool = new pg.Pool({ connectionString });

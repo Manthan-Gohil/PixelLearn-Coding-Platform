@@ -13,6 +13,8 @@ export interface User {
   completedExercises: string[];
   referralCode: string;
   referralCount: number;
+  lastStreakDate?: string;
+  lastDailyBonusDate?: string;
   createdAt: string;
   lastActive: string;
 }

@@ -31,6 +31,13 @@ export const BADGES: Badge[] = [
     requirement: { type: "xp", value: 5000 },
   },
   {
+    id: "xp-10000",
+    name: "Legendary Architect",
+    description: "Earned 10000 XP",
+    icon: "🌟",
+    requirement: { type: "xp", value: 10000 },
+  },
+  {
     id: "streak-30",
     name: "Monthly Warrior",
     description: "30-day coding streak",
@@ -38,11 +45,25 @@ export const BADGES: Badge[] = [
     requirement: { type: "streak", value: 30 },
   },
   {
+    id: "streak-100",
+    name: "Century Streak",
+    description: "100-day coding streak",
+    icon: "👑",
+    requirement: { type: "streak", value: 100 },
+  },
+  {
     id: "exercises-50",
     name: "Problem Solver",
     description: "Complete 50 exercises",
     icon: "🧩",
     requirement: { type: "exercises", value: 50 },
+  },
+  {
+    id: "exercises-100",
+    name: "Algorithm Athlete",
+    description: "Complete 100 exercises",
+    icon: "🚀",
+    requirement: { type: "exercises", value: 100 },
   },
 ];
 
@@ -60,13 +81,32 @@ export const MOCK_USER: User = {
     { ...BADGES[1], unlockedAt: "2026-02-01" },
     { ...BADGES[2], unlockedAt: "2026-02-10" },
   ],
-  enrolledCourses: ["python-fundamentals", "javascript-mastery", "web-dev-bootcamp"],
+  enrolledCourses: [
+    "python-fundamentals",
+    "javascript-mastery",
+    "web-dev-bootcamp",
+  ],
   completedExercises: [
-    "py-ex-1", "py-ex-2", "py-ex-3", "py-ex-4", "py-ex-5",
-    "py-ex-6", "py-ex-7", "py-ex-8", "py-ex-9", "py-ex-10",
-    "js-ex-1", "js-ex-2", "js-ex-3", "js-ex-4", "js-ex-5",
-    "js-ex-6", "js-ex-7",
-    "web-ex-1", "web-ex-2", "web-ex-3",
+    "py-ex-1",
+    "py-ex-2",
+    "py-ex-3",
+    "py-ex-4",
+    "py-ex-5",
+    "py-ex-6",
+    "py-ex-7",
+    "py-ex-8",
+    "py-ex-9",
+    "py-ex-10",
+    "js-ex-1",
+    "js-ex-2",
+    "js-ex-3",
+    "js-ex-4",
+    "js-ex-5",
+    "js-ex-6",
+    "js-ex-7",
+    "web-ex-1",
+    "web-ex-2",
+    "web-ex-3",
   ],
   referralCode: "ALEX2026",
   referralCount: 3,
@@ -115,10 +155,10 @@ export const COURSES: Course[] = [
             outputExample: "Hello, World!",
             hints: [
               "Use the print() function",
-              'Put your text inside quotes within print()',
+              "Put your text inside quotes within print()",
             ],
             constraints: ["Output must match exactly"],
-            starterCode: '# Write your code here\n',
+            starterCode: "# Write your code here\n",
             solution: 'print("Hello, World!")',
             testCases: [
               {
@@ -135,7 +175,11 @@ export const COURSES: Course[] = [
               nodes: [
                 { id: "1", label: "Start", type: "start" },
                 { id: "2", label: "Use print() function", type: "process" },
-                { id: "3", label: "Pass \"Hello, World!\" as argument", type: "process" },
+                {
+                  id: "3",
+                  label: 'Pass "Hello, World!" as argument',
+                  type: "process",
+                },
                 { id: "4", label: "Output: Hello, World!", type: "io" },
                 { id: "5", label: "End", type: "end" },
               ],
@@ -234,8 +278,16 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Define name & version vars", type: "process" },
-                { id: "3", label: "Create f-string with {name} & {version}", type: "process" },
+                {
+                  id: "2",
+                  label: "Define name & version vars",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Create f-string with {name} & {version}",
+                  type: "process",
+                },
                 { id: "4", label: "Print formatted string", type: "io" },
                 { id: "5", label: "End", type: "end" },
               ],
@@ -274,8 +326,7 @@ export const COURSES: Course[] = [
               "Check > 0, < 0, or equal to 0",
             ],
             constraints: ["Use if-elif-else structure"],
-            starterCode:
-              'num = 15\n\n# Check if positive, negative, or zero\n',
+            starterCode: "num = 15\n\n# Check if positive, negative, or zero\n",
             solution:
               'num = 15\n\nif num > 0:\n    print("Positive")\nelif num < 0:\n    print("Negative")\nelse:\n    print("Zero")',
             testCases: [
@@ -409,9 +460,17 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Define function calculate_area(l, w)", type: "process" },
+                {
+                  id: "2",
+                  label: "Define function calculate_area(l, w)",
+                  type: "process",
+                },
                 { id: "3", label: "Return l * w", type: "process" },
-                { id: "4", label: "Call calculate_area(5, 3)", type: "process" },
+                {
+                  id: "4",
+                  label: "Call calculate_area(5, 3)",
+                  type: "process",
+                },
                 { id: "5", label: "Print result", type: "io" },
                 { id: "6", label: "End", type: "end" },
               ],
@@ -457,8 +516,16 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create lambda: x => x * 2", type: "process" },
-                { id: "3", label: "Assign to variable 'double'", type: "process" },
+                {
+                  id: "2",
+                  label: "Create lambda: x => x * 2",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Assign to variable 'double'",
+                  type: "process",
+                },
                 { id: "4", label: "Call double(7)", type: "process" },
                 { id: "5", label: "Print result", type: "io" },
                 { id: "6", label: "End", type: "end" },
@@ -516,7 +583,11 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create list [5, 2, 8, 1, 9]", type: "process" },
+                {
+                  id: "2",
+                  label: "Create list [5, 2, 8, 1, 9]",
+                  type: "process",
+                },
                 { id: "3", label: "Call .sort() method", type: "process" },
                 { id: "4", label: "Print sorted list", type: "io" },
                 { id: "5", label: "End", type: "end" },
@@ -563,8 +634,16 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create dictionary with keys", type: "process" },
-                { id: "3", label: "Loop: for key, value in .items()", type: "decision" },
+                {
+                  id: "2",
+                  label: "Create dictionary with keys",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Loop: for key, value in .items()",
+                  type: "decision",
+                },
                 { id: "4", label: "Print f'{key}: {value}'", type: "io" },
                 { id: "5", label: "More items?", type: "decision" },
                 { id: "6", label: "End", type: "end" },
@@ -613,7 +692,11 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Iterate x in range(1, 11)", type: "decision" },
+                {
+                  id: "2",
+                  label: "Iterate x in range(1, 11)",
+                  type: "decision",
+                },
                 { id: "3", label: "Is x even? (x % 2 == 0)", type: "decision" },
                 { id: "4", label: "Compute x**2", type: "process" },
                 { id: "5", label: "Add to result list", type: "process" },
@@ -699,7 +782,11 @@ export const COURSES: Course[] = [
                 { id: "1", label: "Start", type: "start" },
                 { id: "2", label: "Declare const GREETING", type: "process" },
                 { id: "3", label: "Declare let target", type: "process" },
-                { id: "4", label: "Combine with template literal", type: "process" },
+                {
+                  id: "4",
+                  label: "Combine with template literal",
+                  type: "process",
+                },
                 { id: "5", label: "console.log output", type: "io" },
                 { id: "6", label: "End", type: "end" },
               ],
@@ -747,7 +834,11 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Define arrow fn: (a, b) => a * b", type: "process" },
+                {
+                  id: "2",
+                  label: "Define arrow fn: (a, b) => a * b",
+                  type: "process",
+                },
                 { id: "3", label: "Call multiply(6, 7)", type: "process" },
                 { id: "4", label: "console.log result", type: "io" },
                 { id: "5", label: "End", type: "end" },
@@ -796,7 +887,11 @@ export const COURSES: Course[] = [
               nodes: [
                 { id: "1", label: "Start", type: "start" },
                 { id: "2", label: "Create array [1..10]", type: "process" },
-                { id: "3", label: ".filter(n => n % 2 === 0)", type: "process" },
+                {
+                  id: "3",
+                  label: ".filter(n => n % 2 === 0)",
+                  type: "process",
+                },
                 { id: "4", label: ".map(n => n * n)", type: "process" },
                 { id: "5", label: "console.log result", type: "io" },
                 { id: "6", label: "End", type: "end" },
@@ -855,9 +950,21 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create function returning Promise", type: "process" },
-                { id: "3", label: "Inside: new Promise((resolve) => ...)", type: "process" },
-                { id: "4", label: "Call resolve() with message", type: "process" },
+                {
+                  id: "2",
+                  label: "Create function returning Promise",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Inside: new Promise((resolve) => ...)",
+                  type: "process",
+                },
+                {
+                  id: "4",
+                  label: "Call resolve() with message",
+                  type: "process",
+                },
                 { id: "5", label: "Chain .then() to print result", type: "io" },
                 { id: "6", label: "End", type: "end" },
               ],
@@ -905,8 +1012,16 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Define async function getData", type: "process" },
-                { id: "3", label: "Create Promise with resolve()", type: "process" },
+                {
+                  id: "2",
+                  label: "Define async function getData",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Create Promise with resolve()",
+                  type: "process",
+                },
                 { id: "4", label: "Await the Promise", type: "process" },
                 { id: "5", label: "console.log result", type: "io" },
                 { id: "6", label: "Call getData()", type: "process" },
@@ -957,8 +1072,16 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create object with properties", type: "process" },
-                { id: "3", label: "Destructure: { name, role, level }", type: "process" },
+                {
+                  id: "2",
+                  label: "Create object with properties",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Destructure: { name, role, level }",
+                  type: "process",
+                },
                 { id: "4", label: "console.log each variable", type: "io" },
                 { id: "5", label: "End", type: "end" },
               ],
@@ -1005,9 +1128,17 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Define function sum(...numbers)", type: "process" },
+                {
+                  id: "2",
+                  label: "Define function sum(...numbers)",
+                  type: "process",
+                },
                 { id: "3", label: "Use .reduce() to sum", type: "process" },
-                { id: "4", label: "Return accumulated result", type: "process" },
+                {
+                  id: "4",
+                  label: "Return accumulated result",
+                  type: "process",
+                },
                 { id: "5", label: "Call sum(1,2,3,4,5)", type: "process" },
                 { id: "6", label: "console.log result", type: "io" },
                 { id: "7", label: "End", type: "end" },
@@ -1058,7 +1189,7 @@ export const COURSES: Course[] = [
             title: "Basic HTML Structure",
             description: "Create a proper HTML document",
             theory:
-              "Every HTML document follows a basic structure:\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Page Title</title>\n</head>\n<body>\n    <!-- Content goes here -->\n</body>\n</html>\n```\n\n### Key Elements:\n- `<!DOCTYPE html>` – Declares HTML5\n- `<html>` – Root element\n- `<head>` – Metadata, title, links\n- `<body>` – Visible content",
+              'Every HTML document follows a basic structure:\n\n```html\n<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <title>Page Title</title>\n</head>\n<body>\n    <!-- Content goes here -->\n</body>\n</html>\n```\n\n### Key Elements:\n- `<!DOCTYPE html>` – Declares HTML5\n- `<html>` – Root element\n- `<head>` – Metadata, title, links\n- `<body>` – Visible content',
             problemStatement:
               'Create a basic HTML page with the title "My First Page" and a heading (h1) that says "Welcome to Web Dev".',
             inputExample: "None",
@@ -1110,16 +1241,13 @@ export const COURSES: Course[] = [
             title: "Lists and Links",
             description: "Create ordered, unordered lists and hyperlinks",
             theory:
-              "### Unordered List:\n```html\n<ul>\n    <li>Item 1</li>\n    <li>Item 2</li>\n</ul>\n```\n\n### Ordered List:\n```html\n<ol>\n    <li>First</li>\n    <li>Second</li>\n</ol>\n```\n\n### Links:\n```html\n<a href=\"https://example.com\">Click here</a>\n<a href=\"/about\">About Page</a>\n```",
+              '### Unordered List:\n```html\n<ul>\n    <li>Item 1</li>\n    <li>Item 2</li>\n</ul>\n```\n\n### Ordered List:\n```html\n<ol>\n    <li>First</li>\n    <li>Second</li>\n</ol>\n```\n\n### Links:\n```html\n<a href="https://example.com">Click here</a>\n<a href="/about">About Page</a>\n```',
             problemStatement:
               "Create an unordered list with 3 programming languages and make each one a link to its official website.",
             inputExample: "None",
             outputExample:
               "An unordered list with 3 linked programming languages",
-            hints: [
-              "Nest <a> inside <li>",
-              "Use href for links",
-            ],
+            hints: ["Nest <a> inside <li>", "Use href for links"],
             constraints: ["Must have 3 list items with links"],
             starterCode: "<!-- Create your list with links -->\n<ul>\n\n</ul>",
             solution:
@@ -1141,7 +1269,11 @@ export const COURSES: Course[] = [
                 { id: "2", label: "Create <ul> element", type: "process" },
                 { id: "3", label: "Add 3 <li> items", type: "process" },
                 { id: "4", label: "Wrap text in <a href>", type: "process" },
-                { id: "5", label: "Set href to official URLs", type: "process" },
+                {
+                  id: "5",
+                  label: "Set href to official URLs",
+                  type: "process",
+                },
                 { id: "6", label: "End", type: "end" },
               ],
               edges: [
@@ -1172,7 +1304,7 @@ export const COURSES: Course[] = [
             constraints: ["Must use all semantic elements mentioned"],
             starterCode: "<!-- Build your semantic HTML structure -->\n",
             solution:
-              "<header>\n    <nav>\n        <a href=\"/\">Home</a>\n        <a href=\"/about\">About</a>\n    </nav>\n</header>\n<main>\n    <article>\n        <h1>Main Article</h1>\n        <p>Article content here.</p>\n    </article>\n    <aside>\n        <h2>Sidebar</h2>\n        <p>Related links and info.</p>\n    </aside>\n</main>\n<footer>\n    <p>&copy; 2026 PixelLearn</p>\n</footer>",
+              '<header>\n    <nav>\n        <a href="/">Home</a>\n        <a href="/about">About</a>\n    </nav>\n</header>\n<main>\n    <article>\n        <h1>Main Article</h1>\n        <p>Article content here.</p>\n    </article>\n    <aside>\n        <h2>Sidebar</h2>\n        <p>Related links and info.</p>\n    </aside>\n</main>\n<footer>\n    <p>&copy; 2026 PixelLearn</p>\n</footer>',
             testCases: [
               {
                 input: "",
@@ -1187,9 +1319,17 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create <header> with <nav>", type: "process" },
+                {
+                  id: "2",
+                  label: "Create <header> with <nav>",
+                  type: "process",
+                },
                 { id: "3", label: "Create <main> tag", type: "process" },
-                { id: "4", label: "Add <article> inside main", type: "process" },
+                {
+                  id: "4",
+                  label: "Add <article> inside main",
+                  type: "process",
+                },
                 { id: "5", label: "Add <aside> inside main", type: "process" },
                 { id: "6", label: "Add <footer>", type: "process" },
                 { id: "7", label: "End", type: "end" },
@@ -1268,9 +1408,17 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create useToggle function", type: "process" },
+                {
+                  id: "2",
+                  label: "Create useToggle function",
+                  type: "process",
+                },
                 { id: "3", label: "useState(false) inside", type: "process" },
-                { id: "4", label: "Create toggle fn: setValue(!prev)", type: "process" },
+                {
+                  id: "4",
+                  label: "Create toggle fn: setValue(!prev)",
+                  type: "process",
+                },
                 { id: "5", label: "Return [value, toggle]", type: "io" },
                 { id: "6", label: "End", type: "end" },
               ],
@@ -1321,13 +1469,10 @@ export const COURSES: Course[] = [
             theory:
               "The Two Sum problem is a classic interview question.\n\n### Problem:\nGiven an array and a target sum, find two numbers that add up to the target.\n\n### Approach 1: Brute Force O(n²)\nCheck every pair.\n\n### Approach 2: Hash Map O(n)\nFor each number, check if (target - number) exists in map.\n\n```python\ndef two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n```",
             problemStatement:
-              'Given nums = [2, 7, 11, 15] and target = 9, find the indices of two numbers that add up to the target. Print the result as a list.',
+              "Given nums = [2, 7, 11, 15] and target = 9, find the indices of two numbers that add up to the target. Print the result as a list.",
             inputExample: "nums = [2, 7, 11, 15], target = 9",
             outputExample: "[0, 1]",
-            hints: [
-              "Use a dictionary/hash map",
-              "Store number: index pairs",
-            ],
+            hints: ["Use a dictionary/hash map", "Store number: index pairs"],
             constraints: ["Must be O(n) solution"],
             starterCode:
               "nums = [2, 7, 11, 15]\ntarget = 9\n\n# Find two indices that sum to target\n",
@@ -1347,9 +1492,21 @@ export const COURSES: Course[] = [
             flowchart: {
               nodes: [
                 { id: "1", label: "Start", type: "start" },
-                { id: "2", label: "Create empty hash map 'seen'", type: "process" },
-                { id: "3", label: "Loop through nums with index", type: "decision" },
-                { id: "4", label: "Compute complement = target - num", type: "process" },
+                {
+                  id: "2",
+                  label: "Create empty hash map 'seen'",
+                  type: "process",
+                },
+                {
+                  id: "3",
+                  label: "Loop through nums with index",
+                  type: "decision",
+                },
+                {
+                  id: "4",
+                  label: "Compute complement = target - num",
+                  type: "process",
+                },
                 { id: "5", label: "Is complement in seen?", type: "decision" },
                 { id: "6", label: "Return [seen[complement], i]", type: "io" },
                 { id: "7", label: "Add num:index to seen", type: "process" },

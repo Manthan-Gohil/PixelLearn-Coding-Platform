@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BookOpen, Compass, Trophy, Share2 } from "lucide-react";
+import { BookOpen, Compass, Trophy, Share2, Medal } from "lucide-react";
 import type { Course, User } from "@/types";
 import { DASHBOARD_TABS } from "@/constants/dashboard";
 import { CourseProgressSummary, DashboardTabId, DashboardTabIconName } from "@/types/dashboard";
@@ -9,6 +9,7 @@ import EnrolledCoursesTab from "./EnrolledCoursesTab";
 import ExploreCoursesTab from "./ExploreCoursesTab";
 import AchievementsTab from "./AchievementsTab";
 import ReferralTab from "./ReferralTab";
+import LeaderboardWidget from "./LeaderboardWidget";
 
 interface DashboardTabsProps {
     user: User;
@@ -26,6 +27,7 @@ export default function DashboardTabs({ user, enrolledCourses, exploreCourses, g
         Compass,
         Trophy,
         Share2,
+        Medal,
     };
 
     return (
@@ -69,6 +71,7 @@ export default function DashboardTabs({ user, enrolledCourses, exploreCourses, g
                 {activeTab === "achievements" && (
                     <AchievementsTab user={user} />
                 )}
+                {activeTab === "leaderboard" && <LeaderboardWidget />}
                 {activeTab === "referral" && (
                     <ReferralTab user={user} />
                 )}

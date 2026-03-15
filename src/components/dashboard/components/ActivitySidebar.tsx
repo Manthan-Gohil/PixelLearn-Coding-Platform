@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import type { User } from "@/types";
 import { WEEKLY_ACTIVITY } from "@/services/data";
-import { ACTIVE_STREAK_DAYS, DASHBOARD_QUICK_ACTIONS, STREAK_DAYS } from "@/constants/dashboard";
+import { DASHBOARD_QUICK_ACTIONS, STREAK_DAYS } from "@/constants/dashboard";
 import { DashboardQuickActionIconName } from "@/types/dashboard";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -32,6 +32,18 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
         BarChart3,
         Zap,
     };
+
+    const today = new Date();
+    const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+    const lastStreakDate = user.lastStreakDate ? new Date(user.lastStreakDate) : null;
+    const lastStreakUtc = lastStreakDate
+        ? Date.UTC(lastStreakDate.getUTCFullYear(), lastStreakDate.getUTCMonth(), lastStreakDate.getUTCDate())
+        : null;
+    const checkedInToday = lastStreakUtc === todayUtc;
+    const activeStreakDays = Math.min(user.streak, STREAK_DAYS);
+    const streakHint = checkedInToday
+        ? "Streak secured for today. Come back tomorrow to extend it."
+        : "Complete one exercise today to keep your streak alive.";
 
     return (
         <div className="space-y-6">
@@ -76,17 +88,20 @@ export default function ActivitySidebar({ user, weeklyXP, maxActivityXP }: Activ
                     <div className="text-sm text-text-muted mb-4">
                         days in a row
                     </div>
+                    <p className="text-xs text-text-secondary mb-4">
+                        {streakHint}
+                    </p>
                     <div className="flex justify-center gap-1">
                         {Array.from({ length: STREAK_DAYS }).map((_, i) => (
                             <div
                                 key={i}
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium stagger-fade-up ${i < 5
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium stagger-fade-up ${i < activeStreakDays
                                     ? "gradient-primary text-white"
                                     : "bg-surface-hover text-text-muted"
                                     }`}
                                 style={{ animationDelay: `${0.5 + i * 0.06}s` }}
                             >
-                                {i < ACTIVE_STREAK_DAYS ? "🔥" : "·"}
+                                {i < activeStreakDays ? "🔥" : "·"}
                             </div>
                         ))}
                     </div>
