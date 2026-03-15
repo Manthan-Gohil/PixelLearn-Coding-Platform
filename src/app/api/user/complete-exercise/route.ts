@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { BADGES } from "@/services/data";
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,9 +48,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update daily activity
+    // Update daily activity — use UTC midnight to be consistent with daily-check
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0);
     await prisma.dailyActivity.upsert({
       where: {
         userId_date: { userId: user.id, date: today },
@@ -68,12 +69,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (
-      Array.isArray(newlyUnlockedBadgeIds) &&
-      newlyUnlockedBadgeIds.length > 0
-    ) {
+    const knownBadgeIds = new Set(BADGES.map((b) => b.id));
+    const validBadgeIds: string[] = Array.isArray(newlyUnlockedBadgeIds)
+      ? newlyUnlockedBadgeIds.filter(
+          (id): id is string =>
+            typeof id === "string" && id.length > 0 && knownBadgeIds.has(id),
+        )
+      : [];
+
+    if (validBadgeIds.length > 0) {
       await Promise.all(
-        newlyUnlockedBadgeIds
+        validBadgeIds
           .filter(
             (badgeId): badgeId is string =>
               typeof badgeId === "string" && badgeId.length > 0,

@@ -51,6 +51,11 @@ function serializeUser(user: {
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId: authenticatedClerkId } = await auth();
+    if (!authenticatedClerkId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { clerkId, email, name, avatar } = body;
 
@@ -59,6 +64,11 @@ export async function POST(request: NextRequest) {
         { error: "Missing required fields" },
         { status: 400 },
       );
+    }
+
+    // Ensure the authenticated session matches the user being synced
+    if (clerkId !== authenticatedClerkId) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // Upsert user - create if not exists, update if exists

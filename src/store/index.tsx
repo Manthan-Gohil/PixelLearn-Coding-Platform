@@ -177,9 +177,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                     message: "Profile synced, but the daily bonus check could not be refreshed.",
                     retryLabel: "Retry sync",
                 });
-                lastRetryActionRef.current = () => {
-                    void syncUser();
-                };
+                lastRetryActionRef.current = () => syncUser();
             }
 
             setSyncStatus("success");
@@ -200,11 +198,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 message: "Unable to sync profile. You can keep browsing and retry when ready.",
                 retryLabel: "Retry sync",
             });
-            lastRetryActionRef.current = () => {
-                void syncUser();
-            };
-            setDbSynced(true);
-        } finally {
+            lastRetryActionRef.current = () => syncUser();
             syncInFlightRef.current = false;
         }
     }, [applySyncedUser, clerkUser, isLoaded, isSignedIn, runDailyCheck]);
