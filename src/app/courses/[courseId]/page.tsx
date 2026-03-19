@@ -40,7 +40,7 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
   }
 
   const isEnrolled = user.enrolledCourses.includes(course.id);
-  const progress = getUserProgress(course.id);
+  const progress = getUserProgress(course.id, course);
   const { totalExercises, totalXPEarnable } = getCourseTotals(course);
 
   const toggleChapter = (chapterId: string) => {

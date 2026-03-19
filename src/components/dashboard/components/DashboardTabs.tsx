@@ -15,7 +15,7 @@ interface DashboardTabsProps {
     user: User;
     enrolledCourses: Course[];
     exploreCourses: Course[];
-    getUserProgress: (courseId: string) => CourseProgressSummary;
+    getUserProgress: (courseId: string, course?: Course) => CourseProgressSummary;
     enrollCourse: (courseId: string) => void;
 }
 

@@ -3291,6 +3291,20 @@ async function seedCppCourse() {
 
 async function main() {
   console.log("Starting additive seed...");
+  const retainedCourseIds = [DSA_COURSE.id, CPP_COURSE.id];
+
+  const removedCourses = await prisma.course.deleteMany({
+    where: {
+      id: { notIn: retainedCourseIds },
+    },
+  });
+
+  if (removedCourses.count > 0) {
+    console.log(
+      `Removed ${removedCourses.count} legacy course(s) not in active curriculum.`,
+    );
+  }
+
   await seedDsaCourse();
   await seedCppCourse();
   console.log("Seed completed successfully.");

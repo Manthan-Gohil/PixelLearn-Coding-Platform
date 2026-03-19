@@ -6,7 +6,6 @@ import {
   filterCourses,
   getCourseCategories,
 } from "@/utils/courses";
-import { COURSES } from "@/services/data";
 import type { Course, CourseDifficultyFilter } from "@/types/courses";
 
 interface UseCoursesDataParams {
@@ -43,7 +42,7 @@ export function useCoursesData({
       })
       .catch(() => {
         if (!isMounted) return;
-        setCourses(COURSES);
+        setCourses([]);
         setLoading(false);
       });
 
@@ -88,7 +87,7 @@ export function useCourseById(courseId: string) {
       })
       .catch(() => {
         if (!isMounted) return;
-        setCourse(COURSES.find((item) => item.id === courseId) ?? null);
+        setCourse(null);
         setLoading(false);
       });
 

@@ -8,7 +8,7 @@ import { getCategoryIcon } from "@/utils/courses";
 
 interface EnrolledCoursesTabProps {
     enrolledCourses: Course[];
-    getUserProgress: (courseId: string) => CourseProgressSummary;
+    getUserProgress: (courseId: string, course?: Course) => CourseProgressSummary;
     setActiveTab: (tab: DashboardTabId) => void;
 }
 
@@ -36,7 +36,7 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
     return (
         <div className="space-y-4">
             {enrolledCourses.map((course) => {
-                const progress = getUserProgress(course.id);
+                const progress = getUserProgress(course.id, course);
                 return (
                     <Link
                         key={course.id}

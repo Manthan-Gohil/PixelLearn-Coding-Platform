@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 import { useUser as useClerkUser } from "@clerk/nextjs";
 import { User, Badge, Course } from "@/types";
 export type { User, Badge, Course };
-import { BADGES, COURSES } from "@/services/data";
+import { BADGES } from "../services/data";
 
 type SyncStatus = "idle" | "syncing" | "success" | "error";
 
@@ -321,13 +321,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                         unlocked = newCompleted.length >= badge.requirement.value;
                         break;
                     case "course_complete": {
-                        const completedCourses = COURSES.filter((course) => {
-                            const allExercises = course.chapters.flatMap((ch) =>
-                                ch.exercises.map((ex) => ex.id)
-                            );
-                            return allExercises.every((id: string) => [...newCompleted].includes(id));
-                        });
-                        unlocked = completedCourses.length >= badge.requirement.value;
+                        unlocked = false;
                         break;
                     }
                 }
@@ -413,8 +407,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }, [isRetryingAction]);
 
     const getUserProgress = useCallback(
-        (courseId: string, courseOverride?: Course) => {
-            const course = courseOverride ?? COURSES.find((c) => c.id === courseId);
+        (_courseId: string, courseOverride?: Course) => {
+            const course = courseOverride;
             if (!course) return { completed: 0, total: 0, percentage: 0 };
 
             const allExercises = course.chapters.flatMap((ch) =>
