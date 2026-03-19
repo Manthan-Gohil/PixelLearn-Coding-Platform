@@ -2197,6 +2197,980 @@ const cppChapters: SeedChapter[] = [
       },
     ],
   },
+  {
+    id: "cpp-ch-06-pointers",
+    title: "Pointers & References",
+    description: "Learn pointer basics, pointer arithmetic, and references.",
+    order: 6,
+    exercises: [
+      {
+        id: "cpp-ex-06-01-pointer-basics",
+        title: "Pointer Basics",
+        description: "Create and dereference a pointer.",
+        theory:
+          "### Pointer Basics\nUse `&` to get address and `*` to read/write via pointer.",
+        problemStatement:
+          "Create integer x = 42, pointer ptr to x, and print dereferenced value.",
+        inputExample: "",
+        outputExample: "42",
+        hints: ["Declare int x", "Create int* ptr = &x", "Print *ptr"],
+        constraints: ["Must use pointer"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int x = 42;\n  int* ptr = &x;\n  cout << *ptr;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "42", description: "basic" },
+          { input: "", expectedOutput: "42", description: "dereference" },
+          { input: "", expectedOutput: "42", description: "value" },
+        ],
+        xpReward: 80,
+        difficulty: "medium",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-06-02-modify-via-pointer",
+        title: "Modify Through Pointer",
+        description: "Change variable value using pointer.",
+        theory: "### Write Through Pointer\nAssign via `*ptr = newValue;`.",
+        problemStatement:
+          "Initialize x as 10, modify it to 100 via pointer, print x.",
+        inputExample: "",
+        outputExample: "100",
+        hints: ["Point to x", "Assign through *ptr", "Print x"],
+        constraints: ["Must modify using pointer"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int x = 10;\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int x = 10;\n  int* ptr = &x;\n  *ptr = 100;\n  cout << x;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "100", description: "modify" },
+          { input: "", expectedOutput: "100", description: "pointer write" },
+          { input: "", expectedOutput: "100", description: "result" },
+        ],
+        xpReward: 85,
+        difficulty: "medium",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-06-03-pointer-arithmetic",
+        title: "Pointer Arithmetic",
+        description: "Access array elements with pointers.",
+        theory:
+          "### Arrays and Pointers\n`arr` decays to pointer to first element.",
+        problemStatement:
+          "Use pointer arithmetic on array {5,10,15} to print second element.",
+        inputExample: "",
+        outputExample: "10",
+        hints: ["Create int* p = arr", "Increment p", "Print *p"],
+        constraints: ["Use pointer arithmetic"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int arr[] = {5,10,15};\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int arr[] = {5,10,15};\n  int* p = arr;\n  p++;\n  cout << *p;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "10", description: "second" },
+          { input: "", expectedOutput: "10", description: "array" },
+          { input: "", expectedOutput: "10", description: "pointer" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-06-04-dynamic-memory",
+        title: "Dynamic Memory",
+        description: "Allocate and free memory with new/delete.",
+        theory:
+          "### Heap Allocation\nUse `new` for allocation and `delete` to free.",
+        problemStatement:
+          "Allocate an integer on heap, assign 100, print it, and free memory.",
+        inputExample: "",
+        outputExample: "100",
+        hints: ["Use new int", "Assign via *ptr", "delete ptr"],
+        constraints: ["Must use new/delete"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int* ptr = new int;\n  *ptr = 100;\n  cout << *ptr;\n  delete ptr;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "100", description: "heap" },
+          { input: "", expectedOutput: "100", description: "new" },
+          { input: "", expectedOutput: "100", description: "delete" },
+        ],
+        xpReward: 95,
+        difficulty: "hard",
+        language: "cpp",
+        order: 4,
+      },
+      {
+        id: "cpp-ex-06-05-references",
+        title: "References",
+        description: "Use references as aliases.",
+        theory: "### References\n`int& ref = x;` creates alias to x.",
+        problemStatement: "Create x=50, reference r to x, set r=75, print x.",
+        inputExample: "",
+        outputExample: "75",
+        hints: ["Use int&", "Assign via reference", "Print x"],
+        constraints: ["Must use reference"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int x = 50;\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  int x = 50;\n  int& r = x;\n  r = 75;\n  cout << x;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "75", description: "alias" },
+          { input: "", expectedOutput: "75", description: "write" },
+          { input: "", expectedOutput: "75", description: "result" },
+        ],
+        xpReward: 95,
+        difficulty: "hard",
+        language: "cpp",
+        order: 5,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-07-oop-classes",
+    title: "OOP I: Classes & Objects",
+    description: "Create classes, constructors, and encapsulated methods.",
+    order: 7,
+    exercises: [
+      {
+        id: "cpp-ex-07-01-basic-class",
+        title: "Basic Class",
+        description: "Define class and create object.",
+        theory:
+          "### Class\nUse `class` with public members for object modeling.",
+        problemStatement:
+          "Create class Person with name and age. Create object and print `John 25`.",
+        inputExample: "",
+        outputExample: "John 25",
+        hints: ["Define class", "Create object", "Assign fields"],
+        constraints: ["Must use class"],
+        starterCode:
+          "#include <iostream>\n#include <string>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <string>\nusing namespace std;\nclass Person{ public: string name; int age; };\nint main(){\n  Person p; p.name = "John"; p.age = 25;\n  cout << p.name << " " << p.age;\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "John 25", description: "basic" },
+          { input: "", expectedOutput: "John 25", description: "object" },
+          { input: "", expectedOutput: "John 25", description: "fields" },
+        ],
+        xpReward: 85,
+        difficulty: "medium",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-07-02-constructor",
+        title: "Constructors",
+        description: "Initialize object via constructor.",
+        theory: "### Constructor\nSpecial function called on object creation.",
+        problemStatement:
+          "Create Car class with constructor for brand and print BMW.",
+        inputExample: "",
+        outputExample: "BMW",
+        hints: ["Add constructor", "Set member", "Create object with arg"],
+        constraints: ["Use constructor"],
+        starterCode:
+          "#include <iostream>\n#include <string>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <string>\nusing namespace std;\nclass Car{ public: string brand; Car(string b): brand(b){} };\nint main(){\n  Car c("BMW");\n  cout << c.brand;\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "BMW", description: "constructor" },
+          { input: "", expectedOutput: "BMW", description: "init" },
+          { input: "", expectedOutput: "BMW", description: "output" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-07-03-encapsulation",
+        title: "Encapsulation",
+        description: "Use private data with getters/setters.",
+        theory:
+          "### Encapsulation\nKeep data private and expose public methods.",
+        problemStatement:
+          "Create Account class with private balance and getter/setter. Print 1000.",
+        inputExample: "",
+        outputExample: "1000",
+        hints: ["Use private", "Expose methods", "Set then get"],
+        constraints: ["Must use private member"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nclass Account{ private: int balance; public: void setBalance(int b){balance=b;} int getBalance(){return balance;} };\nint main(){\n  Account a; a.setBalance(1000); cout << a.getBalance();\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "1000", description: "private" },
+          { input: "", expectedOutput: "1000", description: "getter" },
+          { input: "", expectedOutput: "1000", description: "setter" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-07-04-this-pointer",
+        title: "this Pointer",
+        description: "Disambiguate member and parameter names.",
+        theory: "### this\n`this` points to current object instance.",
+        problemStatement:
+          "Create Box class with setWidth(int width) using this pointer. Print 50.",
+        inputExample: "",
+        outputExample: "50",
+        hints: ["Use this->width", "Add getter", "Print value"],
+        constraints: ["Must use this pointer"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nclass Box{ int width; public: void setWidth(int width){ this->width = width; } int getWidth(){ return width; } };\nint main(){\n  Box b; b.setWidth(50); cout << b.getWidth();\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "50", description: "this" },
+          { input: "", expectedOutput: "50", description: "setter" },
+          { input: "", expectedOutput: "50", description: "getter" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 4,
+      },
+      {
+        id: "cpp-ex-07-05-copy-constructor",
+        title: "Copy Constructor",
+        description: "Copy object state into new object.",
+        theory:
+          "### Copy Constructor\n`ClassName(const ClassName& other)` customizes copy.",
+        problemStatement:
+          "Create Student class with copy constructor. Copy Alice 20 and print values.",
+        inputExample: "",
+        outputExample: "Alice 20",
+        hints: ["Add copy ctor", "Copy each field", "Print copied object"],
+        constraints: ["Must implement copy constructor"],
+        starterCode:
+          "#include <iostream>\n#include <string>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <string>\nusing namespace std;\nclass Student{ public: string name; int age; Student(string n, int a): name(n), age(a){} Student(const Student& other){ name = other.name; age = other.age; } };\nint main(){\n  Student s1("Alice", 20); Student s2(s1); cout << s2.name << " " << s2.age;\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "Alice 20", description: "copy" },
+          { input: "", expectedOutput: "Alice 20", description: "values" },
+          { input: "", expectedOutput: "Alice 20", description: "constructor" },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 5,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-08-oop-inheritance",
+    title: "OOP II: Inheritance & Polymorphism",
+    description:
+      "Practice inheritance, virtual functions, and abstract classes.",
+    order: 8,
+    exercises: [
+      {
+        id: "cpp-ex-08-01-basic-inheritance",
+        title: "Basic Inheritance",
+        description: "Derive child class from parent.",
+        theory: "### Inheritance\nChild class can reuse parent public methods.",
+        problemStatement:
+          "Create Vehicle parent and Car child. Print `Car is vehicle and has engine`.",
+        inputExample: "",
+        outputExample: "Car is vehicle and has engine",
+        hints: [
+          "Use `class Car : public Vehicle`",
+          "Add child method",
+          "Call both",
+        ],
+        constraints: ["Use inheritance"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\nclass Vehicle{ public: void show(){ cout << "Car is vehicle "; } };\nclass Car: public Vehicle{ public: void engine(){ cout << "and has engine"; } };\nint main(){ Car c; c.show(); c.engine(); return 0; }\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Car is vehicle and has engine",
+            description: "inherit",
+          },
+          {
+            input: "",
+            expectedOutput: "Car is vehicle and has engine",
+            description: "parent child",
+          },
+          {
+            input: "",
+            expectedOutput: "Car is vehicle and has engine",
+            description: "output",
+          },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-08-02-virtual-functions",
+        title: "Virtual Functions",
+        description: "Override method and invoke polymorphically.",
+        theory: "### Virtual\nVirtual methods enable runtime dispatch.",
+        problemStatement:
+          "Create Shape::draw virtual and Circle override printing `Drawing Circle`.",
+        inputExample: "",
+        outputExample: "Drawing Circle",
+        hints: ["Use virtual", "Override in child", "Call draw"],
+        constraints: ["Must use virtual"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\nclass Shape{ public: virtual void draw(){ cout << "Shape"; } };\nclass Circle: public Shape{ public: void draw() override { cout << "Drawing Circle"; } };\nint main(){ Circle c; c.draw(); return 0; }\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Drawing Circle",
+            description: "virtual",
+          },
+          {
+            input: "",
+            expectedOutput: "Drawing Circle",
+            description: "override",
+          },
+          {
+            input: "",
+            expectedOutput: "Drawing Circle",
+            description: "result",
+          },
+        ],
+        xpReward: 110,
+        difficulty: "hard",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-08-03-abstract-class",
+        title: "Abstract Class",
+        description: "Implement pure virtual method in derived class.",
+        theory: "### Pure Virtual\n`= 0` makes class abstract.",
+        problemStatement:
+          "Create abstract Bird with fly() and Sparrow implementation printing `Sparrow flies`.",
+        inputExample: "",
+        outputExample: "Sparrow flies",
+        hints: ["Use virtual ... = 0", "Derive class", "Implement fly"],
+        constraints: ["Use abstract class"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\nclass Bird{ public: virtual void fly() = 0; };\nclass Sparrow: public Bird{ public: void fly() override { cout << "Sparrow flies"; } };\nint main(){ Sparrow s; s.fly(); return 0; }\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Sparrow flies",
+            description: "abstract",
+          },
+          {
+            input: "",
+            expectedOutput: "Sparrow flies",
+            description: "pure virtual",
+          },
+          {
+            input: "",
+            expectedOutput: "Sparrow flies",
+            description: "implementation",
+          },
+        ],
+        xpReward: 115,
+        difficulty: "hard",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-08-04-multiple-inheritance",
+        title: "Multiple Inheritance",
+        description: "Combine behavior from two base classes.",
+        theory:
+          "### Multiple Inheritance\nClass can inherit from more than one base.",
+        problemStatement:
+          "Create Flyable and Swimmable parents and Duck child; print `Flying Swimming`.",
+        inputExample: "",
+        outputExample: "Flying Swimming",
+        hints: [
+          "Inherit from both classes",
+          "Call both methods",
+          "Print in order",
+        ],
+        constraints: ["Use multiple inheritance"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\nclass Flyable{ public: void fly(){ cout << "Flying "; } };\nclass Swimmable{ public: void swim(){ cout << "Swimming"; } };\nclass Duck: public Flyable, public Swimmable{};\nint main(){ Duck d; d.fly(); d.swim(); return 0; }\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Flying Swimming",
+            description: "multiple",
+          },
+          {
+            input: "",
+            expectedOutput: "Flying Swimming",
+            description: "both",
+          },
+          {
+            input: "",
+            expectedOutput: "Flying Swimming",
+            description: "output",
+          },
+        ],
+        xpReward: 115,
+        difficulty: "hard",
+        language: "cpp",
+        order: 4,
+      },
+      {
+        id: "cpp-ex-08-05-operator-overloading",
+        title: "Operator Overloading",
+        description: "Overload + for custom class.",
+        theory: "### Operator+\nDefine `operator+` to customize addition.",
+        problemStatement: "Overload + in Number class so 7 + 8 prints 15.",
+        inputExample: "",
+        outputExample: "15",
+        hints: ["Implement operator+", "Return Number", "Use this->value"],
+        constraints: ["Must overload +"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nclass Number{ public: int value; Number operator+(const Number& o){ Number r; r.value = value + o.value; return r; } };\nint main(){ Number a,b,c; a.value=7; b.value=8; c=a+b; cout << c.value; return 0; }\n",
+        testCases: [
+          { input: "", expectedOutput: "15", description: "overload" },
+          { input: "", expectedOutput: "15", description: "plus" },
+          { input: "", expectedOutput: "15", description: "result" },
+        ],
+        xpReward: 120,
+        difficulty: "hard",
+        language: "cpp",
+        order: 5,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-09-file-io",
+    title: "File I/O & Streams",
+    description: "Read, write, append, and process file data.",
+    order: 9,
+    exercises: [
+      {
+        id: "cpp-ex-09-01-write-file",
+        title: "Write to File",
+        description: "Write text to a file.",
+        theory: "### ofstream\nUse output stream to create/write files.",
+        problemStatement:
+          "Write `Hello File` to test.txt and print `File created`.",
+        inputExample: "",
+        outputExample: "File created",
+        hints: ["Use ofstream", "Write text", "Close file"],
+        constraints: ["Must use file stream"],
+        starterCode:
+          "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  ofstream out("test.txt");\n  out << "Hello File";\n  out.close();\n  cout << "File created";\n  return 0;\n}\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "File created",
+            description: "write",
+          },
+          {
+            input: "",
+            expectedOutput: "File created",
+            description: "create",
+          },
+          {
+            input: "",
+            expectedOutput: "File created",
+            description: "output",
+          },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-09-02-read-file",
+        title: "Read from File",
+        description: "Read and print first line from file.",
+        theory: "### ifstream\nUse input stream with `getline` for line reads.",
+        problemStatement: "Read first line from data.txt and print it.",
+        inputExample: "",
+        outputExample: "File content",
+        hints: ["Open with ifstream", "Use getline", "Print line"],
+        constraints: ["Must use ifstream"],
+        starterCode:
+          "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main(){\n  ifstream in("data.txt");\n  string line;\n  getline(in, line);\n  cout << line;\n  in.close();\n  return 0;\n}\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "File content",
+            description: "read",
+          },
+          {
+            input: "",
+            expectedOutput: "File content",
+            description: "getline",
+          },
+          {
+            input: "",
+            expectedOutput: "File content",
+            description: "line",
+          },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-09-03-append-file",
+        title: "Append to File",
+        description: "Append text without overwriting existing file.",
+        theory: "### ios::app\nOpen in append mode to keep old content.",
+        problemStatement:
+          "Append `Extra Line` into data.txt and print `Appended`.",
+        inputExample: "",
+        outputExample: "Appended",
+        hints: ["Use ios::app", "Write newline", "Close stream"],
+        constraints: ["Must append"],
+        starterCode:
+          "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  ofstream out("data.txt", ios::app);\n  out << "\\nExtra Line";\n  out.close();\n  cout << "Appended";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "Appended", description: "append" },
+          { input: "", expectedOutput: "Appended", description: "mode" },
+          { input: "", expectedOutput: "Appended", description: "result" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-09-04-binary-read-write",
+        title: "Binary Read/Write",
+        description: "Write integer in binary file and read it back.",
+        theory: "### Binary IO\nUse `write` and `read` with `ios::binary`.",
+        problemStatement:
+          "Write integer 42 to binary file and then read and print it.",
+        inputExample: "",
+        outputExample: "42",
+        hints: ["Use ios::binary", "write bytes", "read bytes"],
+        constraints: ["Must use binary mode"],
+        starterCode:
+          "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <fstream>\nusing namespace std;\nint main(){\n  int num = 42;\n  ofstream out("nums.bin", ios::binary);\n  out.write((char*)&num, sizeof(num));\n  out.close();\n  ifstream in("nums.bin", ios::binary);\n  in.read((char*)&num, sizeof(num));\n  cout << num;\n  in.close();\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "42", description: "binary" },
+          { input: "", expectedOutput: "42", description: "read write" },
+          { input: "", expectedOutput: "42", description: "value" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 4,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-10-stl-containers",
+    title: "STL I: Containers",
+    description: "Master vector, map, set, stack, list, queue.",
+    order: 10,
+    exercises: [
+      {
+        id: "cpp-ex-10-01-vector",
+        title: "Vector Operations",
+        description: "Use push_back, pop_back, and iterate.",
+        theory: "### vector\nDynamic array with push/pop operations.",
+        problemStatement:
+          "Add 5, 10, 15 to vector, pop_back, print remaining as `5 10`.",
+        inputExample: "",
+        outputExample: "5 10 ",
+        hints: ["Create vector", "Push three values", "Pop one", "Print loop"],
+        constraints: ["Must use vector"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <vector>\nusing namespace std;\nint main(){\n  vector<int> v;\n  v.push_back(5); v.push_back(10); v.push_back(15);\n  v.pop_back();\n  for(int x: v) cout << x << " ";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "5 10 ", description: "vector" },
+          { input: "", expectedOutput: "5 10 ", description: "push pop" },
+          { input: "", expectedOutput: "5 10 ", description: "output" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-10-02-map",
+        title: "Map (Key-Value)",
+        description: "Store and retrieve data by string key.",
+        theory: "### map\nOrdered key-value container.",
+        problemStatement:
+          "Create map with marks[Alice]=90, marks[Bob]=85; print both.",
+        inputExample: "",
+        outputExample: "Alice: 90\nBob: 85",
+        hints: ["Create map<string,int>", "Set values", "Print both"],
+        constraints: ["Must use map"],
+        starterCode:
+          "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\nint main(){\n  map<string,int> m;\n  m["Alice"]=90; m["Bob"]=85;\n  cout << "Alice: " << m["Alice"] << "\\n";\n  cout << "Bob: " << m["Bob"];\n  return 0;\n}\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Alice: 90\nBob: 85",
+            description: "map",
+          },
+          {
+            input: "",
+            expectedOutput: "Alice: 90\nBob: 85",
+            description: "key value",
+          },
+          {
+            input: "",
+            expectedOutput: "Alice: 90\nBob: 85",
+            description: "output",
+          },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-10-03-set",
+        title: "Set (Unique)",
+        description: "Store unique sorted elements.",
+        theory: "### set\nAutomatic sorting and deduplication.",
+        problemStatement:
+          "Insert 3,1,2,3 into set and print sorted unique elements `1 2 3`.",
+        inputExample: "",
+        outputExample: "1 2 3 ",
+        hints: ["Create set", "Insert values", "Print in order"],
+        constraints: ["Must use set"],
+        starterCode:
+          "#include <iostream>\n#include <set>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <set>\nusing namespace std;\nint main(){\n  set<int> s;\n  s.insert(3); s.insert(1); s.insert(2); s.insert(3);\n  for(int x: s) cout << x << " ";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "1 2 3 ", description: "set" },
+          { input: "", expectedOutput: "1 2 3 ", description: "unique" },
+          { input: "", expectedOutput: "1 2 3 ", description: "sorted" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-10-04-stack",
+        title: "Stack (LIFO)",
+        description: "Push and pop in LIFO order.",
+        theory: "### stack\nLast-In First-Out container.",
+        problemStatement:
+          "Push 10, 20, 30; pop all and print in reverse `30 20 10`.",
+        inputExample: "",
+        outputExample: "30 20 10 ",
+        hints: ["Create stack", "Push three", "Pop and print"],
+        constraints: ["Must use stack"],
+        starterCode:
+          "#include <iostream>\n#include <stack>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <stack>\nusing namespace std;\nint main(){\n  stack<int> s;\n  s.push(10); s.push(20); s.push(30);\n  while(!s.empty()){ cout << s.top() << " "; s.pop(); }\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "30 20 10 ", description: "stack" },
+          { input: "", expectedOutput: "30 20 10 ", description: "lifo" },
+          { input: "", expectedOutput: "30 20 10 ", description: "order" },
+        ],
+        xpReward: 100,
+        difficulty: "medium",
+        language: "cpp",
+        order: 4,
+      },
+      {
+        id: "cpp-ex-10-05-list",
+        title: "List (Insert/Delete)",
+        description: "Efficiently insert in middle of list.",
+        theory: "### list\nDoubly-linked list with efficient insertion.",
+        problemStatement:
+          "Create list {1,2,3}, insert 25 at position 1, print `1 25 2 3`.",
+        inputExample: "",
+        outputExample: "1 25 2 3 ",
+        hints: ["Create list", "Add three", "Use advance", "Insert"],
+        constraints: ["Must use list"],
+        starterCode:
+          "#include <iostream>\n#include <list>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <list>\nusing namespace std;\nint main(){\n  list<int> l;\n  l.push_back(1); l.push_back(2); l.push_back(3);\n  auto it = l.begin(); advance(it, 1); l.insert(it, 25);\n  for(int x: l) cout << x << " ";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "1 25 2 3 ", description: "list" },
+          { input: "", expectedOutput: "1 25 2 3 ", description: "insert" },
+          { input: "", expectedOutput: "1 25 2 3 ", description: "order" },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 5,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-11-stl-algorithms",
+    title: "STL II: Algorithms",
+    description: "Sort, search, count, and transform data.",
+    order: 11,
+    exercises: [
+      {
+        id: "cpp-ex-11-01-sort",
+        title: "Sorting",
+        description: "Use std::sort for arrays and vectors.",
+        theory: "### std::sort\nQuickly sort containers in ascending order.",
+        problemStatement: "Create vector {5,2,8,1}, sort it, print `1 2 5 8`.",
+        inputExample: "",
+        outputExample: "1 2 5 8 ",
+        hints: ["Create vector", "Use sort", "Print loop"],
+        constraints: ["Must use sort"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  vector<int> v={5,2,8,1};\n  sort(v.begin(), v.end());\n  for(int x: v) cout << x << " ";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "1 2 5 8 ", description: "sort" },
+          { input: "", expectedOutput: "1 2 5 8 ", description: "ascending" },
+          { input: "", expectedOutput: "1 2 5 8 ", description: "output" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-11-02-find",
+        title: "Finding",
+        description: "Search for element and return position.",
+        theory: "### std::find\nLocate first occurrence of value.",
+        problemStatement:
+          "Find 30 in vector {10,20,30,40}, print position `2`.",
+        inputExample: "",
+        outputExample: "2",
+        hints: ["Create vector", "Use find", "Calculate position"],
+        constraints: ["Must use find"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  vector<int> v={10,20,30,40};\n  auto it = find(v.begin(), v.end(), 30);\n  if(it != v.end()) cout << (it - v.begin());\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "2", description: "find" },
+          { input: "", expectedOutput: "2", description: "position" },
+          { input: "", expectedOutput: "2", description: "index" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-11-03-count",
+        title: "Counting",
+        description: "Count occurrence of element.",
+        theory: "### std::count\nCounts how many elements match value.",
+        problemStatement: "Count occurrences of 2 in {1,2,2,3,2}, print `3`.",
+        inputExample: "",
+        outputExample: "3",
+        hints: ["Create vector", "Use count", "Print result"],
+        constraints: ["Must use count"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  vector<int> v={1,2,2,3,2};\n  int c = count(v.begin(), v.end(), 2);\n  cout << c;\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "3", description: "count" },
+          { input: "", expectedOutput: "3", description: "frequency" },
+          { input: "", expectedOutput: "3", description: "result" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-11-04-transform",
+        title: "Transform",
+        description: "Apply function to each element.",
+        theory: "### std::transform\nApply operation to all elements.",
+        problemStatement: "Double each element in {1,2,3}, print `2 4 6`.",
+        inputExample: "",
+        outputExample: "2 4 6 ",
+        hints: ["Use transform lambda", "Return x * 2", "Print result"],
+        constraints: ["Must use transform"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){\n  vector<int> v={1,2,3};\n  transform(v.begin(), v.end(), v.begin(), [](int x){ return x*2; });\n  for(int x: v) cout << x << " ";\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "2 4 6 ", description: "transform" },
+          { input: "", expectedOutput: "2 4 6 ", description: "double" },
+          { input: "", expectedOutput: "2 4 6 ", description: "output" },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 4,
+      },
+    ],
+  },
+  {
+    id: "cpp-ch-12-exception-advanced",
+    title: "Exception Handling & Advanced",
+    description: "Handle errors, templates, and lambdas.",
+    order: 12,
+    exercises: [
+      {
+        id: "cpp-ex-12-01-try-catch",
+        title: "Try-Catch",
+        description: "Catch out_of_range exception.",
+        theory: "### Try-Catch\nHandle exceptions with try-catch blocks.",
+        problemStatement:
+          "Access invalid vector index and catch out_of_range; print `Invalid index`.",
+        inputExample: "",
+        outputExample: "Invalid index",
+        hints: ["Create vector", "Try .at(10)", "Catch out_of_range"],
+        constraints: ["Must use try-catch"],
+        starterCode:
+          "#include <iostream>\n#include <vector>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\n#include <vector>\nusing namespace std;\nint main(){\n  vector<int> v={1,2,3};\n  try{ v.at(10); }\n  catch(out_of_range& e){ cout << "Invalid index"; }\n  return 0;\n}\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Invalid index",
+            description: "exception",
+          },
+          {
+            input: "",
+            expectedOutput: "Invalid index",
+            description: "caught",
+          },
+          {
+            input: "",
+            expectedOutput: "Invalid index",
+            description: "output",
+          },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "cpp",
+        order: 1,
+      },
+      {
+        id: "cpp-ex-12-02-custom-exception",
+        title: "Custom Exception",
+        description: "Define and throw custom exception.",
+        theory:
+          "### Custom Exception\nInherit from exception and override what().",
+        problemStatement:
+          "Create DivideByZero exception and print `Error: Cannot divide by zero`.",
+        inputExample: "",
+        outputExample: "Error: Cannot divide by zero",
+        hints: ["Inherit exception", "Override what()", "Throw and catch"],
+        constraints: ["Custom exception"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\nclass DivideByZero: public exception{ public: const char* what() const throw() { return "Error: Cannot divide by zero"; } };\nint main(){\n  try{ throw DivideByZero(); }\n  catch(DivideByZero& e){ cout << e.what(); }\n  return 0;\n}\n',
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Error: Cannot divide by zero",
+            description: "custom",
+          },
+          {
+            input: "",
+            expectedOutput: "Error: Cannot divide by zero",
+            description: "exception",
+          },
+          {
+            input: "",
+            expectedOutput: "Error: Cannot divide by zero",
+            description: "message",
+          },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 2,
+      },
+      {
+        id: "cpp-ex-12-03-templates",
+        title: "Templates",
+        description: "Generic function template.",
+        theory: "### Template\nWrite code that works with any type.",
+        problemStatement:
+          "Create compare template returning larger value; test `20 5.5`.",
+        inputExample: "",
+        outputExample: "20 5.5",
+        hints: ["Use template<typename T>", "Compare values", "Test types"],
+        constraints: ["Must use templates"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          '#include <iostream>\nusing namespace std;\ntemplate<typename T>\nT compare(T a, T b){ return (a>b)?a:b; }\nint main(){\n  cout << compare(10,20) << " " << compare(2.5,5.5);\n  return 0;\n}\n',
+        testCases: [
+          { input: "", expectedOutput: "20 5.5", description: "template" },
+          { input: "", expectedOutput: "20 5.5", description: "types" },
+          { input: "", expectedOutput: "20 5.5", description: "result" },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 3,
+      },
+      {
+        id: "cpp-ex-12-04-lambda",
+        title: "Lambda Functions",
+        description: "Anonymous function for multiplication.",
+        theory: "### Lambda\n`[capture](params){ body }` syntax.",
+        problemStatement: "Create lambda multiply(6,7) and print `42`.",
+        inputExample: "",
+        outputExample: "42",
+        hints: ["Use auto mult =", "Capture nothing []", "Return result"],
+        constraints: ["Must use lambda"],
+        starterCode:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  // TODO\n  return 0;\n}\n",
+        solution:
+          "#include <iostream>\nusing namespace std;\nint main(){\n  auto mult = [](int a, int b){ return a*b; };\n  cout << mult(6,7);\n  return 0;\n}\n",
+        testCases: [
+          { input: "", expectedOutput: "42", description: "lambda" },
+          { input: "", expectedOutput: "42", description: "multiply" },
+          { input: "", expectedOutput: "42", description: "result" },
+        ],
+        xpReward: 100,
+        difficulty: "hard",
+        language: "cpp",
+        order: 4,
+      },
+    ],
+  },
 ];
 
 async function seedCppCourse() {
