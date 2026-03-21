@@ -33,7 +33,7 @@ export default function DashboardTabs({ user, enrolledCourses, exploreCourses, g
     return (
         <div className="lg:col-span-2">
             {/* Tab Navigation */}
-            <div className="flex items-center gap-1 mb-6 p-1 glass rounded-xl">
+            <div className="flex items-center gap-1 mb-6 p-1 fb-card rounded-xl">
                 {DASHBOARD_TABS.map((tab) => {
                     const Icon = tabIcons[tab.icon];
                     return (
@@ -41,7 +41,7 @@ export default function DashboardTabs({ user, enrolledCourses, exploreCourses, g
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex-1 justify-center ${activeTab === tab.id
-                                ? "gradient-primary text-white shadow-lg shadow-primary/20"
+                                ? "bg-[#E6C212] text-black"
                                 : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
                                 }`}
                         >

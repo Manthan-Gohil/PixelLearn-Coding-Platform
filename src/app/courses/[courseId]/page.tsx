@@ -31,7 +31,7 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
       <div className="h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-text-primary mb-2">Course Not Found</h1>
-          <Link href="/courses" className="text-primary-light hover:underline">
+          <Link href="/courses" className="text-[#E6C212] hover:underline">
             ← Back to Courses
           </Link>
         </div>
@@ -61,14 +61,14 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="glass rounded-2xl overflow-hidden">
-            <div className="h-48 gradient-card flex items-center justify-center relative">
+          <div className="fb-card rounded-2xl overflow-hidden">
+            <div className="h-48 bg-[#0f0f0f] flex items-center justify-center relative">
               <span className="text-7xl group-hover:scale-125 transition-transform">
                 {getCategoryIcon(course.category)}
               </span>
               <div className="absolute top-4 right-4 flex gap-2">
                 {course.isPremium && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold gradient-primary text-white">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#E6C212] text-black">
                     PRO
                   </span>
                 )}

@@ -11,9 +11,9 @@ interface AchievementsTabProps {
 export default function AchievementsTab({ user }: AchievementsTabProps) {
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl p-6">
+            <div className="fb-card rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-warning" />
+                    <Trophy className="w-5 h-5 text-[#E6C212]" />
                     Badges Collection
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -26,7 +26,7 @@ export default function AchievementsTab({ user }: AchievementsTabProps) {
                         <div
                             key={badge.id}
                             className={`p-4 rounded-xl border text-center transition-all ${"unlocked" in badge && badge.unlocked
-                                ? "border-primary/30 bg-primary/5"
+                                ? "border-[#E6C212]/30 bg-[#E6C212]/5"
                                 : "border-border bg-surface-alt/50 opacity-50"
                                 }`}
                         >
@@ -48,9 +48,9 @@ export default function AchievementsTab({ user }: AchievementsTabProps) {
             </div>
 
             {/* XP Milestones */}
-            <div className="glass rounded-xl p-6">
+            <div className="fb-card rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-primary-light" />
+                    <TrendingUp className="w-5 h-5 text-[#E6C212]" />
                     XP Milestones
                 </h3>
                 <div className="space-y-4">
@@ -73,7 +73,7 @@ export default function AchievementsTab({ user }: AchievementsTabProps) {
                                     <div
                                         className={`h-2 rounded-full transition-all duration-500 ${progress >= 100
                                             ? "bg-success"
-                                            : "gradient-primary"
+                                            : "bg-[#E6C212]"
                                             }`}
                                         style={{ width: `${progress}%` }}
                                     />

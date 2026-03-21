@@ -19,14 +19,14 @@ export default function ExploreCoursesTab({ user, courses, enrollCourse }: Explo
                 return (
                     <div
                         key={course.id}
-                        className="glass rounded-xl overflow-hidden hover:border-primary/20 transition-all group"
+                        className="fb-card rounded-xl overflow-hidden hover:border-border-light transition-all group"
                     >
-                        <div className="h-32 gradient-card flex items-center justify-center relative">
+                        <div className="h-32 bg-[#0f0f0f] flex items-center justify-center relative">
                             <span className="text-4xl group-hover:scale-110 transition-transform">
                                 {getCategoryIcon(course.category, "🧮")}
                             </span>
                             {course.isPremium && (
-                                <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold gradient-primary text-white">
+                                <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#E6C212] text-black">
                                     PRO
                                 </span>
                             )}
@@ -48,7 +48,7 @@ export default function ExploreCoursesTab({ user, courses, enrollCourse }: Explo
                                     {course.enrolledCount.toLocaleString()}
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <Zap className="w-3 h-3 text-primary" />
+                                    <Zap className="w-3 h-3 text-[#E6C212]" />
                                     {course.totalXP} XP
                                 </span>
                             </div>
@@ -67,7 +67,7 @@ export default function ExploreCoursesTab({ user, courses, enrollCourse }: Explo
                                     className={`block w-full text-center py-2 rounded-lg text-sm font-medium transition-all ${course.isPremium &&
                                         user.subscription === "free"
                                         ? "border border-border text-text-muted cursor-not-allowed"
-                                        : "gradient-primary text-white hover:opacity-90"
+                                        : "bg-[#E6C212] text-black hover:bg-[#f0d030]"
                                         }`}
                                     disabled={
                                         course.isPremium &&

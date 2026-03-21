@@ -26,7 +26,7 @@ export default function CourseSummaryCard({
   const isLocked = isPremiumLocked(course.isPremium, userSubscription);
 
   return (
-    <div className="glass rounded-xl p-6 sticky top-24">
+    <div className="fb-card rounded-xl p-6 sticky top-24">
       <h3 className="text-lg font-semibold text-text-primary mb-4">Course Progress</h3>
 
       <div className="flex justify-center mb-6">
@@ -55,8 +55,8 @@ export default function CourseSummaryCard({
             />
             <defs>
               <linearGradient id="progressGradient">
-                <stop offset="0%" stopColor="#6366f1" />
-                <stop offset="100%" stopColor="#06b6d4" />
+                <stop offset="0%" stopColor="#E6C212" />
+                <stop offset="100%" stopColor="#f0d030" />
               </linearGradient>
             </defs>
           </svg>
@@ -86,13 +86,13 @@ export default function CourseSummaryCard({
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-text-secondary flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-accent" />Chapters
+            <Trophy className="w-4 h-4 text-[#E6C212]" />Chapters
           </span>
           <span className="font-medium text-text-primary">{course.chapters.length}</span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-text-secondary flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-primary-light" />Difficulty
+            <BarChart3 className="w-4 h-4 text-[#E6C212]" />Difficulty
           </span>
           <span className={`px-2 py-0.5 rounded text-xs font-medium ${DIFFICULTY_COLORS[course.difficulty]}`}>
             {course.difficulty}
@@ -104,11 +104,10 @@ export default function CourseSummaryCard({
         <button
           onClick={() => onEnroll(course.id)}
           disabled={isLocked}
-          className={`w-full py-3 rounded-xl font-semibold transition-all ${
-            isLocked
+          className={`w-full py-3 rounded-xl font-semibold transition-all ${isLocked
               ? "border border-border text-text-muted cursor-not-allowed"
-              : "gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/25"
-          }`}
+              : "bg-[#E6C212] text-black hover:bg-[#f0d030] shadow-lg shadow-black/30"
+            }`}
         >
           {isLocked ? (
             <span className="flex items-center justify-center gap-2">
@@ -123,7 +122,7 @@ export default function CourseSummaryCard({
       ) : (
         <Link
           href={`/playground/${course.id}/${course.chapters[0]?.exercises[0]?.id || ""}`}
-          className="block w-full text-center py-3 rounded-xl font-semibold gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/25 transition-all outline-none"
+          className="block w-full text-center py-3 rounded-xl font-semibold bg-[#E6C212] text-black hover:bg-[#f0d030] shadow-lg shadow-black/30 transition-all outline-none"
           style={{ WebkitTapHighlightColor: "transparent" }}
         >
           <span className="flex items-center justify-center gap-2">

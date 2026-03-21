@@ -37,17 +37,16 @@ export default function ChapterItem({
   const isLocked = isPremiumLocked(chapter.isPremium, userSubscription);
 
   return (
-    <div className={`glass rounded-xl overflow-hidden transition-all ${isLocked ? "opacity-60" : ""}`}>
+    <div className={`fb-card rounded-xl overflow-hidden transition-all ${isLocked ? "opacity-60" : ""}`}>
       <button
         onClick={onToggle}
         className="w-full flex items-center gap-4 p-4 hover:bg-surface-hover/50 transition-colors"
       >
         <div
-          className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
-            chapterCompleted === chapterTotal && chapterTotal > 0
+          className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${chapterCompleted === chapterTotal && chapterTotal > 0
               ? "bg-success/10 text-success"
-              : "bg-primary/10 text-primary-light"
-          }`}
+              : "bg-[#E6C212]/10 text-[#E6C212]"
+            }`}
         >
           {chapterCompleted === chapterTotal && chapterTotal > 0 ? "✓" : chapter.order}
         </div>
@@ -57,7 +56,7 @@ export default function ChapterItem({
             <h3 className="font-semibold text-text-primary">{chapter.title}</h3>
             {isLocked && <Lock className="w-4 h-4 text-text-muted" />}
             {chapter.isPremium && (
-              <span className="px-1.5 py-0.5 rounded text-xs font-medium gradient-primary text-white">
+              <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-[#E6C212] text-black">
                 PRO
               </span>
             )}
@@ -70,7 +69,7 @@ export default function ChapterItem({
         <div className="hidden sm:block w-24">
           <div className="w-full bg-surface-hover rounded-full h-1.5">
             <div
-              className="h-1.5 rounded-full gradient-primary"
+              className="h-1.5 rounded-full bg-[#E6C212]"
               style={{ width: `${chapterTotal > 0 ? (chapterCompleted / chapterTotal) * 100 : 0}%` }}
             />
           </div>
@@ -95,13 +94,12 @@ export default function ChapterItem({
                 className="flex items-center gap-4 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-surface-hover/30 transition-colors"
               >
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    completed
+                  className={`w-6 h-6 rounded-full flex items-center justify-center ${completed
                       ? "bg-success text-white"
                       : canAccess
-                        ? "border-2 border-primary/40"
+                        ? "border-2 border-[#E6C212]/50"
                         : "border-2 border-border"
-                  }`}
+                    }`}
                 >
                   {completed && <CheckCircle2 className="w-4 h-4" />}
                 </div>
@@ -123,11 +121,10 @@ export default function ChapterItem({
                   {canAccess ? (
                     <Link
                       href={`/playground/${courseId}/${exercise.id}`}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-                        completed
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${completed
                           ? "border border-success/30 text-success hover:bg-success/10"
-                          : "gradient-primary text-white hover:opacity-90"
-                      }`}
+                          : "bg-[#E6C212] text-black hover:bg-[#f0d030]"
+                        }`}
                     >
                       {completed ? "Review" : "Start"}
                     </Link>

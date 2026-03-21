@@ -23,21 +23,21 @@ export default function CareerQA() {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="glass rounded-xl p-6">
+            <div className="fb-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-primary-light" />
+                    <Brain className="w-5 h-5 text-[#E6C212]" />
                     Ask a Career Question
                 </h2>
                 <textarea
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="e.g., What skills do I need to become a full-stack developer? How long will it take to transition from QA to development?"
-                    className="w-full h-40 p-4 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/50 resize-none"
+                    className="w-full h-40 p-4 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[#E6C212]/60 resize-none"
                 />
                 <button
                     onClick={handleCareerQA}
                     disabled={isLoading || !question.trim()}
-                    className="mt-4 flex items-center gap-2 px-6 py-2.5 rounded-lg gradient-primary text-white font-medium hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+                    className="mt-4 fb-btn-primary disabled:opacity-50"
                 >
                     {isLoading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -66,7 +66,7 @@ export default function CareerQA() {
             </div>
 
             {/* Answer */}
-            <div className="glass rounded-xl p-6">
+            <div className="fb-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-text-primary mb-4">
                     AI Response
                 </h2>
@@ -94,7 +94,7 @@ export default function CareerQA() {
                             if (line.startsWith("- "))
                                 return (
                                     <div key={i} className="flex items-start gap-2 text-sm text-text-secondary ml-2">
-                                        <span className="text-primary-light mt-1">•</span>
+                                        <span className="text-[#E6C212] mt-1">•</span>
                                         <span>{line.replace("- ", "")}</span>
                                     </div>
                                 );

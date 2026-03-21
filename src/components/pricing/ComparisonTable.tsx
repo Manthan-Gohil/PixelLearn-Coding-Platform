@@ -18,7 +18,7 @@ export default function ComparisonTable() {
             <h2 ref={headerRef} className="text-2xl font-bold text-text-primary mb-8 text-center">
                 Feature Comparison
             </h2>
-            <div ref={tableRef} className="glass rounded-2xl overflow-hidden animate-glow-pulse">
+            <div ref={tableRef} className="fb-card rounded-2xl overflow-hidden animate-glow-pulse">
                 <div className="grid grid-cols-3 gap-0 border-b border-border p-4 bg-surface-alt/50">
                     <div className="text-sm font-semibold text-text-primary">
                         Feature
@@ -26,7 +26,7 @@ export default function ComparisonTable() {
                     <div className="text-sm font-semibold text-text-primary text-center">
                         Free
                     </div>
-                    <div className="text-sm font-semibold text-primary-light text-center flex items-center justify-center gap-1">
+                    <div className="text-sm font-semibold text-[#E6C212] text-center flex items-center justify-center gap-1">
                         <Crown className="w-4 h-4" /> Pro
                     </div>
                 </div>
@@ -53,12 +53,12 @@ export default function ComparisonTable() {
                         <div className="text-center">
                             {typeof feature.pro === "boolean" ? (
                                 feature.pro ? (
-                                    <Check className="w-4 h-4 text-primary-light mx-auto" />
+                                    <Check className="w-4 h-4 text-[#E6C212] mx-auto" />
                                 ) : (
                                     <X className="w-4 h-4 text-text-muted mx-auto" />
                                 )
                             ) : (
-                                <span className="text-sm text-primary-light font-medium">
+                                <span className="text-sm text-[#E6C212] font-medium">
                                     {feature.pro}
                                 </span>
                             )}

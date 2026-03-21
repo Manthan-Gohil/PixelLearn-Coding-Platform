@@ -43,8 +43,8 @@ export default function StatsCards({ user, totalExercisesCompleted }: StatsCards
             label: "Exercises Done",
             value: totalExercisesCompleted,
             suffix: "",
-            color: "text-primary-light",
-            bgColor: "bg-primary/10",
+            color: "text-[#E6C212]",
+            bgColor: "bg-[#E6C212]/10",
             glowColor: "shadow-primary/20",
         },
         {
@@ -63,7 +63,7 @@ export default function StatsCards({ user, totalExercisesCompleted }: StatsCards
             {stats.map((stat, i) => (
                 <div
                     key={stat.label}
-                    className={`stat-card glass rounded-xl p-4 hover:border-primary/20 transition-all duration-300 card-hover-glow spotlight-card`}
+                    className={`stat-card fb-card rounded-xl p-4 hover:border-border-light transition-all duration-300 card-hover-glow spotlight-card`}
                     onMouseMove={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
                         e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);

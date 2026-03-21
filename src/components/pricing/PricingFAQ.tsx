@@ -24,14 +24,14 @@ export default function PricingFAQ() {
                 {PRICING_FAQ_ITEMS.map((faq, i) => (
                     <div
                         key={i}
-                        className="faq-item glass rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/20"
+                        className="faq-item fb-card rounded-xl overflow-hidden transition-all duration-300 hover:border-border-light"
                     >
                         <button
                             onClick={() => setShowFAQ(showFAQ === i ? null : i)}
                             className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-hover/30 transition-colors"
                         >
                             <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
-                                <HelpCircle className="w-4 h-4 text-primary-light" />
+                                <HelpCircle className="w-4 h-4 text-[#E6C212]" />
                                 {faq.question}
                             </span>
                             <span

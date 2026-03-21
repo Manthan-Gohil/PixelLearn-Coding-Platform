@@ -50,17 +50,17 @@ function AIToolsContent() {
         return (
             <StandardLayout particlesCount={15} showFooter={false} flowblockTheme>
                 <div className="relative max-w-4xl mx-auto py-20 text-center">
-                    <div className="glass rounded-2xl p-12 animate-glow-pulse">
-                        <Lock className="w-16 h-16 text-primary-light mx-auto mb-6 animate-float-subtle" />
+                    <div className="fb-card rounded-2xl p-12 animate-glow-pulse">
+                        <Lock className="w-16 h-16 text-[#E6C212] mx-auto mb-6 animate-float-subtle" />
                         <h1 className="text-3xl font-bold text-text-primary mb-4">
-                            {AI_TOOLS_PRO_ONLY_TITLE_PREFIX}<span className="gradient-text">{AI_TOOLS_PRO_ONLY_TITLE_HIGHLIGHT}</span>
+                            {AI_TOOLS_PRO_ONLY_TITLE_PREFIX}<span className="text-[#E6C212]">{AI_TOOLS_PRO_ONLY_TITLE_HIGHLIGHT}</span>
                         </h1>
                         <p className="text-text-secondary mb-8 max-w-lg mx-auto">
                             {AI_TOOLS_PRO_ONLY_DESCRIPTION}
                         </p>
                         <a
                             href={AI_TOOLS_UPGRADE_HREF}
-                            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 transition-all shadow-xl shadow-primary/25 hover-bounce"
+                            className="fb-btn-primary text-base"
                         >
                             <Zap className="w-5 h-5" />
                             Upgrade to Pro
@@ -80,12 +80,12 @@ function AIToolsContent() {
         >
             {/* Header */}
             <div ref={headerRef} className="mb-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3 animate-shimmer">
-                    <Sparkles className="w-4 h-4 text-primary-light animate-float-subtle" />
-                    <span className="text-sm font-medium text-primary-light">AI-Powered</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-border-light mb-3 animate-shimmer">
+                    <Sparkles className="w-4 h-4 text-[#E6C212] animate-float-subtle" />
+                    <span className="text-sm font-medium text-[#E6C212]">AI-Powered</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-                    AI Career <span className="gradient-text">Intelligence</span>
+                    AI Career <span className="text-[#E6C212]">Intelligence</span>
                 </h1>
                 <p className="text-text-secondary text-lg">
                     Get personalized career guidance, resume analysis, and roadmap generation
@@ -101,8 +101,8 @@ function AIToolsContent() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`ai-tab p-4 rounded-xl border transition-all duration-300 text-left spotlight-card hover-bounce ${activeTab === tab.id
-                                ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10 animate-glow-pulse"
-                                : "border-border glass hover:border-primary/20"
+                                ? "border-[#E6C212]/50 bg-[#0f0f0f] shadow-lg shadow-black/40 animate-glow-pulse"
+                                : "border-border fb-card hover:border-border-light"
                                 }`}
                             onMouseMove={(e) => {
                                 const rect = e.currentTarget.getBoundingClientRect();
@@ -112,7 +112,7 @@ function AIToolsContent() {
                         >
                             <Icon
                                 className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
-                                    ? "text-primary-light scale-110"
+                                    ? "text-[#E6C212] scale-110"
                                     : "text-text-muted"
                                     }`}
                             />

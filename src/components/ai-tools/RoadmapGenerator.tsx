@@ -35,9 +35,9 @@ export default function RoadmapGenerator() {
 
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl p-6">
+            <div className="fb-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <Rocket className="w-5 h-5 text-success" />
+                    <Rocket className="w-5 h-5 text-[#E6C212]" />
                     Generate Your Career Roadmap
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -50,7 +50,7 @@ export default function RoadmapGenerator() {
                             value={desiredRole}
                             onChange={(e) => setDesiredRole(e.target.value)}
                             placeholder="e.g., Full Stack Developer"
-                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/50"
+                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[#E6C212]/60"
                         />
                     </div>
                     <div>
@@ -62,7 +62,7 @@ export default function RoadmapGenerator() {
                             value={currentSkills}
                             onChange={(e) => setCurrentSkills(e.target.value)}
                             placeholder="e.g., HTML, CSS, Python"
-                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/50"
+                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[#E6C212]/60"
                         />
                     </div>
                     <div>
@@ -72,7 +72,7 @@ export default function RoadmapGenerator() {
                         <select
                             value={experienceLevel}
                             onChange={(e) => setExperienceLevel(e.target.value as ExperienceLevel)}
-                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary focus:outline-none focus:border-primary/50"
+                            className="w-full p-3 rounded-lg bg-surface-alt border border-border text-text-primary focus:outline-none focus:border-[#E6C212]/60"
                         >
                             {ROADMAP_EXPERIENCE_LEVELS.map((level) => (
                                 <option key={level} value={level}>
@@ -85,7 +85,7 @@ export default function RoadmapGenerator() {
                 <button
                     onClick={handleRoadmap}
                     disabled={isLoading || !desiredRole.trim()}
-                    className="mt-4 flex items-center gap-2 px-6 py-2.5 rounded-lg gradient-primary text-white font-medium hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+                    className="mt-4 fb-btn-primary disabled:opacity-50"
                 >
                     {isLoading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -110,12 +110,12 @@ export default function RoadmapGenerator() {
                             {roadmapSteps.map((step, i) => (
                                 <div key={i} className="relative flex gap-6">
                                     {/* Timeline Dot */}
-                                    <div className="relative z-10 w-12 h-12 rounded-xl gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/20 shrink-0">
+                                    <div className="relative z-10 w-12 h-12 rounded-xl bg-[#E6C212] flex items-center justify-center text-black font-bold text-lg shadow-lg shadow-black/30 shrink-0">
                                         {step.step}
                                     </div>
 
                                     {/* Content */}
-                                    <div className="flex-1 glass rounded-xl p-6 hover:border-primary/20 transition-all">
+                                    <div className="flex-1 fb-card rounded-xl p-6 hover:border-border-light transition-all">
                                         <div className="flex items-center justify-between mb-2">
                                             <h4 className="text-lg font-semibold text-text-primary">
                                                 {step.title}
@@ -138,7 +138,7 @@ export default function RoadmapGenerator() {
                                                 {step.skills.map((skill, j) => (
                                                     <span
                                                         key={j}
-                                                        className="px-2 py-0.5 rounded bg-primary/10 text-primary-light text-xs font-medium"
+                                                        className="px-2 py-0.5 rounded bg-[#E6C212]/10 text-[#E6C212] text-xs font-medium"
                                                     >
                                                         {skill}
                                                     </span>
@@ -155,7 +155,7 @@ export default function RoadmapGenerator() {
                                                 {step.resources.map((resource, j) => (
                                                     <span
                                                         key={j}
-                                                        className="px-2 py-0.5 rounded bg-accent/10 text-accent text-xs"
+                                                        className="px-2 py-0.5 rounded bg-surface-card text-text-secondary text-xs border border-border"
                                                     >
                                                         {resource}
                                                     </span>

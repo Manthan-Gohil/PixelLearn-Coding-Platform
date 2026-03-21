@@ -20,9 +20,9 @@ export default function ReferralTab({ user }: ReferralTabProps) {
     };
 
     return (
-        <div className="glass rounded-xl p-6">
+        <div className="fb-card rounded-xl p-6">
             <h3 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-primary-light" />
+                <Share2 className="w-5 h-5 text-[#E6C212]" />
                 Refer & Earn
             </h3>
             <p className="text-text-secondary text-sm mb-6">
@@ -39,7 +39,7 @@ export default function ReferralTab({ user }: ReferralTabProps) {
                     onClick={handleCopyReferral}
                     className={`px-4 py-3 rounded-lg font-medium text-sm transition-all ${copied
                         ? "bg-success/10 text-success border border-success/30"
-                        : "gradient-primary text-white hover:opacity-90"
+                        : "bg-[#E6C212] text-black hover:bg-[#f0d030]"
                         }`}
                 >
                     {copied ? (

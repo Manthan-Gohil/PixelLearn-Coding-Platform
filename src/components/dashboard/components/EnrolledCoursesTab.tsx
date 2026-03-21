@@ -15,7 +15,7 @@ interface EnrolledCoursesTabProps {
 export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, setActiveTab }: EnrolledCoursesTabProps) {
     if (enrolledCourses.length === 0) {
         return (
-            <div className="glass rounded-xl p-12 text-center">
+            <div className="fb-card rounded-xl p-12 text-center">
                 <BookOpen className="w-12 h-12 text-text-muted mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-text-primary mb-2">
                     No courses enrolled yet
@@ -25,7 +25,7 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                 </p>
                 <button
                     onClick={() => setActiveTab("explore")}
-                    className="px-6 py-2 rounded-lg gradient-primary text-white font-medium"
+                    className="fb-btn-primary"
                 >
                     Explore Courses
                 </button>
@@ -41,18 +41,18 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                     <Link
                         key={course.id}
                         href={`/courses/${course.id}`}
-                        className="group glass rounded-xl p-5 flex items-center gap-5 hover:border-primary/20 transition-all"
+                        className="group fb-card rounded-xl p-5 flex items-center gap-5 hover:border-border-light transition-all"
                     >
-                        <div className="w-16 h-16 rounded-xl gradient-card flex items-center justify-center text-3xl shrink-0 border border-border">
+                        <div className="w-16 h-16 rounded-xl bg-[#0f0f0f] flex items-center justify-center text-3xl shrink-0 border border-border">
                             {getCategoryIcon(course.category)}
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-text-primary group-hover:text-primary-light transition-colors truncate">
+                                <h3 className="font-semibold text-text-primary group-hover:text-[#E6C212] transition-colors truncate">
                                     {course.title}
                                 </h3>
                                 {course.isPremium && (
-                                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold gradient-primary text-white shrink-0">
+                                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#E6C212] text-black shrink-0">
                                         PRO
                                     </span>
                                 )}
@@ -70,7 +70,7 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                             {/* Progress Bar */}
                             <div className="w-full bg-surface-hover rounded-full h-2">
                                 <div
-                                    className="h-2 rounded-full gradient-primary transition-all duration-500"
+                                    className="h-2 rounded-full bg-[#E6C212] transition-all duration-500"
                                     style={{
                                         width: `${progress.percentage}%`,
                                     }}
@@ -78,14 +78,14 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                             </div>
                         </div>
                         <div className="text-right shrink-0">
-                            <div className="text-lg font-bold text-text-primary">
+                            <div className="text-lg font-bold text-[#E6C212] fb-mono">
                                 {progress.percentage}%
                             </div>
                             <div className="text-xs text-text-muted">
                                 complete
                             </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-primary-light transition-colors shrink-0" />
+                        <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-[#E6C212] transition-colors shrink-0" />
                     </Link>
                 );
             })}

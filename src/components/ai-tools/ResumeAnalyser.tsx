@@ -297,11 +297,11 @@ export default function ResumeAnalyser() {
 
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl p-6 mb-6">
+            <div className="fb-card rounded-xl p-6 mb-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-                            <FileText className="w-6 h-6 text-primary-light" />
+                            <FileText className="w-6 h-6 text-[#E6C212]" />
                             AI Resume Analyzer
                         </h2>
                         <p className="text-sm text-text-secondary">
@@ -309,7 +309,7 @@ export default function ResumeAnalyser() {
                         </p>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
-                        <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border/60 text-text-secondary font-medium hover:border-primary/50 hover:text-primary-light active:scale-95 transition-all duration-150 text-sm cursor-pointer select-none">
+                        <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border/60 text-text-secondary font-medium hover:border-[#E6C212]/50 hover:text-[#E6C212] active:scale-95 transition-all duration-150 text-sm cursor-pointer select-none">
                             <Upload className="w-4 h-4" />
                             {resumeFile ? (
                                 <span className="flex items-center gap-1.5">
@@ -322,7 +322,7 @@ export default function ResumeAnalyser() {
                         <button
                             onClick={handleResumeAnalysis}
                             disabled={isLoading || !resumeText || isParsing}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-lg gradient-primary text-white font-medium hover:opacity-90 active:scale-95 active:brightness-90 disabled:opacity-50 transition-all duration-150 shadow-lg shadow-primary/20 select-none"
+                            className="fb-btn-primary disabled:opacity-50"
                         >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
                             {isLoading ? "Analyzing..." : "Analyze Resume"}
@@ -330,7 +330,7 @@ export default function ResumeAnalyser() {
                         {resumeResult && (
                             <button
                                 onClick={downloadReport}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-primary/40 text-primary-light font-medium hover:bg-primary/10 active:scale-95 transition-all duration-150 text-sm select-none"
+                                className="fb-btn-outline text-sm px-4 py-2.5"
                             >
                                 <Download className="w-4 h-4" />
                                 Download Report
@@ -342,7 +342,7 @@ export default function ResumeAnalyser() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-320px)] min-h-150">
                 {/* Left Side: Report */}
-                <div className="glass rounded-2xl overflow-hidden flex flex-col border border-border/50">
+                <div className="fb-card rounded-2xl overflow-hidden flex flex-col border border-border/50">
                     <div className="p-4 border-b border-border/50 bg-surface-alt/50 flex items-center justify-between">
                         <h3 className="font-semibold text-text-primary">Analysis Report</h3>
                         {resumeResult && (
@@ -364,7 +364,7 @@ export default function ResumeAnalyser() {
                             <div className="flex flex-col items-center justify-center h-full text-center p-8">
                                 {isParsing ? (
                                     <div className="flex flex-col items-center gap-4">
-                                        <Loader2 className="w-10 h-10 text-primary-light animate-spin" />
+                                        <Loader2 className="w-10 h-10 text-[#E6C212] animate-spin" />
                                         <h4 className="text-lg font-semibold text-text-primary animate-pulse">
                                             Extracting your real data...
                                         </h4>
@@ -372,7 +372,7 @@ export default function ResumeAnalyser() {
                                 ) : analysisStep > 0 ? (
                                     <div className="space-y-6 animate-pulse w-full max-w-sm">
                                         <div className="flex flex-col items-center gap-4">
-                                            <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+                                            <div className="w-16 h-16 rounded-full border-4 border-[#E6C212]/20 border-t-[#E6C212] animate-spin" />
                                             <h4 className="text-lg font-semibold text-text-primary text-center">
                                                 {analysisStep === AI_ANALYSIS_STEPS.verify && "Verifying Document Integrity..."}
                                                 {analysisStep === AI_ANALYSIS_STEPS.synthesize && "Synthesizing Professional Profile..."}
@@ -380,15 +380,15 @@ export default function ResumeAnalyser() {
                                             </h4>
                                         </div>
                                         <div className="space-y-2">
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.verify ? 'w-1/3' : 'w-0'}`} />
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.synthesize ? 'w-2/3' : 'w-0'}`} />
-                                            <div className={`h-2 rounded-full transition-all duration-500 bg-primary ${analysisStep >= AI_ANALYSIS_STEPS.generate ? 'w-full' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-[#E6C212] ${analysisStep >= AI_ANALYSIS_STEPS.verify ? 'w-1/3' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-[#E6C212] ${analysisStep >= AI_ANALYSIS_STEPS.synthesize ? 'w-2/3' : 'w-0'}`} />
+                                            <div className={`h-2 rounded-full transition-all duration-500 bg-[#E6C212] ${analysisStep >= AI_ANALYSIS_STEPS.generate ? 'w-full' : 'w-0'}`} />
                                         </div>
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                                            <Brain className="w-10 h-10 text-primary-light opacity-50" />
+                                        <div className="w-20 h-20 rounded-full bg-[#E6C212]/10 flex items-center justify-center mb-4">
+                                            <Brain className="w-10 h-10 text-[#E6C212] opacity-50" />
                                         </div>
                                         <h4 className="text-lg font-semibold text-text-primary mb-2">Ready for Analysis</h4>
                                         <p className="text-sm text-text-secondary max-w-sm">
@@ -405,7 +405,7 @@ export default function ResumeAnalyser() {
                                         <h4 className={`text-2xl font-bold ${resumeResult.overall_score >= 80 ? 'text-success' : 'text-warning'}`}>
                                             {resumeResult.overall_feedback}
                                         </h4>
-                                        <div className="px-3 py-1 rounded-full bg-primary/10 text-primary-light text-xs font-bold uppercase tracking-wider">
+                                        <div className="px-3 py-1 rounded-full bg-[#E6C212]/10 text-[#E6C212] text-xs font-bold uppercase tracking-wider">
                                             Score: {resumeResult.overall_score}/100
                                         </div>
                                     </div>
@@ -422,7 +422,7 @@ export default function ResumeAnalyser() {
                                             </div>
                                             <div className="w-full bg-border/30 h-1.5 rounded-full mb-3">
                                                 <div
-                                                    className="h-full rounded-full gradient-primary"
+                                                    className="h-full rounded-full bg-[#E6C212]"
                                                     style={{ width: `${data.score}%` }}
                                                 />
                                             </div>
@@ -494,13 +494,13 @@ export default function ResumeAnalyser() {
                                 {resumeResult.focus_areas && resumeResult.focus_areas.length > 0 && (
                                     <div>
                                         <h5 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
-                                            <Sparkles className="w-4 h-4 text-primary-light" />
+                                            <Sparkles className="w-4 h-4 text-[#E6C212]" />
                                             Where to Focus Next
                                         </h5>
                                         <div className="space-y-3">
                                             {resumeResult.focus_areas.map((area, i) => (
-                                                <div key={i} className="p-4 rounded-xl border border-primary/20 bg-primary/5">
-                                                    <p className="text-sm font-bold text-primary-light mb-2">{area.area}</p>
+                                                <div key={i} className="p-4 rounded-xl border border-[#E6C212]/20 bg-[#E6C212]/5">
+                                                    <p className="text-sm font-bold text-[#E6C212] mb-2">{area.area}</p>
                                                     <p className="text-[11px] text-text-secondary mb-2 leading-relaxed">
                                                         <span className="font-semibold text-text-primary">Why: </span>{area.why}
                                                     </p>
@@ -517,19 +517,19 @@ export default function ResumeAnalyser() {
                                 {resumeResult.action_plan && resumeResult.action_plan.length > 0 && (
                                     <div>
                                         <h5 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
-                                            <Rocket className="w-4 h-4 text-primary-light" />
+                                            <Rocket className="w-4 h-4 text-[#E6C212]" />
                                             Your Action Plan
                                         </h5>
-                                        <div className="relative pl-4 border-l-2 border-primary/30 space-y-4">
+                                        <div className="relative pl-4 border-l-2 border-[#E6C212]/30 space-y-4">
                                             {resumeResult.action_plan.map((step, i) => (
                                                 <div key={i} className="relative">
-                                                    <div className="absolute -left-5.25 w-4 h-4 rounded-full bg-primary/20 border-2 border-primary/60 flex items-center justify-center">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary-light" />
+                                                    <div className="absolute -left-5.25 w-4 h-4 rounded-full bg-[#E6C212]/20 border-2 border-[#E6C212]/60 flex items-center justify-center">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#E6C212]" />
                                                     </div>
                                                     <div className="p-3 rounded-xl bg-surface-alt/30 border border-border/30">
                                                         <div className="flex items-center justify-between gap-2 mb-1">
                                                             <p className="text-xs font-semibold text-text-primary">{step.title}</p>
-                                                            <span className="shrink-0 px-2 py-0.5 rounded-full bg-primary/10 text-primary-light text-[10px] font-medium">{step.timeframe}</span>
+                                                            <span className="shrink-0 px-2 py-0.5 rounded-full bg-[#E6C212]/10 text-[#E6C212] text-[10px] font-medium">{step.timeframe}</span>
                                                         </div>
                                                         <p className="text-[11px] text-text-secondary leading-relaxed">{step.action}</p>
                                                     </div>
@@ -540,15 +540,15 @@ export default function ResumeAnalyser() {
                                 )}
 
                                 {/* Tips for Improvement */}
-                                <div className="p-6 rounded-2xl bg-linear-to-br from-primary/10 to-accent/10 border border-primary/20">
+                                <div className="p-6 rounded-2xl bg-[#0f0f0f] border border-border-light">
                                     <h5 className="text-sm font-bold text-text-primary mb-4 flex items-center gap-2">
-                                        <Sparkles className="w-4 h-4 text-primary-light" />
+                                        <Sparkles className="w-4 h-4 text-[#E6C212]" />
                                         Pro Tips to Master Your Resume
                                     </h5>
                                     <div className="space-y-4">
                                         {resumeResult.tips_for_improvement.map((tip, i) => (
                                             <div key={i} className="flex gap-4">
-                                                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary-light shrink-0">
+                                                <div className="w-6 h-6 rounded-full bg-[#E6C212]/20 flex items-center justify-center text-[10px] font-bold text-[#E6C212] shrink-0">
                                                     {String(i + 1).padStart(2, "0")}
                                                 </div>
                                                 <p className="text-sm text-text-secondary">{tip}</p>
@@ -561,7 +561,7 @@ export default function ResumeAnalyser() {
                                 {resumeResult.projects && resumeResult.projects.length > 0 && (
                                     <div>
                                         <h5 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
-                                            <Brain className="w-4 h-4 text-primary-light" />
+                                            <Brain className="w-4 h-4 text-[#E6C212]" />
                                             Projects Deep Dive
                                         </h5>
                                         <div className="space-y-3">
@@ -573,7 +573,7 @@ export default function ResumeAnalyser() {
                                                     </div>
                                                     <div className="flex flex-wrap gap-1.5 mb-2">
                                                         {proj.tech.map((t, j) => (
-                                                            <span key={j} className="px-2 py-0.5 rounded-full bg-primary/10 text-primary-light text-[10px] font-medium">{t}</span>
+                                                            <span key={j} className="px-2 py-0.5 rounded-full bg-[#E6C212]/10 text-[#E6C212] text-[10px] font-medium">{t}</span>
                                                         ))}
                                                     </div>
                                                     <p className="text-xs text-text-secondary leading-relaxed">{proj.comment}</p>
@@ -587,7 +587,7 @@ export default function ResumeAnalyser() {
                                 {resumeResult.internships && resumeResult.internships.length > 0 && (
                                     <div>
                                         <h5 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
-                                            <Rocket className="w-4 h-4 text-primary-light" />
+                                            <Rocket className="w-4 h-4 text-[#E6C212]" />
                                             Internship Breakdown
                                         </h5>
                                         <div className="space-y-3">
@@ -631,7 +631,7 @@ export default function ResumeAnalyser() {
 
                 {/* Right Side: Preview */}
                 <div
-                    className="glass rounded-2xl overflow-hidden flex flex-col border border-border/50"
+                    className="fb-card rounded-2xl overflow-hidden flex flex-col border border-border/50"
                     onMouseEnter={() => { document.body.style.overflow = 'hidden'; }}
                     onMouseLeave={() => { document.body.style.overflow = ''; }}
                 >

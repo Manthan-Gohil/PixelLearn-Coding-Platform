@@ -44,12 +44,12 @@ function CoursesContent() {
       containerClassName="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
     >
       <div ref={headerRef} className="mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3 animate-shimmer">
-          <Code2 className="w-4 h-4 text-primary-light animate-float-subtle" />
-          <span className="text-sm font-medium text-primary-light">Learn by Building</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-border-light mb-3 animate-shimmer">
+          <Code2 className="w-4 h-4 text-[#E6C212] animate-float-subtle" />
+          <span className="text-sm font-medium text-[#E6C212]">Learn by Building</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-          Explore <span className="gradient-text">Courses</span>
+          Explore <span className="text-[#E6C212]">Courses</span>
         </h1>
         <p className="text-text-secondary text-lg">
           Master programming with hands-on, practice-first courses
@@ -68,8 +68,8 @@ function CoursesContent() {
         searchRef={searchRef}
       />
 
-      <div className="mb-4 text-sm text-text-muted animate-fade-in flex items-center gap-2">
-        <Sparkles className="w-3 h-3 text-primary-light" />
+      <div className="mb-4 text-sm text-text-muted animate-fade-in flex items-center gap-2 fb-mono">
+        <Sparkles className="w-3 h-3 text-[#E6C212]" />
         Showing {filteredCourses.length} course{filteredCourses.length !== 1 ? "s" : ""}
       </div>
 

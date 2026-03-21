@@ -50,11 +50,11 @@ export default function DashboardContent() {
             {/* Header */}
             <div ref={headerRef} className="mb-8">
                 <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-                    Welcome back, <span className="gradient-text">{user.name}</span>
+                    Welcome back, <span className="text-[#E6C212]">{user.name}</span>
                 </h1>
                 <p className="text-text-secondary">
                     Continue your learning journey. You&apos;re on a{" "}
-                    <span className="text-warning font-semibold">{user.streak}-day</span> streak!
+                    <span className="text-[#E6C212] font-semibold">{user.streak}-day</span> streak!
                     <span className="inline-block ml-1 animate-float-subtle">🔥</span>
                 </p>
             </div>

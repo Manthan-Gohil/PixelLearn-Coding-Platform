@@ -29,9 +29,9 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                 return (
                     <div
                         key={plan.id}
-                        className={`plan-card relative glass rounded-2xl p-8 transition-all duration-300 card-hover-glow spotlight-card ${plan.isPopular
-                            ? "border-primary/40 shadow-2xl shadow-primary/15 scale-105 z-10 animate-glow-pulse"
-                            : "hover:border-primary/20"
+                        className={`plan-card relative fb-card rounded-2xl p-8 transition-all duration-300 card-hover-glow spotlight-card ${plan.isPopular
+                            ? "border-[#E6C212]/60 shadow-2xl shadow-black/50 scale-105 z-10 animate-glow-pulse"
+                            : "hover:border-border-light"
                             }`}
                         onMouseMove={(e) => {
                             const rect = e.currentTarget.getBoundingClientRect();
@@ -40,14 +40,14 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                         }}
                     >
                         {plan.isPopular && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full gradient-primary text-white text-xs font-semibold shadow-lg shadow-primary/25 animate-shimmer">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#E6C212] text-black text-xs font-semibold shadow-lg shadow-black/40 animate-shimmer">
                                 Most Popular
                             </div>
                         )}
 
                         <div className="flex items-center gap-2 mb-2">
                             {plan.price > 0 ? (
-                                <Crown className="w-5 h-5 text-primary-light animate-float-subtle" />
+                                <Crown className="w-5 h-5 text-[#E6C212] animate-float-subtle" />
                             ) : (
                                 <Zap className="w-5 h-5 text-text-muted" />
                             )}
@@ -88,7 +88,7 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                                     style={{ animationDelay: `${0.5 + i * 0.05}s` }}
                                 >
                                     <Check
-                                        className={`w-4 h-4 mt-0.5 shrink-0 ${plan.isPopular ? "text-primary-light" : "text-success"
+                                        className={`w-4 h-4 mt-0.5 shrink-0 ${plan.isPopular ? "text-[#E6C212]" : "text-success"
                                             }`}
                                     />
                                     {feature}
@@ -106,8 +106,8 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                                     updateSubscription(plan.price > 0 ? "pro" : "free")
                                 }
                                 className={`block w-full text-center py-3 rounded-xl font-semibold transition-all hover-bounce ${plan.isPopular
-                                    ? "gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/25"
-                                    : "border border-border text-text-primary hover:bg-surface-hover hover:border-primary/30"
+                                    ? "bg-[#E6C212] text-black hover:bg-[#f0d030]"
+                                    : "fb-btn-outline w-full justify-center py-3"
                                     }`}
                             >
                                 {plan.price === 0 ? "Get Started Free" : "Subscribe Now"}
