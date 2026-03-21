@@ -1,4 +1,8 @@
 import prisma from "../src/lib/prisma";
+import {
+  JS_COURSE_ID as JS_COURSE_ID_FROM_MODULE,
+  seedJsCourse as seedJsCourseFromModule,
+} from "./seeds/seed-js";
 
 type TestCase = {
   input: string;
@@ -21,7 +25,7 @@ type SeedExercise = {
   testCases: TestCase[];
   xpReward: number;
   difficulty: "easy" | "medium" | "hard";
-  language: "cpp" | "html" | "css";
+  language: "cpp" | "html" | "css" | "javascript";
   order: number;
 };
 
@@ -5883,6 +5887,664 @@ async function seedCssCourse() {
   );
 }
 
+const JS_COURSE = {
+  id: "javascript-complete-mastery",
+  title: "JavaScript: Complete Guide from Beginner to Advanced",
+  shortDescription:
+    "Master JavaScript from basics to modern async patterns with practical exercises.",
+  description:
+    "Learn JavaScript end-to-end: variables, operators, conditionals, loops, functions, arrays and objects, DOM manipulation, events, asynchronous JavaScript with promises and async/await, ES6+ features, and application-level coding patterns. Each chapter combines detailed theory and hands-on exercises so learners can write production-style JavaScript confidently.",
+  category: "Web Development",
+  difficulty: "beginner" as const,
+  thumbnail:
+    "https://images.unsplash.com/photo-1484417894907-623942c8ee29?auto=format&fit=crop&q=80&w=800",
+  isPremium: false,
+  estimatedHours: 70,
+  enrolledCount: 0,
+  rating: 4.9,
+  tags: ["JavaScript", "Web Development", "Frontend", "DOM", "Async", "ES6+"],
+};
+
+const jsChapters: SeedChapter[] = [
+  {
+    id: "js-ch-01-fundamentals",
+    title: "JavaScript Fundamentals",
+    description:
+      "Learn core syntax, variables, data types, and operators with confidence.",
+    order: 1,
+    exercises: [
+      {
+        id: "js-ex-01-01-variables-types",
+        title: "Variables and Data Types",
+        description: "Use let/const and print values with template literals.",
+        theory:
+          "### Core Data Basics\nJavaScript supports primitive types like string, number, boolean, null, undefined, and symbol.\n\nUse `const` when value should not be reassigned; use `let` for mutable variables.\n\nTemplate literals (`${...}`) provide readable string interpolation.",
+        problemStatement:
+          "Declare `const name = 'Alex'` and `let score = 95`, then print: `Alex scored 95`.",
+        inputExample: "",
+        outputExample: "Alex scored 95",
+        hints: ["Use const and let", "Use template literal", "Use console.log"],
+        constraints: ["Must use template literals"],
+        starterCode: "// TODO",
+        solution:
+          "const name = 'Alex';\nlet score = 95;\nconsole.log(`${name} scored ${score}`);",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Alex scored 95",
+            description: "exact output",
+          },
+          {
+            input: "",
+            expectedOutput: "uses const and let",
+            description: "declarations",
+          },
+          {
+            input: "",
+            expectedOutput: "uses template literal",
+            description: "string interpolation",
+          },
+        ],
+        xpReward: 60,
+        difficulty: "easy",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-01-02-operators-conditionals",
+        title: "Operators and Conditionals",
+        description: "Evaluate conditions and branch with if/else.",
+        theory:
+          "### Decisions in JavaScript\nUse comparison operators (`===`, `!==`, `>`, `<`) with if/else for control flow. Prefer strict equality `===` to avoid implicit type coercion issues.",
+        problemStatement:
+          "Given `const age = 20`, print `Adult` if age >= 18 else print `Minor`.",
+        inputExample: "",
+        outputExample: "Adult",
+        hints: [
+          "Use if (age >= 18)",
+          "Use strict comparisons",
+          "Print one of two messages",
+        ],
+        constraints: ["Must use if/else"],
+        starterCode: "const age = 20;\n// TODO",
+        solution:
+          "const age = 20;\nif (age >= 18) console.log('Adult');\nelse console.log('Minor');",
+        testCases: [
+          { input: "", expectedOutput: "Adult", description: "age 20" },
+          {
+            input: "",
+            expectedOutput: "if else structure used",
+            description: "control flow",
+          },
+          {
+            input: "",
+            expectedOutput: "single output",
+            description: "deterministic result",
+          },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+  {
+    id: "js-ch-02-functions-loops",
+    title: "Functions and Loops",
+    description:
+      "Write reusable logic and iterate data with loops and modern function syntax.",
+    order: 2,
+    exercises: [
+      {
+        id: "js-ex-02-01-functions",
+        title: "Create and Use Functions",
+        description: "Define a function with parameters and return value.",
+        theory:
+          "### Function Fundamentals\nFunctions encapsulate reusable logic.\n\nGood function design:\n- clear input parameters\n- predictable return value\n- single responsibility\n\nArrow functions are concise for small utilities.",
+        problemStatement:
+          "Write a function `multiply(a, b)` that returns product. Print result of multiply(6, 7).",
+        inputExample: "6, 7",
+        outputExample: "42",
+        hints: [
+          "Return a * b",
+          "Call function and log result",
+          "Use either function or arrow syntax",
+        ],
+        constraints: ["Must return value from function"],
+        starterCode: "// TODO",
+        solution:
+          "function multiply(a, b) { return a * b; }\nconsole.log(multiply(6, 7));",
+        testCases: [
+          { input: "", expectedOutput: "42", description: "6x7" },
+          {
+            input: "",
+            expectedOutput: "function returns value",
+            description: "return behavior",
+          },
+          { input: "", expectedOutput: "result logged", description: "output" },
+        ],
+        xpReward: 80,
+        difficulty: "easy",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-02-02-loops-accumulator",
+        title: "Loop and Accumulate",
+        description: "Use loop to calculate sum of numbers 1..10.",
+        theory:
+          "### Iteration Patterns\nFor loops are useful when iteration count is known.\nAccumulator pattern:\n1. Initialize total\n2. Add in each iteration\n3. Use final total",
+        problemStatement:
+          "Use a for loop to compute and print sum of numbers from 1 to 10.",
+        inputExample: "",
+        outputExample: "55",
+        hints: [
+          "Initialize total = 0",
+          "Loop from 1 to 10 inclusive",
+          "Add each i to total",
+        ],
+        constraints: ["Must use for loop"],
+        starterCode: "// TODO",
+        solution:
+          "let total = 0;\nfor (let i = 1; i <= 10; i++) total += i;\nconsole.log(total);",
+        testCases: [
+          { input: "", expectedOutput: "55", description: "sum 1..10" },
+          {
+            input: "",
+            expectedOutput: "for loop used",
+            description: "loop requirement",
+          },
+          {
+            input: "",
+            expectedOutput: "accumulator pattern",
+            description: "logic",
+          },
+        ],
+        xpReward: 90,
+        difficulty: "medium",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+  {
+    id: "js-ch-03-arrays-objects",
+    title: "Arrays and Objects",
+    description:
+      "Manipulate collections and object data with modern array methods.",
+    order: 3,
+    exercises: [
+      {
+        id: "js-ex-03-01-array-methods",
+        title: "Filter and Map",
+        description: "Transform arrays using functional methods.",
+        theory:
+          "### Array Method Workflow\n`filter` keeps matching elements. `map` transforms each element. Chaining them produces concise readable logic.",
+        problemStatement:
+          "Given [1,2,3,4,5,6], filter even numbers then square them. Print resulting array.",
+        inputExample: "[1,2,3,4,5,6]",
+        outputExample: "[4,16,36]",
+        hints: [
+          "Use filter n % 2 === 0",
+          "Then map n => n * n",
+          "Log final array",
+        ],
+        constraints: ["Must use filter and map"],
+        starterCode: "const nums = [1,2,3,4,5,6];\n// TODO",
+        solution:
+          "const nums = [1,2,3,4,5,6];\nconst result = nums.filter(n => n % 2 === 0).map(n => n * n);\nconsole.log(result);",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "[4,16,36]",
+            description: "even squares",
+          },
+          {
+            input: "",
+            expectedOutput: "uses filter and map",
+            description: "method usage",
+          },
+          {
+            input: "",
+            expectedOutput: "result array logged",
+            description: "output",
+          },
+        ],
+        xpReward: 100,
+        difficulty: "medium",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-03-02-objects-destructuring",
+        title: "Object Access and Destructuring",
+        description: "Extract fields from objects cleanly.",
+        theory:
+          "### Working with Objects\nObjects model key-value data structures. Destructuring simplifies extraction: `const {name, role} = user;`\n\nThis improves readability in component and API code.",
+        problemStatement:
+          "From `{ name: 'Sam', role: 'Developer', exp: 3 }`, destructure and print name and role on separate lines.",
+        inputExample: "user object",
+        outputExample: "Sam\nDeveloper",
+        hints: [
+          "Use const { name, role } = user",
+          "Print each value",
+          "Keep exp unused",
+        ],
+        constraints: ["Must use destructuring"],
+        starterCode:
+          "const user = { name: 'Sam', role: 'Developer', exp: 3 };\n// TODO",
+        solution:
+          "const user = { name: 'Sam', role: 'Developer', exp: 3 };\nconst { name, role } = user;\nconsole.log(name);\nconsole.log(role);",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Sam\nDeveloper",
+            description: "name and role",
+          },
+          {
+            input: "",
+            expectedOutput: "destructuring used",
+            description: "syntax",
+          },
+          {
+            input: "",
+            expectedOutput: "line-separated output",
+            description: "format",
+          },
+        ],
+        xpReward: 100,
+        difficulty: "medium",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+  {
+    id: "js-ch-04-dom-events",
+    title: "DOM Manipulation and Events",
+    description:
+      "Interact with page elements, update content, and respond to user actions.",
+    order: 4,
+    exercises: [
+      {
+        id: "js-ex-04-01-dom-select-update",
+        title: "Select and Update DOM Content",
+        description: "Read DOM node and update text safely.",
+        theory:
+          "### DOM Basics\nUse `document.querySelector` to find elements with CSS selectors.\nUpdate with `textContent` for safe plain-text insertion.",
+        problemStatement:
+          "Select element with id `status` and set its textContent to `Loaded successfully`.",
+        inputExample: "<p id='status'></p>",
+        outputExample: "Loaded successfully",
+        hints: [
+          "Use #status selector",
+          "Assign textContent",
+          "Run after DOM exists",
+        ],
+        constraints: ["Must use querySelector"],
+        starterCode: "// TODO",
+        solution:
+          "const el = document.querySelector('#status');\nif (el) el.textContent = 'Loaded successfully';",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "status text updated",
+            description: "dom update",
+          },
+          {
+            input: "",
+            expectedOutput: "querySelector used",
+            description: "selector",
+          },
+          {
+            input: "",
+            expectedOutput: "safe textContent usage",
+            description: "content safety",
+          },
+        ],
+        xpReward: 110,
+        difficulty: "medium",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-04-02-click-event",
+        title: "Handle Button Click Event",
+        description: "Attach event listener and update counter state in UI.",
+        theory:
+          "### Event-driven UI\n`addEventListener` registers behavior for user events.\nCommon pattern:\n- read current value\n- compute next state\n- update DOM\n\nThis pattern underpins interactive web apps.",
+        problemStatement:
+          "On each click of button `#incBtn`, increment numeric text inside `#count`.",
+        inputExample: "button + span",
+        outputExample: "count increases 1 per click",
+        hints: [
+          "Get both elements",
+          "Parse current count with Number",
+          "Update text after increment",
+        ],
+        constraints: ["Must use click event listener"],
+        starterCode: "// TODO",
+        solution:
+          "const btn = document.querySelector('#incBtn');\nconst countEl = document.querySelector('#count');\nif (btn && countEl) {\n  btn.addEventListener('click', () => {\n    const curr = Number(countEl.textContent || '0');\n    countEl.textContent = String(curr + 1);\n  });\n}",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "listener attached to #incBtn",
+            description: "event binding",
+          },
+          {
+            input: "",
+            expectedOutput: "count increments by one",
+            description: "state update",
+          },
+          {
+            input: "",
+            expectedOutput: "updates #count text",
+            description: "dom write",
+          },
+        ],
+        xpReward: 120,
+        difficulty: "medium",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+  {
+    id: "js-ch-05-async-js",
+    title: "Asynchronous JavaScript",
+    description:
+      "Understand promises, async/await, and fetching data from APIs.",
+    order: 5,
+    exercises: [
+      {
+        id: "js-ex-05-01-promise-basics",
+        title: "Create and Resolve a Promise",
+        description: "Build a basic Promise and consume it with then().",
+        theory:
+          "### Async Building Blocks\nA Promise represents future completion.\nStates: pending -> fulfilled or rejected.\nUse `.then` for success and `.catch` for failures.",
+        problemStatement:
+          "Create function `getGreeting()` returning Promise resolved with `Hello Async`, then print resolved value.",
+        inputExample: "",
+        outputExample: "Hello Async",
+        hints: [
+          "Return new Promise",
+          "Call resolve with string",
+          "Use then to log",
+        ],
+        constraints: ["Must use Promise and then"],
+        starterCode: "// TODO",
+        solution:
+          "function getGreeting() {\n  return new Promise(resolve => resolve('Hello Async'));\n}\ngetGreeting().then(msg => console.log(msg));",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "Hello Async",
+            description: "resolved output",
+          },
+          {
+            input: "",
+            expectedOutput: "promise returned",
+            description: "api shape",
+          },
+          {
+            input: "",
+            expectedOutput: "then handler used",
+            description: "consumption",
+          },
+        ],
+        xpReward: 120,
+        difficulty: "medium",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-05-02-async-await-fetch",
+        title: "Fetch Data with Async/Await",
+        description: "Use fetch and await JSON parsing with error handling.",
+        theory:
+          "### Modern Async Flow\n`async/await` makes async code read like sync code.\nWrap await calls in try/catch for robust error handling.",
+        problemStatement:
+          "Write async function that fetches `https://jsonplaceholder.typicode.com/todos/1`, parses JSON, and prints `title`.",
+        inputExample: "remote API endpoint",
+        outputExample: "delectus aut autem",
+        hints: ["await fetch(url)", "await res.json()", "log data.title"],
+        constraints: ["Must use async/await and try/catch"],
+        starterCode: "// TODO",
+        solution:
+          "async function run() {\n  try {\n    const res = await fetch('https://jsonplaceholder.typicode.com/todos/1');\n    const data = await res.json();\n    console.log(data.title);\n  } catch (e) {\n    console.log('Request failed');\n  }\n}\nrun();",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "title printed from response",
+            description: "data output",
+          },
+          {
+            input: "",
+            expectedOutput: "uses await fetch + json",
+            description: "await flow",
+          },
+          {
+            input: "",
+            expectedOutput: "try/catch included",
+            description: "error handling",
+          },
+        ],
+        xpReward: 150,
+        difficulty: "hard",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+  {
+    id: "js-ch-06-es6-capstone",
+    title: "ES6+ Features and Final Project",
+    description:
+      "Apply modern JavaScript patterns and complete a practical mini-project.",
+    order: 6,
+    exercises: [
+      {
+        id: "js-ex-06-01-es6-features",
+        title: "Spread, Rest, and Arrow Functions",
+        description: "Use ES6 syntax for concise and expressive code.",
+        theory:
+          "### ES6+ Productivity Tools\n- Rest parameters gather variable arguments\n- Spread syntax expands arrays/objects\n- Arrow functions reduce boilerplate\n\nTogether they simplify modern JS codebases.",
+        problemStatement:
+          "Create function `sum(...nums)` using rest + reduce; clone array `[1,2,3]` with spread and append 4; print both results.",
+        inputExample: "nums and array operations",
+        outputExample: "10\n[1,2,3,4]",
+        hints: ["Use ...nums param", "Use reduce for total", "Use [...arr, 4]"],
+        constraints: ["Must use rest and spread"],
+        starterCode: "// TODO",
+        solution:
+          "const sum = (...nums) => nums.reduce((a, b) => a + b, 0);\nconst arr = [1, 2, 3];\nconst next = [...arr, 4];\nconsole.log(sum(1, 2, 3, 4));\nconsole.log(next);",
+        testCases: [
+          { input: "", expectedOutput: "10", description: "sum output" },
+          {
+            input: "",
+            expectedOutput: "[1,2,3,4]",
+            description: "spread result",
+          },
+          {
+            input: "",
+            expectedOutput: "uses rest + spread syntax",
+            description: "feature usage",
+          },
+        ],
+        xpReward: 130,
+        difficulty: "medium",
+        language: "javascript",
+        order: 1,
+      },
+      {
+        id: "js-ex-06-02-final-project-todo-logic",
+        title: "Final Project: Todo App Core Logic",
+        description:
+          "Implement core add/toggle/remove logic for a todo app state manager.",
+        theory:
+          "### State Management Mindset\nEven simple apps need predictable state transitions.\nA robust pattern is immutable updates:\n- Add task by returning new array\n- Toggle by mapping and changing only target item\n- Remove by filtering by id\n\nThis pattern aligns with modern frameworks and avoids mutation bugs.",
+        problemStatement:
+          "Implement three functions: addTodo(list, text), toggleTodo(list, id), removeTodo(list, id). Each returns a new list. Use object shape `{ id, text, done }`.",
+        inputExample: "todo list array + operation calls",
+        outputExample: "correctly updated arrays for each operation",
+        hints: [
+          "Use Date.now() or incremental id for new todo",
+          "Use map for toggle",
+          "Use filter for remove",
+          "Avoid in-place mutation",
+        ],
+        constraints: [
+          "All functions must be pure (return new arrays)",
+          "Todo object must include id, text, done",
+        ],
+        starterCode:
+          "// TODO: implement addTodo, toggleTodo, removeTodo\n\nlet todos = [];\n",
+        solution:
+          "function addTodo(list, text) {\n  const todo = { id: Date.now(), text, done: false };\n  return [...list, todo];\n}\n\nfunction toggleTodo(list, id) {\n  return list.map(item => item.id === id ? { ...item, done: !item.done } : item);\n}\n\nfunction removeTodo(list, id) {\n  return list.filter(item => item.id !== id);\n}\n\nlet todos = [];\ntodos = addTodo(todos, 'Learn JavaScript');\nconst firstId = todos[0].id;\ntodos = toggleTodo(todos, firstId);\nconsole.log(todos[0].done);\ntodos = removeTodo(todos, firstId);\nconsole.log(todos.length);",
+        testCases: [
+          {
+            input: "",
+            expectedOutput: "addTodo appends new item",
+            description: "add behavior",
+          },
+          {
+            input: "",
+            expectedOutput: "toggleTodo flips done boolean",
+            description: "toggle behavior",
+          },
+          {
+            input: "",
+            expectedOutput: "removeTodo removes matching id",
+            description: "remove behavior",
+          },
+        ],
+        xpReward: 180,
+        difficulty: "hard",
+        language: "javascript",
+        order: 2,
+      },
+    ],
+  },
+];
+
+async function seedJsCourse() {
+  const totalXP = jsChapters
+    .flatMap((chapter) => chapter.exercises)
+    .reduce((sum, exercise) => sum + exercise.xpReward, 0);
+
+  const course = await prisma.course.upsert({
+    where: { id: JS_COURSE.id },
+    create: {
+      ...JS_COURSE,
+      totalXP,
+    },
+    update: {
+      title: JS_COURSE.title,
+      shortDescription: JS_COURSE.shortDescription,
+      description: JS_COURSE.description,
+      category: JS_COURSE.category,
+      difficulty: JS_COURSE.difficulty,
+      thumbnail: JS_COURSE.thumbnail,
+      isPremium: JS_COURSE.isPremium,
+      estimatedHours: JS_COURSE.estimatedHours,
+      enrolledCount: JS_COURSE.enrolledCount,
+      rating: JS_COURSE.rating,
+      tags: JS_COURSE.tags,
+      totalXP,
+    },
+  });
+
+  const chapterIds = jsChapters.map((chapter) => chapter.id);
+
+  await prisma.chapter.deleteMany({
+    where: {
+      courseId: course.id,
+      id: { notIn: chapterIds },
+    },
+  });
+
+  for (const chapter of jsChapters) {
+    await prisma.chapter.upsert({
+      where: { id: chapter.id },
+      create: {
+        id: chapter.id,
+        courseId: course.id,
+        title: chapter.title,
+        description: chapter.description,
+        order: chapter.order,
+        isPremium: false,
+      },
+      update: {
+        courseId: course.id,
+        title: chapter.title,
+        description: chapter.description,
+        order: chapter.order,
+        isPremium: false,
+      },
+    });
+
+    const exerciseIds = chapter.exercises.map((exercise) => exercise.id);
+
+    await prisma.exercise.deleteMany({
+      where: {
+        chapterId: chapter.id,
+        id: { notIn: exerciseIds },
+      },
+    });
+
+    for (const exercise of chapter.exercises) {
+      await prisma.exercise.upsert({
+        where: { id: exercise.id },
+        create: {
+          id: exercise.id,
+          chapterId: chapter.id,
+          courseId: course.id,
+          title: exercise.title,
+          description: exercise.description,
+          theory: exercise.theory,
+          problemStatement: exercise.problemStatement,
+          inputExample: exercise.inputExample,
+          outputExample: exercise.outputExample,
+          hints: exercise.hints,
+          constraints: exercise.constraints,
+          starterCode: exercise.starterCode,
+          solution: exercise.solution,
+          testCases: exercise.testCases,
+          xpReward: exercise.xpReward,
+          difficulty: exercise.difficulty,
+          language: exercise.language,
+          order: exercise.order,
+        },
+        update: {
+          chapterId: chapter.id,
+          courseId: course.id,
+          title: exercise.title,
+          description: exercise.description,
+          theory: exercise.theory,
+          problemStatement: exercise.problemStatement,
+          inputExample: exercise.inputExample,
+          outputExample: exercise.outputExample,
+          hints: exercise.hints,
+          constraints: exercise.constraints,
+          starterCode: exercise.starterCode,
+          solution: exercise.solution,
+          testCases: exercise.testCases,
+          xpReward: exercise.xpReward,
+          difficulty: exercise.difficulty,
+          language: exercise.language,
+          order: exercise.order,
+        },
+      });
+    }
+  }
+
+  console.log(
+    `Seeded ${course.title}: ${jsChapters.length} chapters, ${jsChapters.flatMap((c) => c.exercises).length} exercises`,
+  );
+}
+
 async function main() {
   console.log("Starting additive seed...");
   const retainedCourseIds = [
@@ -5890,6 +6552,7 @@ async function main() {
     CPP_COURSE.id,
     HTML_COURSE.id,
     CSS_COURSE.id,
+    JS_COURSE_ID_FROM_MODULE,
   ];
 
   const removedCourses = await prisma.course.deleteMany({
@@ -5908,6 +6571,7 @@ async function main() {
   await seedCppCourse();
   await seedHtmlCourse();
   await seedCssCourse();
+  await seedJsCourseFromModule();
   console.log("Seed completed successfully.");
 }
 
