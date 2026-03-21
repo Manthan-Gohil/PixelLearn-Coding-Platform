@@ -50,7 +50,7 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
   };
 
   return (
-    <StandardLayout particlesCount={15} containerClassName="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <StandardLayout particlesCount={15} flowblockTheme containerClassName="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         href="/courses"
         className="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary mb-6 transition-colors text-sm"

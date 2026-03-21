@@ -48,7 +48,7 @@ function AIToolsContent() {
 
     if (!isPro) {
         return (
-            <StandardLayout particlesCount={15} showFooter={false}>
+            <StandardLayout particlesCount={15} showFooter={false} flowblockTheme>
                 <div className="relative max-w-4xl mx-auto py-20 text-center">
                     <div className="glass rounded-2xl p-12 animate-glow-pulse">
                         <Lock className="w-16 h-16 text-primary-light mx-auto mb-6 animate-float-subtle" />
@@ -75,6 +75,7 @@ function AIToolsContent() {
     return (
         <StandardLayout
             particlesCount={15}
+            flowblockTheme
             containerClassName="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8"
         >
             {/* Header */}

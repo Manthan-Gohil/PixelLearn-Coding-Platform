@@ -1,16 +1,56 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Code2, BookOpen, Trophy, Brain, Shield, BarChart3 } from "lucide-react";
-import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function FeaturesSection() {
-    const sectionRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 40, duration: 0.7 });
-    const gridRef = useStaggerReveal<HTMLDivElement>(".feature-card", {
-        direction: "up",
-        distance: 40,
-        stagger: 0.1,
-        duration: 0.6,
-    });
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const headingRef = useRef<HTMLDivElement>(null);
+    const cardsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Heading reveal
+            gsap.fromTo(
+                headingRef.current,
+                { opacity: 0, y: 60 },
+                {
+                    opacity: 1, y: 0, duration: 0.9,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: headingRef.current,
+                        start: "top 85%",
+                        toggleActions: "play none none none",
+                    },
+                }
+            );
+
+            // Staggered card reveal
+            const cards = cardsRef.current?.querySelectorAll(".feature-card");
+            if (cards) {
+                gsap.fromTo(
+                    cards,
+                    { opacity: 0, y: 50, scale: 0.95 },
+                    {
+                        opacity: 1, y: 0, scale: 1, duration: 0.7,
+                        stagger: 0.12,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: cardsRef.current,
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
 
     const features = [
         {
@@ -18,87 +58,79 @@ export default function FeaturesSection() {
             title: "Interactive Code Editor",
             description:
                 "Write, run, and test code in our Monaco-based editor with syntax highlighting, auto-completion, and instant feedback.",
-            color: "text-primary-light",
-            bgColor: "bg-primary/10",
+            accent: "#67e8f9",
         },
         {
             icon: BookOpen,
             title: "Structured Courses",
             description:
                 "Learn through carefully designed courses with chapters and exercises that build progressively from beginner to advanced.",
-            color: "text-accent",
-            bgColor: "bg-accent/10",
+            accent: "#E6C212",
         },
         {
             icon: Trophy,
             title: "Progress Gamification",
             description:
                 "Earn XP, unlock badges, and maintain streaks. Track your growth with detailed analytics and professional dashboards.",
-            color: "text-warning",
-            bgColor: "bg-warning/10",
+            accent: "#fbbf24",
         },
         {
             icon: Brain,
             title: "AI Career Intelligence",
             description:
                 "Get personalized career guidance, resume analysis, and roadmap generation powered by advanced AI models.",
-            color: "text-success",
-            bgColor: "bg-success/10",
+            accent: "#4ade80",
         },
         {
             icon: Shield,
             title: "Secure Sandbox",
             description:
                 "Run code safely in our isolated execution environment. Support for Python, JavaScript, Java, C++, and more.",
-            color: "text-danger",
-            bgColor: "bg-danger/10",
+            accent: "#f87171",
         },
         {
             icon: BarChart3,
             title: "Learning Analytics",
             description:
                 "Visualize your progress with weekly activity charts, completion rates, and personalized insights.",
-            color: "text-primary",
-            bgColor: "bg-primary/10",
+            accent: "#a78bfa",
         },
     ];
 
     return (
-        <section className="py-24 relative">
-            <div className="absolute inset-0 bg-grid-pattern opacity-50" />
+        <section ref={sectionRef} className="py-28 relative fb-section-glow">
+            <div className="absolute inset-0 fb-dot-grid opacity-40" />
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div ref={sectionRef} className="text-center mb-16">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+                <div ref={headingRef} className="text-center mb-20 opacity-0">
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6">
                         Everything You Need to{" "}
-                        <span className="gradient-text">Level Up</span>
+                        <span className="text-[#E6C212]">Level Up</span>
                     </h2>
-                    <p className="text-text-secondary max-w-2xl mx-auto text-lg">
+                    <p className="fb-mono text-[15px] text-[#A1A1AA] max-w-2xl mx-auto leading-relaxed">
                         A complete platform designed for developers who want to learn by
                         building, not just watching.
                     </p>
                 </div>
 
-                <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature, i) => (
                         <div
                             key={i}
-                            className="feature-card group glass rounded-2xl p-6 hover:border-primary/20 transition-all duration-300 card-hover-glow spotlight-card"
-                            onMouseMove={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
-                                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-                            }}
+                            className="feature-card fb-card p-7 group cursor-default"
                         >
                             <div
-                                className={`w-12 h-12 rounded-xl ${feature.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 animate-float-subtle`}
-                                style={{ animationDelay: `${i * 0.5}s` }}
+                                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+                                style={{ backgroundColor: `${feature.accent}15` }}
                             >
-                                <feature.icon className={`w-6 h-6 ${feature.color}`} />
+                                <feature.icon
+                                    className="w-6 h-6"
+                                    style={{ color: feature.accent }}
+                                />
                             </div>
-                            <h3 className="text-lg font-semibold text-text-primary mb-2">
+                            <h3 className="text-lg font-semibold text-white mb-3">
                                 {feature.title}
                             </h3>
-                            <p className="text-sm text-text-secondary leading-relaxed">
+                            <p className="text-sm text-[#A1A1AA] leading-relaxed">
                                 {feature.description}
                             </p>
                         </div>

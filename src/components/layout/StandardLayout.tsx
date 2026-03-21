@@ -13,11 +13,12 @@ interface StandardLayoutProps {
     className?: string;
     containerClassName?: string;
     noContainer?: boolean;
+    flowblockTheme?: boolean;
 }
 
 /**
  * StandardLayout provides a consistent shell for most pages in PixelLearn.
- * It includes the Navbar, Footer, and standard background effects.
+ * When flowblockTheme is true, it wraps in a pure black Flowblock-style theme.
  */
 export default function StandardLayout({
     children,
@@ -26,8 +27,25 @@ export default function StandardLayout({
     particlesCount = 20,
     className = "",
     containerClassName = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
-    noContainer = false
+    noContainer = false,
+    flowblockTheme = false,
 }: StandardLayoutProps) {
+    if (flowblockTheme) {
+        return (
+            <main className={`min-h-screen flowblock-theme ${showNavbar ? "pt-18" : ""} ${className}`}>
+                {showNavbar && <Navbar flowblockMode />}
+
+                {noContainer ? children : (
+                    <div className={`relative ${containerClassName}`}>
+                        {children}
+                    </div>
+                )}
+
+                {showFooter && <Footer flowblockMode />}
+            </main>
+        );
+    }
+
     return (
         <main className={`min-h-screen bg-surface ${showNavbar ? 'pt-16' : ''} relative overflow-hidden ${className}`}>
             <GlowOrbs />

@@ -2,38 +2,38 @@
 
 /* ===== DARK THEME (default) ===== */
 @theme {
-  --color-primary: #6366f1;
-  --color-primary-dark: #4f46e5;
-  --color-primary-light: #818cf8;
-  --color-accent: #06b6d4;
-  --color-accent-dark: #0891b2;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-primary: #E6C212;
+  --color-primary-dark: #c9a810;
+  --color-primary-light: #E6C212;
+  --color-accent: #00FFFF;
+  --color-accent-dark: #00cccc;
+  --color-success: #4ade80;
+  --color-warning: #E6C212;
   --color-danger: #ef4444;
-  --color-surface: #0f1729;
-  --color-surface-alt: #1a2332;
-  --color-surface-hover: #243044;
-  --color-surface-card: #141e30;
-  --color-border: #1e293b;
-  --color-border-light: #334155;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-surface: #000000;
+  --color-surface-alt: #0a0a0a;
+  --color-surface-hover: #1a1a1a;
+  --color-surface-card: #111111;
+  --color-border: #222222;
+  --color-border-light: #333333;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
-/* ===== LIGHT THEME ===== */
+/* ===== LIGHT THEME (disabled for Flowblock unified theme) ===== */
 :root[data-theme="light"] {
-  --color-surface: #f8fafc;
-  --color-surface-alt: #f1f5f9;
-  --color-surface-hover: #e2e8f0;
-  --color-surface-card: #ffffff;
-  --color-border: #e2e8f0;
-  --color-border-light: #cbd5e1;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
+  --color-surface: #000000;
+  --color-surface-alt: #0a0a0a;
+  --color-surface-hover: #1a1a1a;
+  --color-surface-card: #111111;
+  --color-border: #222222;
+  --color-border-light: #333333;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
 }
 
 @layer base {
@@ -57,7 +57,7 @@
   }
 
   ::selection {
-    background-color: rgba(99, 102, 241, 0.3);
+    background-color: rgba(230, 194, 18, 0.3);
     color: white;
   }
 
@@ -643,6 +643,226 @@
 
 .transition-block {
   position: absolute;
-  background-color: var(--color-surface);
+  background-color: #000000;
   opacity: 0;
+}
+
+/* ===== FLOWBLOCK THEME (Homepage Only) ===== */
+.flowblock-theme {
+  --fb-bg: #000000;
+  --fb-surface: #0a0a0a;
+  --fb-card: #111111;
+  --fb-card-hover: #1a1a1a;
+  --fb-border: #222222;
+  --fb-border-light: #333333;
+  --fb-yellow: #E6C212;
+  --fb-yellow-hover: #f0d030;
+  --fb-teal: #00FFFF;
+  --fb-white: #FFFFFF;
+  --fb-gray-100: #E5E5E5;
+  --fb-gray-300: #A1A1AA;
+  --fb-gray-500: #71717A;
+  --fb-gray-700: #3F3F46;
+  background-color: var(--fb-bg);
+  color: var(--fb-white);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Flowblock dot-grid background */
+.fb-dot-grid {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Flowblock navbar */
+.fb-navbar {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.fb-navbar.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom-color: var(--fb-border);
+}
+
+/* Character stagger hover effect */
+.fb-stagger-text {
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.fb-stagger-text .char {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fb-stagger-text:hover .char {
+  animation: char-jump 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.fb-stagger-text:hover .char:nth-child(1) { animation-delay: 0s; }
+.fb-stagger-text:hover .char:nth-child(2) { animation-delay: 0.02s; }
+.fb-stagger-text:hover .char:nth-child(3) { animation-delay: 0.04s; }
+.fb-stagger-text:hover .char:nth-child(4) { animation-delay: 0.06s; }
+.fb-stagger-text:hover .char:nth-child(5) { animation-delay: 0.08s; }
+.fb-stagger-text:hover .char:nth-child(6) { animation-delay: 0.10s; }
+.fb-stagger-text:hover .char:nth-child(7) { animation-delay: 0.12s; }
+.fb-stagger-text:hover .char:nth-child(8) { animation-delay: 0.14s; }
+.fb-stagger-text:hover .char:nth-child(9) { animation-delay: 0.16s; }
+.fb-stagger-text:hover .char:nth-child(10) { animation-delay: 0.18s; }
+
+@keyframes char-jump {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* Flowblock yellow primary button */
+.fb-btn-primary {
+  background-color: var(--fb-yellow);
+  color: #000000;
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fb-btn-primary:hover {
+  background-color: var(--fb-yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(230, 194, 18, 0.25);
+}
+
+/* Flowblock outlined button */
+.fb-btn-outline {
+  background: transparent;
+  color: var(--fb-white);
+  font-weight: 500;
+  padding: 14px 32px;
+  border-radius: 8px;
+  border: 1px solid var(--fb-border-light);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fb-btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--fb-gray-500);
+  transform: translateY(-2px);
+}
+
+/* Flowblock dark cards */
+.fb-card {
+  background: var(--fb-card);
+  border: 1px solid var(--fb-border);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.fb-card:hover {
+  border-color: var(--fb-border-light);
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.04);
+  transform: translateY(-4px);
+}
+
+/* Flowblock card elevated (center card) */
+.fb-card-elevated {
+  background: var(--fb-card);
+  border: 1px solid var(--fb-border-light);
+  border-radius: 16px;
+  box-shadow: 0 10px 60px rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+  z-index: 2;
+}
+
+/* Section teal glow */
+.fb-section-glow {
+  position: relative;
+}
+
+.fb-section-glow::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(0, 255, 255, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Monospace digits */
+.fb-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Flowblock section divider */
+.fb-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fb-border-light), transparent);
+}
+
+/* Pricing card row */
+.fb-pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--fb-border);
+  font-size: 14px;
+}
+
+.fb-pricing-row:last-child {
+  border-bottom: none;
+}
+
+.fb-pricing-label {
+  color: var(--fb-gray-300);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.fb-pricing-value {
+  color: var(--fb-white);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Sticky scroll section */
+.fb-sticky-container {
+  position: relative;
+}
+
+.fb-sticky-left {
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+}
+
+/* Flowblock scroll reveal (GSAP controlled) */
+.fb-reveal {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.fb-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }

@@ -128,7 +128,7 @@ export default function LandingReveal() {
 
             // Final Glow Flare
             tl.to(".logo-reveal-container", {
-                filter: "drop-shadow(0 0 30px rgba(99, 102, 241, 0.6))",
+                filter: "drop-shadow(0 0 30px rgba(230, 194, 18, 0.6))",
                 duration: 0.5,
             });
 
@@ -175,7 +175,7 @@ export default function LandingReveal() {
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 bg-[#0f1729] flex flex-col z-[9999] overflow-hidden font-mono"
+            className="fixed inset-0 bg-[#000000] flex flex-col z-[9999] overflow-hidden font-mono"
         >
             {/* Dynamic Floating Backdrop */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -251,7 +251,7 @@ export default function LandingReveal() {
                     {currentValue < 100 && (
                         <div className="flex gap-8">
                             <span className="text-white/5 select-none w-6 text-right shrink-0 font-bold">{visibleLines.length + 1}</span>
-                            <span className="w-2.5 h-6 bg-primary animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.6)]" />
+                            <span className="w-2.5 h-6 bg-[#E6C212] animate-pulse shadow-[0_0_15px_rgba(230,194,18,0.6)]" />
                         </div>
                     )}
                 </div>
@@ -262,8 +262,8 @@ export default function LandingReveal() {
                 <div className="logo-reveal-container text-center relative">
                     {/* Sparkles / Particles could go here if using a particle lib, but we use pure CSS/GSAP */}
 
-                    <div className="logo-badge inline-flex items-center gap-3 px-5 py-2 rounded-full border border-primary/30 bg-primary/10 mb-8 glass shadow-2xl">
-                        <Sparkles className="w-5 h-5 text-primary-light animate-pulse" />
+                    <div className="logo-badge inline-flex items-center gap-3 px-5 py-2 rounded-full border border-[#E6C212]/30 bg-[#E6C212]/10 mb-8 glass shadow-2xl">
+                        <Sparkles className="w-5 h-5 text-[#E6C212] animate-pulse" />
                         <span className="text-xs font-bold text-white tracking-[0.2em] uppercase">
                             AI-Powered Coding Excellence
                         </span>
@@ -283,7 +283,7 @@ export default function LandingReveal() {
                                 {learnChars.map((char, i) => (
                                     <span
                                         key={`l-${i}`}
-                                        className="learn-char inline-block select-none gradient-text"
+                                        className="learn-char inline-block select-none text-[#E6C212]"
                                     >
                                         {char}
                                     </span>
@@ -292,7 +292,7 @@ export default function LandingReveal() {
                         </h1>
                     </div>
 
-                    <div className="mission-text mt-8 font-mono text-primary-light tracking-[0.3em] text-xs opacity-0 uppercase font-bold">
+                    <div className="mission-text mt-8 font-mono text-[#E6C212] tracking-[0.3em] text-xs opacity-0 uppercase font-bold">
                         {">"} MISSION_INITIALIZED_SUCCESSFULLY
                     </div>
                 </div>
@@ -301,9 +301,9 @@ export default function LandingReveal() {
             {/* Bottom Status Panel */}
             <div className="relative z-10 bg-black/60 border-t border-white/5 p-8 flex items-center justify-between backdrop-blur-2xl reveal-item">
                 <div className="flex items-center gap-10 text-[11px]">
-                    <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20 shadow-inner">
-                        <span className="w-2.5 h-2.5 rounded-full bg-success animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                        <span className="text-primary-light font-black tracking-[0.2em] uppercase">SYSTEM_READY</span>
+                    <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-[#E6C212]/10 border border-[#E6C212]/20 shadow-inner">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#4ade80] animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                        <span className="text-[#E6C212] font-black tracking-[0.2em] uppercase">SYSTEM_READY</span>
                     </div>
                     <div className="hidden lg:flex items-center gap-3 text-white/30 font-medium">
                         <FileJson className="w-4 h-4" />
@@ -316,14 +316,14 @@ export default function LandingReveal() {
                     <div className="flex flex-col items-end gap-2">
                         <div className="w-56 h-1.5 bg-white/5 rounded-full overflow-hidden shadow-inner">
                             <div
-                                className="h-full bg-gradient-to-r from-primary via-accent to-success transition-all duration-300 ease-out shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+                                className="h-full bg-gradient-to-r from-[#E6C212] via-[#fbbf24] to-[#4ade80] transition-all duration-300 ease-out shadow-[0_0_20px_rgba(230,194,18,0.4)]"
                                 style={{ width: `${currentValue}%` }}
                             />
                         </div>
                         <div className="flex justify-between w-full">
                             <span className="text-[10px] text-white/20 tracking-[0.3em] font-bold">BOOT_SEQ_INITIALIZE</span>
                             <span className="text-lg font-black text-white leading-none">
-                                {currentValue}<span className="text-primary-light text-xs ml-0.5 select-none">%</span>
+                                {currentValue}<span className="text-[#E6C212] text-xs ml-0.5 select-none">%</span>
                             </span>
                         </div>
                     </div>

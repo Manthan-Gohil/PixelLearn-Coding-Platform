@@ -31,7 +31,7 @@ export default function Home() {
       {showReveal && <LandingReveal />}
       <StandardLayout
         noContainer={true}
-        particlesCount={25}
+        flowblockTheme={true}
         className={`overflow-x-hidden transition-opacity duration-1000 ${showReveal ? 'h-screen overflow-hidden opacity-0' : 'opacity-100'}`}
       >
         <HeroSection />

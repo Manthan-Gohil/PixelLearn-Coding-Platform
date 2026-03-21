@@ -40,6 +40,7 @@ function CoursesContent() {
   return (
     <StandardLayout
       particlesCount={20}
+      flowblockTheme
       containerClassName="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
     >
       <div ref={headerRef} className="mb-8">

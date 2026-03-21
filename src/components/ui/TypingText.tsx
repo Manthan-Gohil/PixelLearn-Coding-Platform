@@ -60,7 +60,7 @@ export default function TypingText({
     return (
         <span className={className}>
             {displayText}
-            <span className="inline-block w-[2px] h-[1em] bg-primary-light ml-0.5 animate-blink align-middle" />
+            <span className="inline-block w-[2px] h-[1em] bg-[#E6C212] ml-0.5 animate-blink align-middle" />
         </span>
     );
 }

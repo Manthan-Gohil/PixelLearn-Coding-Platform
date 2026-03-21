@@ -1,9 +1,88 @@
 "use client";
 
 import Link from "next/link";
-import { Code2, Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
+import { Code2 } from "lucide-react";
 
-export default function Footer() {
+export default function Footer({ flowblockMode = false }: { flowblockMode?: boolean }) {
+    // ── FLOWBLOCK-STYLE FOOTER ──
+    if (flowblockMode) {
+        const linkGroups = {
+            Product: [
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Courses", href: "/courses" },
+                { label: "Pricing", href: "/pricing" },
+                { label: "AI Tools", href: "/ai-tools" },
+            ],
+            Resources: [
+                { label: "Documentation", href: "#" },
+                { label: "Blog", href: "#" },
+                { label: "Community", href: "#" },
+            ],
+        };
+
+        return (
+            <footer className="border-t border-[#222] py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row justify-between gap-10 mb-10">
+                        {/* Logo */}
+                        <div>
+                            <Link href="/" className="flex items-center gap-2.5 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-[#E6C212] flex items-center justify-center">
+                                    <Code2 className="w-5 h-5 text-black" />
+                                </div>
+                                <span className="text-xl font-bold text-white tracking-tight">
+                                    PixelLearn
+                                </span>
+                            </Link>
+                            <p className="text-sm text-[#71717A] max-w-xs leading-relaxed">
+                                Master coding through interactive practice, structured courses, and AI-powered career intelligence.
+                            </p>
+                        </div>
+
+                        {/* Links */}
+                        <div className="flex gap-16">
+                            {Object.entries(linkGroups).map(([category, links]) => (
+                                <div key={category}>
+                                    <h4 className="text-sm font-semibold text-[#A1A1AA] mb-4 tracking-wider uppercase fb-mono">
+                                        {category}
+                                    </h4>
+                                    <ul className="space-y-2.5">
+                                        {links.map((link) => (
+                                            <li key={link.label}>
+                                                <Link
+                                                    href={link.href}
+                                                    className="text-sm text-[#71717A] hover:text-white transition-colors duration-200"
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Bottom */}
+                    <div className="pt-6 border-t border-[#222] flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p className="text-xs text-[#71717A]">
+                            © 2026 PixelLearn. All rights reserved.
+                        </p>
+                        <div className="flex items-center gap-6">
+                            <Link href="#" className="text-xs text-[#71717A] hover:text-white transition-colors">
+                                Terms & Conditions
+                            </Link>
+                            <Link href="#" className="text-xs text-[#71717A] hover:text-white transition-colors">
+                                Privacy Policy
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+
+    // ── DEFAULT FOOTER (for inner pages) ──
     const footerLinks = {
         Product: [
             { label: "Courses", href: "/courses" },
@@ -34,9 +113,7 @@ export default function Footer() {
     return (
         <footer className="border-t border-border bg-surface-alt/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Main Footer */}
                 <div className="py-16 grid grid-cols-2 md:grid-cols-6 gap-8">
-                    {/* Brand */}
                     <div className="col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-4">
                             <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
@@ -49,20 +126,8 @@ export default function Footer() {
                         <p className="text-text-secondary text-sm mb-6 max-w-xs leading-relaxed">
                             Master coding through interactive practice, structured courses, and AI-powered career intelligence.
                         </p>
-                        <div className="flex items-center gap-3">
-                            {[Github, Twitter, Linkedin, Mail].map((Icon, i) => (
-                                <a
-                                    key={i}
-                                    href="#"
-                                    className="w-9 h-9 rounded-lg bg-surface-hover border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/30 transition-all duration-200"
-                                >
-                                    <Icon className="w-4 h-4" />
-                                </a>
-                            ))}
-                        </div>
                     </div>
 
-                    {/* Links */}
                     {Object.entries(footerLinks).map(([category, links]) => (
                         <div key={category}>
                             <h4 className="text-sm font-semibold text-text-primary mb-4">
@@ -84,10 +149,9 @@ export default function Footer() {
                     ))}
                 </div>
 
-                {/* Bottom */}
                 <div className="py-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-text-muted flex items-center gap-1">
-                        © 2026 PixelLearn. Made with <Heart className="w-3 h-3 text-danger fill-danger" /> for developers.
+                    <p className="text-xs text-text-muted">
+                        © 2026 PixelLearn. All rights reserved.
                     </p>
                     <p className="text-xs text-text-muted">
                         Built with Next.js, Tailwind CSS & AI
