@@ -123,7 +123,7 @@ export default function CourseCard({
           {isEnrolled && (
             <Link
               href={`/courses/${course.id}`}
-              className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-success/30 text-success hover:bg-success/10 transition-all text-center hover-bounce"
+              className="flex-1 py-2.5 rounded-lg text-sm font-semibold bg-[#E6C212] text-black hover:bg-[#f0d030] transition-all text-center hover-bounce"
             >
               Continue
             </Link>

@@ -44,8 +44,8 @@ export default function ChapterItem({
       >
         <div
           className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${chapterCompleted === chapterTotal && chapterTotal > 0
-              ? "bg-success/10 text-success"
-              : "bg-[#E6C212]/10 text-[#E6C212]"
+            ? "bg-success/10 text-success"
+            : "bg-[#E6C212]/10 text-[#E6C212]"
             }`}
         >
           {chapterCompleted === chapterTotal && chapterTotal > 0 ? "✓" : chapter.order}
@@ -95,10 +95,10 @@ export default function ChapterItem({
               >
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center ${completed
-                      ? "bg-success text-white"
-                      : canAccess
-                        ? "border-2 border-[#E6C212]/50"
-                        : "border-2 border-border"
+                    ? "bg-success text-white"
+                    : canAccess
+                      ? "border-2 border-[#E6C212]/50"
+                      : "border-2 border-border"
                     }`}
                 >
                   {completed && <CheckCircle2 className="w-4 h-4" />}
@@ -122,8 +122,8 @@ export default function ChapterItem({
                     <Link
                       href={`/playground/${courseId}/${exercise.id}`}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${completed
-                          ? "border border-success/30 text-success hover:bg-success/10"
-                          : "bg-[#E6C212] text-black hover:bg-[#f0d030]"
+                        ? "border border-success/30 text-success hover:bg-success/10"
+                        : "bg-[#E6C212] text-black hover:bg-[#f0d030]"
                         }`}
                     >
                       {completed ? "Review" : "Start"}

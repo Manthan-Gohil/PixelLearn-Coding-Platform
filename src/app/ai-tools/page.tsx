@@ -87,7 +87,7 @@ function AIToolsContent() {
                 <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
                     AI Career <span className="text-[#E6C212]">Intelligence</span>
                 </h1>
-                <p className="text-text-secondary text-lg">
+                <p className="text-text-secondary text-lg fb-mono">
                     Get personalized career guidance, resume analysis, and roadmap generation
                 </p>
             </div>

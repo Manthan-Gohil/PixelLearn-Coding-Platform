@@ -20,13 +20,13 @@ export default function ComparisonTable() {
             </h2>
             <div ref={tableRef} className="fb-card rounded-2xl overflow-hidden animate-glow-pulse">
                 <div className="grid grid-cols-3 gap-0 border-b border-border p-4 bg-surface-alt/50">
-                    <div className="text-sm font-semibold text-text-primary">
+                    <div className="text-sm font-semibold text-text-primary fb-mono">
                         Feature
                     </div>
-                    <div className="text-sm font-semibold text-text-primary text-center">
+                    <div className="text-sm font-semibold text-text-primary text-center fb-mono">
                         Free
                     </div>
-                    <div className="text-sm font-semibold text-[#E6C212] text-center flex items-center justify-center gap-1">
+                    <div className="text-sm font-semibold text-[#E6C212] text-center flex items-center justify-center gap-1 fb-mono">
                         <Crown className="w-4 h-4" /> Pro
                     </div>
                 </div>
@@ -36,7 +36,7 @@ export default function ComparisonTable() {
                         className={`comparison-row grid grid-cols-3 gap-0 p-4 ${i % 2 === 0 ? "bg-surface-alt/20" : ""
                             } border-b border-border/50 last:border-0 hover:bg-surface-hover/30 transition-colors duration-200`}
                     >
-                        <div className="text-sm text-text-secondary">{feature.name}</div>
+                        <div className="text-sm text-text-secondary fb-mono">{feature.name}</div>
                         <div className="text-center">
                             {typeof feature.free === "boolean" ? (
                                 feature.free ? (

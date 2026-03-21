@@ -105,8 +105,8 @@ export default function CourseSummaryCard({
           onClick={() => onEnroll(course.id)}
           disabled={isLocked}
           className={`w-full py-3 rounded-xl font-semibold transition-all ${isLocked
-              ? "border border-border text-text-muted cursor-not-allowed"
-              : "bg-[#E6C212] text-black hover:bg-[#f0d030] shadow-lg shadow-black/30"
+            ? "border border-border text-text-muted cursor-not-allowed"
+            : "bg-[#E6C212] text-black hover:bg-[#f0d030] shadow-lg shadow-black/30"
             }`}
         >
           {isLocked ? (

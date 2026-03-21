@@ -8,7 +8,7 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
     ssr: false,
     loading: () => (
         <div className="w-full h-full flex items-center justify-center bg-surface-alt">
-            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            <Loader2 className="w-6 h-6 text-[#E6C212] animate-spin" />
         </div>
     ),
 });
@@ -53,10 +53,9 @@ export default function EditorPanel({
                     : "w-full"
                 }`}
         >
-            {/* Editor Toolbar */}
             <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
                 <div className="flex items-center gap-2">
-                    <div className="px-3 py-1 rounded-md bg-primary/10 border border-primary/20 text-[11px] font-bold text-primary-light uppercase tracking-wider">
+                    <div className="px-3 py-1 rounded-md bg-[#E6C212]/10 border border-[#E6C212]/30 text-[11px] font-bold text-[#E6C212] uppercase tracking-wider fb-mono">
                         {language === "cpp" ? "C++" : language === "jsx" ? "React (JSX)" : language === "tsx" ? "React (TSX)" : language === "reactjs" ? "React (JS)" : language}
                     </div>
                     <button
@@ -81,7 +80,7 @@ export default function EditorPanel({
                     <button
                         onClick={runCode}
                         disabled={isRunning}
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold gradient-primary text-white hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#E6C212] text-black hover:bg-[#f0d030] disabled:opacity-50 transition-all shadow-lg shadow-black/30 fb-mono"
                     >
                         {isRunning ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -93,7 +92,6 @@ export default function EditorPanel({
                 </div>
             </div>
 
-            {/* Monaco Editor */}
             <div className="flex-1 min-h-0">
                 <MonacoEditor
                     height="100%"

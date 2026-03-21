@@ -77,10 +77,10 @@ export default function StatsCards({ user, totalExercisesCompleted }: StatsCards
                             <stat.icon className={`w-5 h-5 ${stat.color} animate-float-subtle`} style={{ animationDelay: `${i * 0.5}s` }} />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold text-text-primary">
+                            <div className="text-2xl font-bold text-text-primary fb-mono">
                                 <AnimatedCounter value={stat.value} suffix={stat.suffix} duration={1500} />
                             </div>
-                            <div className="text-xs text-text-muted">{stat.label}</div>
+                            <div className="text-xs text-text-muted fb-mono uppercase tracking-wider">{stat.label}</div>
                         </div>
                     </div>
                 </div>

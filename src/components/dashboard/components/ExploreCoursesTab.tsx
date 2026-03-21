@@ -55,7 +55,7 @@ export default function ExploreCoursesTab({ user, courses, enrollCourse }: Explo
                             {isEnrolled ? (
                                 <Link
                                     href={`/courses/${course.id}`}
-                                    className="block text-center py-2 rounded-lg border border-success/30 text-success text-sm font-medium hover:bg-success/10 transition-colors"
+                                    className="block text-center py-2 rounded-lg bg-[#E6C212] text-black text-sm font-semibold hover:bg-[#f0d030] transition-colors"
                                 >
                                     <span className="flex items-center justify-center gap-1">
                                         <Play className="w-3 h-3" /> Continue Learning

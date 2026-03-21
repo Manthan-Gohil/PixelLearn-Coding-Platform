@@ -204,12 +204,13 @@ function PlaygroundContent({
         if (courseId && !user.enrolledCourses.includes(courseId)) enrollCourse(courseId);
     }, [courseId, user.enrolledCourses, enrollCourse]);
 
-    if (loading) return <div className="h-screen flex items-center justify-center bg-surface"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+    if (loading) return <div className="h-screen flex items-center justify-center bg-surface"><Loader2 className="w-8 h-8 animate-spin text-[#E6C212]" /></div>;
 
-    if (!course || !exercise) return <main className="min-h-screen bg-surface flex items-center justify-center"><div className="text-center"><h1 className="text-2xl font-bold text-text-primary mb-2">Exercise Not Found</h1><Link href="/courses" className="text-primary-light hover:underline">← Back to Courses</Link></div></main>;
+    if (!course || !exercise) return <main className="min-h-screen bg-surface flex items-center justify-center"><div className="text-center"><h1 className="text-2xl font-bold text-text-primary mb-2">Exercise Not Found</h1><Link href="/courses" className="text-[#E6C212] hover:underline">← Back to Courses</Link></div></main>;
 
     return (
-        <div className="h-screen bg-surface flex flex-col overflow-hidden select-none">
+        <div className="h-screen bg-surface flex flex-col overflow-hidden select-none relative">
+            <div className="absolute inset-0 fb-dot-grid opacity-20 pointer-events-none" />
             <PasteBlockedAlert show={showPasteAlert} onClose={() => setShowPasteAlert(false)} />
             {tabSwitchCount > 0 && tabSwitchCount % PROCTOR_ALERT_FREQUENCY === 0 && (
                 <div className="fixed top-4 right-4 z-110 bg-danger/90 backdrop-blur text-white px-4 py-2 rounded-lg shadow-xl animate-bounce-short text-xs font-bold border border-white/20">
@@ -252,5 +253,5 @@ function PlaygroundContent({
 
 export default function PlaygroundPage({ params }: { params: Promise<{ courseId: string; exerciseId: string }> }) {
     const resolvedParams = use(params);
-    return <Suspense fallback={<div className="h-screen bg-surface flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}><PlaygroundContent courseId={resolvedParams.courseId} exerciseId={resolvedParams.exerciseId} /></Suspense>;
+    return <Suspense fallback={<div className="h-screen bg-surface flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#E6C212]" /></div>}><PlaygroundContent courseId={resolvedParams.courseId} exerciseId={resolvedParams.exerciseId} /></Suspense>;
 }

@@ -39,7 +39,7 @@ export default function TheoryPanel({
                 <button
                     onClick={() => setShowTheory(true)}
                     className={`px-4 py-2.5 text-sm font-medium transition-colors ${showTheory
-                        ? "text-primary-light border-b-2 border-primary"
+                        ? "text-[#E6C212] border-b-2 border-[#E6C212]"
                         : "text-text-muted hover:text-text-primary"
                         }`}
                 >
@@ -51,7 +51,7 @@ export default function TheoryPanel({
                 <button
                     onClick={() => setShowTheory(false)}
                     className={`px-4 py-2.5 text-sm font-medium transition-colors ${!showTheory
-                        ? "text-primary-light border-b-2 border-primary"
+                        ? "text-[#E6C212] border-b-2 border-[#E6C212]"
                         : "text-text-muted hover:text-text-primary"
                         }`}
                 >
@@ -95,7 +95,7 @@ export default function TheoryPanel({
                                             key={i}
                                             className="flex items-start gap-2 text-sm text-text-secondary"
                                         >
-                                            <span className="text-primary-light mt-1">•</span>
+                                            <span className="text-[#E6C212] mt-1">•</span>
                                             <span>{line.replace("- ", "")}</span>
                                         </div>
                                     );
@@ -129,7 +129,7 @@ export default function TheoryPanel({
                             <div className="mt-5">
                                 <button
                                     onClick={() => setShowFlowchart(true)}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20 text-primary-light hover:bg-primary/10 transition-all group"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#E6C212]/5 border border-[#E6C212]/20 text-[#E6C212] hover:bg-[#E6C212]/10 transition-all group"
                                 >
                                     <GitBranch className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                                     <span className="text-sm font-medium">View Solution Flowchart</span>
@@ -189,10 +189,10 @@ export default function TheoryPanel({
 
                         {/* Flowchart Hint Button */}
                         {exerciseFlowchart && (
-                            <div className="p-3 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
+                            <div className="p-3 rounded-xl bg-[#0f0f0f] border border-border-light">
                                 <button
                                     onClick={() => setShowFlowchart(true)}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/10 border border-primary/20 text-primary-light hover:bg-primary/15 transition-all group"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#E6C212]/10 border border-[#E6C212]/20 text-[#E6C212] hover:bg-[#E6C212]/15 transition-all group"
                                 >
                                     <GitBranch className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                                     <span className="text-sm font-medium">💡 Need Help? View Flowchart</span>
@@ -207,7 +207,7 @@ export default function TheoryPanel({
                         <div>
                             <button
                                 onClick={() => setShowHints(!showHints)}
-                                className="flex items-center gap-2 text-sm font-medium text-primary-light hover:text-primary transition-colors"
+                                className="flex items-center gap-2 text-sm font-medium text-[#E6C212] hover:text-[#f0d030] transition-colors"
                             >
                                 {showHints ? (
                                     <EyeOff className="w-4 h-4" />
@@ -237,7 +237,7 @@ export default function TheoryPanel({
                                     {currentHintIndex < exercise.hints.length - 1 && (
                                         <button
                                             onClick={() => setCurrentHintIndex((p: number) => p + 1)}
-                                            className="text-xs text-primary-light hover:text-primary"
+                                            className="text-xs text-[#E6C212] hover:text-[#f0d030]"
                                         >
                                             Show next hint →
                                         </button>

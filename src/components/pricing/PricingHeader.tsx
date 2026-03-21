@@ -24,7 +24,7 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
             <h1 className="text-3xl sm:text-5xl font-bold text-text-primary mb-4">
                 Choose Your <span className="text-[#E6C212]">Learning Plan</span>
             </h1>
-            <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+            <p className="text-text-secondary text-lg max-w-2xl mx-auto fb-mono">
                 Start free, upgrade when you need more. No hidden fees, cancel
                 anytime.
             </p>
@@ -33,7 +33,7 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
             <div className="mt-8 inline-flex items-center gap-3 p-1 fb-card rounded-xl animate-glow-pulse">
                 <button
                     onClick={() => onBillingChange("monthly")}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${billing === "monthly"
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 fb-mono ${billing === "monthly"
                         ? "bg-[#E6C212] text-black"
                         : "text-text-muted hover:text-text-primary"
                         }`}
@@ -42,7 +42,7 @@ export default function PricingHeader({ billing, onBillingChange }: PricingHeade
                 </button>
                 <button
                     onClick={() => onBillingChange("yearly")}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${billing === "yearly"
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 fb-mono ${billing === "yearly"
                         ? "bg-[#E6C212] text-black"
                         : "text-text-muted hover:text-text-primary"
                         }`}

@@ -11,10 +11,10 @@ export default function PasteBlockedAlert({ show, onClose }: PasteBlockedAlertPr
     if (!show) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
             <div className="relative max-w-md w-full mx-4 animate-scale-in">
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-danger via-warning to-danger rounded-2xl opacity-40 blur-lg animate-pulse-slow" />
+                <div className="absolute -inset-1 bg-linear-to-r from-danger via-warning to-danger rounded-2xl opacity-40 blur-lg animate-pulse-slow" />
                 <div className="relative p-6 rounded-2xl bg-surface-alt border border-danger/30 shadow-2xl">
                     {/* Shield icon */}
                     <div className="flex items-center justify-center mb-4">
@@ -47,7 +47,7 @@ export default function PasteBlockedAlert({ show, onClose }: PasteBlockedAlertPr
                     {/* Action button */}
                     <button
                         onClick={onClose}
-                        className="w-full py-2.5 rounded-xl font-semibold text-sm gradient-primary text-white hover:opacity-90 transition-all shadow-lg shadow-primary/20"
+                        className="w-full py-2.5 rounded-xl font-semibold text-sm bg-[#E6C212] text-black hover:bg-[#f0d030] transition-all shadow-lg shadow-black/30"
                     >
                         I Understand — I&apos;ll Write My Own Code
                     </button>

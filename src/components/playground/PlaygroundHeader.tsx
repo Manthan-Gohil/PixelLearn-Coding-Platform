@@ -41,7 +41,7 @@ export default function PlaygroundHeader({
                     <span className="hidden sm:inline">{courseTitle}</span>
                 </Link>
                 <span className="text-border">|</span>
-                <h1 className="text-sm font-semibold text-text-primary truncate max-w-[300px]">
+                <h1 className="text-sm font-semibold text-text-primary truncate max-w-75">
                     {exerciseTitle}
                 </h1>
                 {completed && (
@@ -50,7 +50,7 @@ export default function PlaygroundHeader({
                     </span>
                 )}
                 {/* Proctor Badge */}
-                <span className="flex items-center gap-1 text-xs text-danger/80 font-medium bg-danger/5 border border-danger/20 px-2 py-0.5 rounded-full">
+                <span className="flex items-center gap-1 text-xs text-danger/80 font-medium bg-danger/5 border border-danger/20 px-2 py-0.5 rounded-full fb-mono">
                     <ShieldAlert className="w-3 h-3" /> Proctor Mode
                 </span>
             </div>
@@ -78,7 +78,7 @@ export default function PlaygroundHeader({
                         <ArrowLeft className="w-4 h-4" />
                     </Link>
                 )}
-                <span className="text-xs text-text-muted">
+                <span className="text-xs text-text-muted fb-mono">
                     {exerciseIndex + 1} / {totalExercises}
                 </span>
                 {nextExerciseId && (
@@ -91,7 +91,7 @@ export default function PlaygroundHeader({
                     </Link>
                 )}
                 <span className="text-border mx-1">|</span>
-                <span className="flex items-center gap-1 text-xs text-warning font-medium">
+                <span className="flex items-center gap-1 text-xs text-[#E6C212] font-medium fb-mono">
                     <Zap className="w-3 h-3" /> {exerciseXp} XP
                 </span>
             </div>

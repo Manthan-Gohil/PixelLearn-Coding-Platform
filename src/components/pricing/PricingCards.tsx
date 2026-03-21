@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, Zap, Check } from "lucide-react";
+import { Crown, Zap } from "lucide-react";
 import type { SubscriptionPlan, User } from "@/types";
 import { useStaggerReveal } from "@/hooks/useScrollReveal";
 
@@ -8,6 +8,18 @@ interface PricingCardsProps {
     plans: SubscriptionPlan[];
     user: User;
     updateSubscription: (type: "free" | "pro") => void;
+}
+
+function getPlanDetails(plan: SubscriptionPlan) {
+    const isFree = plan.id === "free";
+
+    return [
+        { label: "Access to Courses", value: isFree ? "Free Only" : "All Courses" },
+        { label: "Coding Playground", value: isFree ? "Basic" : "Unlimited" },
+        { label: "AI Career Tools", value: isFree ? "Limited" : "Full Access" },
+        { label: "Daily Exercises", value: isFree ? "5 / day" : "Unlimited" },
+        { label: "Priority Support", value: isFree ? "—" : "✓" },
+    ];
 }
 
 export default function PricingCards({ plans, user, updateSubscription }: PricingCardsProps) {
@@ -45,7 +57,7 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                             </div>
                         )}
 
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-4">
                             {plan.price > 0 ? (
                                 <Crown className="w-5 h-5 text-[#E6C212] animate-float-subtle" />
                             ) : (
@@ -56,48 +68,31 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                             </h3>
                         </div>
 
-                        <div className="flex items-baseline gap-1 mb-1">
-                            <span className="text-4xl font-bold text-text-primary">
+                        <div className="mb-6">
+                            <div className="fb-mono text-4xl sm:text-5xl font-bold text-text-primary mb-1">
                                 ${plan.price}
-                            </span>
-                            <span className="text-text-muted text-sm">
-                                /{plan.interval === "yearly" ? "year" : "mo"}
-                            </span>
+                                <span className="text-lg text-text-muted font-normal">
+                                    /{plan.interval === "yearly" ? "year" : "mo"}
+                                </span>
+                            </div>
+                            <div className="fb-divider my-4" />
+                            <h4 className="fb-mono text-sm text-text-secondary text-center tracking-wider uppercase">
+                                {plan.name} Plan
+                            </h4>
+                            <div className="fb-divider my-4" />
                         </div>
-                        {plan.interval === "yearly" && plan.price > 0 && (
-                            <p className="text-xs text-success mb-4">
-                                That&apos;s just ${(plan.price / 12).toFixed(2)}/month
-                            </p>
-                        )}
-                        {plan.price === 0 && (
-                            <p className="text-xs text-text-muted mb-4">
-                                Free forever, no credit card
-                            </p>
-                        )}
-                        {plan.interval === "monthly" && plan.price > 0 && (
-                            <p className="text-xs text-text-muted mb-4">
-                                Billed monthly, cancel anytime
-                            </p>
-                        )}
 
-                        <ul className="space-y-3 mb-8">
-                            {plan.features.map((feature, i) => (
-                                <li
-                                    key={i}
-                                    className="flex items-start gap-2 text-sm text-text-secondary stagger-fade-up"
-                                    style={{ animationDelay: `${0.5 + i * 0.05}s` }}
-                                >
-                                    <Check
-                                        className={`w-4 h-4 mt-0.5 shrink-0 ${plan.isPopular ? "text-[#E6C212]" : "text-success"
-                                            }`}
-                                    />
-                                    {feature}
-                                </li>
+                        <div className="space-y-0 mb-8">
+                            {getPlanDetails(plan).map((detail, i) => (
+                                <div key={i} className="fb-pricing-row">
+                                    <span className="fb-pricing-label">{detail.label}</span>
+                                    <span className="fb-pricing-value">{detail.value}</span>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
 
                         {isCurrent ? (
-                            <div className="block text-center py-3 rounded-xl font-semibold border border-success/30 text-success">
+                            <div className="block text-center py-3 rounded-lg font-semibold border border-[#E6C212]/40 text-[#E6C212] bg-[#E6C212]/5 fb-mono">
                                 Current Plan
                             </div>
                         ) : (
@@ -105,9 +100,9 @@ export default function PricingCards({ plans, user, updateSubscription }: Pricin
                                 onClick={() =>
                                     updateSubscription(plan.price > 0 ? "pro" : "free")
                                 }
-                                className={`block w-full text-center py-3 rounded-xl font-semibold transition-all hover-bounce ${plan.isPopular
+                                className={`block w-full text-center py-3 rounded-lg font-semibold transition-all ${plan.price === 0
                                     ? "bg-[#E6C212] text-black hover:bg-[#f0d030]"
-                                    : "fb-btn-outline w-full justify-center py-3"
+                                    : "border border-[#333] text-white hover:bg-[#111] hover:border-[#555]"
                                     }`}
                             >
                                 {plan.price === 0 ? "Get Started Free" : "Subscribe Now"}

@@ -51,7 +51,7 @@ function CoursesContent() {
         <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
           Explore <span className="text-[#E6C212]">Courses</span>
         </h1>
-        <p className="text-text-secondary text-lg">
+        <p className="text-text-secondary text-lg fb-mono">
           Master programming with hands-on, practice-first courses
         </p>
       </div>

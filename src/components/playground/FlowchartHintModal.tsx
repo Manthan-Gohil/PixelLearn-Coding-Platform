@@ -23,13 +23,13 @@ export default function FlowchartHintModal({
         <div className="fixed inset-0 z-90 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="relative max-w-3xl w-full mx-4 max-h-[85vh] animate-scale-in flex flex-col">
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-linear-to-r from-primary via-accent to-primary rounded-2xl opacity-20 blur-lg" />
-                <div className="relative rounded-2xl bg-surface-alt border border-primary/20 shadow-2xl flex flex-col max-h-[85vh]">
+                <div className="absolute -inset-1 bg-linear-to-r from-[#E6C212]/20 via-[#E6C212]/35 to-[#E6C212]/20 rounded-2xl opacity-20 blur-lg" />
+                <div className="relative rounded-2xl bg-surface-alt border border-[#E6C212]/20 shadow-2xl flex flex-col max-h-[85vh]">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                                <GitBranch className="w-5 h-5 text-primary-light" />
+                            <div className="w-10 h-10 rounded-xl bg-[#E6C212]/10 border border-[#E6C212]/20 flex items-center justify-center">
+                                <GitBranch className="w-5 h-5 text-[#E6C212]" />
                             </div>
                             <div>
                                 <h3 className="text-base font-bold text-text-primary">
@@ -55,7 +55,7 @@ export default function FlowchartHintModal({
                             Start/End
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-muted whitespace-nowrap">
-                            <div className="w-3 h-3 rounded bg-primary/20 border border-primary/50" />
+                            <div className="w-3 h-3 rounded bg-[#E6C212]/20 border border-[#E6C212]/50" />
                             Process
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-muted whitespace-nowrap">
@@ -63,7 +63,7 @@ export default function FlowchartHintModal({
                             Decision
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-muted whitespace-nowrap">
-                            <div className="w-3 h-3 -skew-x-12 bg-accent/20 border border-accent/50" />
+                            <div className="w-3 h-3 -skew-x-12 bg-[#E6C212]/10 border border-[#E6C212]/30" />
                             I/O
                         </div>
                     </div>

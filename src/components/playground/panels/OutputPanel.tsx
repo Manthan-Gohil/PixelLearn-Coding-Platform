@@ -24,7 +24,7 @@ export default function OutputPanel({ output, setOutput }: OutputPanelProps) {
                     </button>
                 )}
             </div>
-            <div className="flex-1 overflow-y-auto p-4 font-mono text-sm text-center sm:text-left">
+            <div className="flex-1 overflow-y-auto p-4 fb-mono text-sm text-center sm:text-left">
                 {output ? (
                     <pre
                         className={`whitespace-pre-wrap ${output.includes("Error") ? "text-danger" : "text-success"
