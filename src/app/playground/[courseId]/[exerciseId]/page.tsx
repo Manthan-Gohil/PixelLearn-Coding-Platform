@@ -19,6 +19,8 @@ import PreviewPanel from "@/components/playground/panels/PreviewPanel";
 import PasteBlockedAlert from "@/components/playground/PasteBlockedAlert";
 import FlowchartHintModal from "@/components/playground/FlowchartHintModal";
 
+const DEFAULT_REACT_ENTRY_FILE = "src/App.jsx";
+
 function PlaygroundContent({
     courseId,
     exerciseId,
@@ -38,6 +40,9 @@ function PlaygroundContent({
     const [currentHintIndex, setCurrentHintIndex] = useState(0);
     const [showTheory, setShowTheory] = useState(true);
     const [language, setLanguage] = useState("python");
+    const [files, setFiles] = useState<Record<string, string>>({});
+    const [folders, setFolders] = useState<string[]>([]);
+    const [selectedFile, setSelectedFile] = useState<string>("");
     const [showTheoryPanel, setShowTheoryPanel] = useState(true);
     const [previewHtml, setPreviewHtml] = useState("");
     const [showPasteAlert, setShowPasteAlert] = useState(false);
@@ -78,7 +83,6 @@ function PlaygroundContent({
 
     useEffect(() => {
         if (exercise) {
-            setCode(exercise.starterCode);
             setLanguage(exercise.language);
             setOutput("");
             setInput("");
@@ -86,19 +90,106 @@ function PlaygroundContent({
             setShowHints(false);
             setCurrentHintIndex(0);
             setShowFlowchart(false);
+
+            if (isFrontendLanguage(exercise.language)) {
+                const initialFiles: Record<string, string> = {
+                    [DEFAULT_REACT_ENTRY_FILE]: exercise.starterCode,
+                };
+                setFiles(initialFiles);
+                setFolders(["src"]);
+                setSelectedFile(DEFAULT_REACT_ENTRY_FILE);
+                setCode(exercise.starterCode);
+            } else {
+                setFiles({});
+                setFolders([]);
+                setSelectedFile("");
+                setCode(exercise.starterCode);
+            }
         }
     }, [exercise?.id]);
 
-    const updatePreview = useCallback((htmlCode: string, lang: string) => {
-        setPreviewHtml(buildPreviewHtml(htmlCode, lang));
+    useEffect(() => {
+        if (!isFrontend || !selectedFile) return;
+        const content = files[selectedFile];
+        if (typeof content === "string") {
+            setCode(content);
+        }
+    }, [files, selectedFile, isFrontend]);
+
+    const entryFile = useMemo(() => {
+        const keys = Object.keys(files);
+        if (!isFrontend || keys.length === 0) return "";
+
+        const preferred = ["src/App.jsx", "App.jsx", "src/App.tsx", "App.tsx"];
+        const found = preferred.find((file) => keys.includes(file));
+        if (found) return found;
+        if (selectedFile && keys.includes(selectedFile)) return selectedFile;
+        return keys[0];
+    }, [files, isFrontend, selectedFile]);
+
+    const updatePreview = useCallback((htmlCode: string, lang: string, sourceFiles?: Record<string, string>, previewEntryFile?: string) => {
+        setPreviewHtml(buildPreviewHtml(htmlCode, lang, sourceFiles, previewEntryFile));
     }, []);
 
     useEffect(() => {
         if (isFrontend && code) {
-            const timer = setTimeout(() => updatePreview(code, language), PREVIEW_DEBOUNCE_MS);
+            const timer = setTimeout(() => updatePreview(code, language, files, entryFile), PREVIEW_DEBOUNCE_MS);
             return () => clearTimeout(timer);
         }
-    }, [code, isFrontend, language, updatePreview]);
+    }, [code, isFrontend, language, files, entryFile, updatePreview]);
+
+    const handleCodeChange = useCallback((updatedCode: string) => {
+        setCode(updatedCode);
+        if (!isFrontend || !selectedFile) return;
+        setFiles((prev) => ({
+            ...prev,
+            [selectedFile]: updatedCode,
+        }));
+    }, [isFrontend, selectedFile]);
+
+    const handleSelectFile = useCallback((filePath: string) => {
+        setSelectedFile(filePath);
+        const fileContent = files[filePath];
+        if (typeof fileContent === "string") {
+            setCode(fileContent);
+        }
+    }, [files]);
+
+    const handleCreateFolder = useCallback(() => {
+        if (!isFrontend) return;
+        const folderPath = window.prompt("Enter folder path (example: src/components)", "src/components");
+        if (!folderPath) return;
+        const normalized = folderPath.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+        if (!normalized) return;
+        setFolders((prev) => (prev.includes(normalized) ? prev : [...prev, normalized]));
+    }, [isFrontend]);
+
+    const handleCreateFile = useCallback(() => {
+        if (!isFrontend) return;
+        const filePathInput = window.prompt("Enter file path (example: src/Child.jsx)", "src/Child.jsx");
+        if (!filePathInput) return;
+
+        let normalized = filePathInput.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+        if (!/\.(jsx|tsx|js|ts)$/.test(normalized)) {
+            normalized = `${normalized}.jsx`;
+        }
+
+        setFiles((prev) => {
+            if (prev[normalized]) return prev;
+            const baseName = normalized.split("/").pop()?.replace(/\.[^.]+$/, "") || "Component";
+            const starter = `import React from 'react';\n\nexport default function ${baseName.replace(/[^a-zA-Z0-9_$]/g, "") || "Component"}() {\n  return <div>${baseName} works</div>;\n}\n`;
+            return {
+                ...prev,
+                [normalized]: starter,
+            };
+        });
+
+        const folderPath = normalized.includes("/") ? normalized.slice(0, normalized.lastIndexOf("/")) : "";
+        if (folderPath) {
+            setFolders((prev) => (prev.includes(folderPath) ? prev : [...prev, folderPath]));
+        }
+        setSelectedFile(normalized);
+    }, [isFrontend]);
 
     const handleEditorDidMount = useCallback<PlaygroundEditorDidMount>((editor, monaco) => {
         editorRef.current = editor;
@@ -173,7 +264,7 @@ function PlaygroundContent({
         if (!exercise || isRunning) return;
         setIsRunning(true); setOutput("");
         if (isFrontend) {
-            updatePreview(code, language); setOutput("✓ Preview updated successfully");
+            updatePreview(code, language, files, entryFile); setOutput("✓ Preview updated successfully");
             setIsRunning(false); return;
         }
         try {
@@ -190,15 +281,29 @@ function PlaygroundContent({
         } finally {
             setIsRunning(false);
         }
-    }, [code, exercise, isRunning, isFrontend, language, input, updatePreview]);
+    }, [code, exercise, isRunning, isFrontend, language, input, updatePreview, files, entryFile]);
 
     const handleMarkComplete = useCallback(() => {
         if (exercise && !completed) completeExercise(exercise.id, exercise.xpReward);
     }, [exercise, completed, completeExercise]);
 
     const resetCode = useCallback(() => {
-        if (exercise) { setCode(exercise.starterCode); setOutput(""); setInput(""); setPreviewHtml(""); }
-    }, [exercise]);
+        if (!exercise) return;
+
+        if (isFrontend) {
+            const nextEntry = entryFile || DEFAULT_REACT_ENTRY_FILE;
+            setFiles((prev) => ({
+                ...prev,
+                [nextEntry]: exercise.starterCode,
+            }));
+            setSelectedFile(nextEntry);
+        }
+
+        setCode(exercise.starterCode);
+        setOutput("");
+        setInput("");
+        setPreviewHtml("");
+    }, [exercise, isFrontend, entryFile]);
 
     useEffect(() => {
         if (courseId && !user.enrolledCourses.includes(courseId)) enrollCourse(courseId);
@@ -223,7 +328,7 @@ function PlaygroundContent({
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
-                <EditorPanel language={language} code={code} setCode={setCode} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
+                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={files} folders={folders} selectedFile={selectedFile} onSelectFile={handleSelectFile} onCreateFile={handleCreateFile} onCreateFolder={handleCreateFolder} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
                 {!isFrontend && (
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Loader2, RotateCcw, CheckCircle2, Play } from "lucide-react";
+import { Loader2, RotateCcw, CheckCircle2, Play, Plus, FolderPlus, FileCode, Folder } from "lucide-react";
 import type { PlaygroundEditorDidMount } from "@/types/playground";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -17,6 +17,12 @@ interface EditorPanelProps {
     language: string;
     code: string;
     setCode: (code: string) => void;
+    files?: Record<string, string>;
+    folders?: string[];
+    selectedFile?: string;
+    onSelectFile?: (filePath: string) => void;
+    onCreateFile?: () => void;
+    onCreateFolder?: () => void;
     isRunning: boolean;
     completed: boolean;
     isFrontend: boolean;
@@ -31,6 +37,12 @@ export default function EditorPanel({
     language,
     code,
     setCode,
+    files,
+    folders,
+    selectedFile,
+    onSelectFile,
+    onCreateFile,
+    onCreateFolder,
     isRunning,
     completed,
     isFrontend,
@@ -40,7 +52,25 @@ export default function EditorPanel({
     runCode,
     resetCode,
 }: EditorPanelProps) {
-    const monacoLang = language === "cpp" ? "cpp" : language === "jsx" ? "javascript" : language === "tsx" ? "typescript" : language === "reactjs" ? "javascript" : language;
+    const selectedFileLower = (selectedFile || "").toLowerCase();
+    const monacoLang = selectedFileLower.endsWith(".tsx")
+        ? "typescript"
+        : selectedFileLower.endsWith(".ts")
+            ? "typescript"
+            : selectedFileLower.endsWith(".jsx") || selectedFileLower.endsWith(".js")
+                ? "javascript"
+                : language === "cpp"
+                    ? "cpp"
+                    : language === "jsx"
+                        ? "javascript"
+                        : language === "tsx"
+                            ? "typescript"
+                            : language === "reactjs"
+                                ? "javascript"
+                                : language;
+
+    const fileEntries = Object.keys(files || {}).sort((a, b) => a.localeCompare(b));
+    const folderEntries = (folders || []).slice().sort((a, b) => a.localeCompare(b));
 
     return (
         <div
@@ -93,6 +123,60 @@ export default function EditorPanel({
             </div>
 
             <div className="flex-1 min-h-0">
+                {isFrontend && files && selectedFile && onSelectFile && (
+                    <div className="border-b border-border bg-surface-alt/40 px-2 py-2">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                            <span className="text-[11px] uppercase tracking-wide text-text-muted font-semibold">Workspace</span>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={onCreateFolder}
+                                    className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
+                                    title="Create folder"
+                                >
+                                    <FolderPlus className="w-3.5 h-3.5" />
+                                    Folder
+                                </button>
+                                <button
+                                    onClick={onCreateFile}
+                                    className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
+                                    title="Create file"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    File
+                                </button>
+                            </div>
+                        </div>
+
+                        {folderEntries.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-2">
+                                {folderEntries.map((folder) => (
+                                    <span key={folder} className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border text-[10px] text-text-muted">
+                                        <Folder className="w-3 h-3" />
+                                        {folder}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-1 max-h-20 overflow-auto pr-1">
+                            {fileEntries.map((file) => (
+                                <button
+                                    key={file}
+                                    onClick={() => onSelectFile(file)}
+                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] border transition-colors ${selectedFile === file
+                                        ? "border-[#E6C212]/40 bg-[#E6C212]/10 text-[#E6C212]"
+                                        : "border-border text-text-muted hover:text-text-primary hover:bg-surface-hover"
+                                        }`}
+                                    title={file}
+                                >
+                                    <FileCode className="w-3.5 h-3.5" />
+                                    {file}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 <MonacoEditor
                     height="100%"
                     language={monacoLang}
