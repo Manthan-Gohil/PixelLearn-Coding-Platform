@@ -43,7 +43,7 @@ export default function PreviewPanel({ showTheoryPanel, previewHtml }: PreviewPa
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full text-text-muted text-sm italic">
-                        Preview will appear here...
+                        Click "Run Code" and interact with your React UI here.
                     </div>
                 )}
             </div>
