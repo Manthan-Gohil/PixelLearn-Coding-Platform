@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function FeaturesSection() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const headingRef = useRef<HTMLDivElement>(null);
-    const cardsRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -29,18 +29,18 @@ export default function FeaturesSection() {
                 }
             );
 
-            // Staggered card reveal
-            const cards = cardsRef.current?.querySelectorAll(".feature-card");
-            if (cards) {
+            // Staggered items reveal
+            const items = listRef.current?.querySelectorAll(".wq-expand-item");
+            if (items) {
                 gsap.fromTo(
-                    cards,
-                    { opacity: 0, y: 50, scale: 0.95 },
+                    items,
+                    { opacity: 0, x: -60 },
                     {
-                        opacity: 1, y: 0, scale: 1, duration: 0.7,
-                        stagger: 0.12,
+                        opacity: 1, x: 0, duration: 0.8,
+                        stagger: 0.1,
                         ease: "power3.out",
                         scrollTrigger: {
-                            trigger: cardsRef.current,
+                            trigger: listRef.current,
                             start: "top 80%",
                             toggleActions: "play none none none",
                         },
@@ -57,14 +57,14 @@ export default function FeaturesSection() {
             icon: Code2,
             title: "Interactive Code Editor",
             description:
-                "Write, run, and test code in our Monaco-based editor with syntax highlighting, auto-completion, and instant feedback.",
+                "Write, run, and test code in our Monaco-based editor with syntax highlighting, auto-completion, and instant feedback in a sandboxed environment.",
             accent: "#67e8f9",
         },
         {
             icon: BookOpen,
             title: "Structured Courses",
             description:
-                "Learn through carefully designed courses with chapters and exercises that build progressively from beginner to advanced.",
+                "Learn through carefully designed courses with chapters and exercises that build progressively from beginner to advanced mastery.",
             accent: "#E6C212",
         },
         {
@@ -85,54 +85,74 @@ export default function FeaturesSection() {
             icon: Shield,
             title: "Secure Sandbox",
             description:
-                "Run code safely in our isolated execution environment. Support for Python, JavaScript, Java, C++, and more.",
+                "Run code safely in our isolated execution environment. Full support for Python, JavaScript, Java, C++, and more.",
             accent: "#f87171",
         },
         {
             icon: BarChart3,
             title: "Learning Analytics",
             description:
-                "Visualize your progress with weekly activity charts, completion rates, and personalized insights.",
+                "Visualize your progress with weekly activity charts, completion rates, and personalized insights to optimize your learning.",
             accent: "#a78bfa",
         },
     ];
 
     return (
-        <section ref={sectionRef} className="py-28 relative fb-section-glow">
+        <section ref={sectionRef} className="py-28 relative edge-glow-left edge-glow-right">
             <div className="absolute inset-0 fb-dot-grid opacity-40" />
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div ref={headingRef} className="text-center mb-20 opacity-0">
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6">
+                {/* Heading — WorldQuant Style */}
+                <div ref={headingRef} className="mb-6 opacity-0">
+                    <span className="fb-mono text-[12px] text-[#E6C212] uppercase tracking-[0.3em] mb-4 block">
+                        Our Platform
+                    </span>
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
                         Everything You Need to{" "}
                         <span className="text-[#E6C212]">Level Up</span>
                     </h2>
-                    <p className="fb-mono text-[15px] text-[#A1A1AA] max-w-2xl mx-auto leading-relaxed">
+                    <p className="fb-mono text-[15px] text-[#A1A1AA] max-w-2xl leading-relaxed">
                         A complete platform designed for developers who want to learn by
                         building, not just watching.
                     </p>
                 </div>
 
-                <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* WorldQuant-Style Expandable List */}
+                <div ref={listRef} className="mt-16">
                     {features.map((feature, i) => (
-                        <div
-                            key={i}
-                            className="feature-card fb-card p-7 group cursor-default"
-                        >
-                            <div
-                                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
-                                style={{ backgroundColor: `${feature.accent}15` }}
-                            >
-                                <feature.icon
-                                    className="w-6 h-6"
-                                    style={{ color: feature.accent }}
-                                />
+                        <div key={i} className="wq-expand-item px-4 sm:px-8 py-6 group">
+                            <div className="flex items-start gap-4 sm:gap-8">
+                                {/* Number */}
+                                <span className="wq-expand-num pt-2">
+                                    {String(i + 1).padStart(2, "0")}
+                                </span>
+
+                                {/* Main content */}
+                                <div className="flex-1">
+                                    {/* Title row */}
+                                    <div className="flex items-center gap-4">
+                                        <h3 className="wq-expand-title">{feature.title}</h3>
+                                    </div>
+
+                                    {/* Expandable content */}
+                                    <div className="wq-expand-content">
+                                        <div className="wq-expand-accent mb-4" />
+                                        <div className="flex items-start gap-4">
+                                            <div
+                                                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                                                style={{ backgroundColor: `${feature.accent}15` }}
+                                            >
+                                                <feature.icon
+                                                    className="w-6 h-6"
+                                                    style={{ color: feature.accent }}
+                                                />
+                                            </div>
+                                            <p className="text-[15px] text-[#A1A1AA] leading-relaxed max-w-xl">
+                                                {feature.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 className="text-lg font-semibold text-white mb-3">
-                                {feature.title}
-                            </h3>
-                            <p className="text-sm text-[#A1A1AA] leading-relaxed">
-                                {feature.description}
-                            </p>
                         </div>
                     ))}
                 </div>

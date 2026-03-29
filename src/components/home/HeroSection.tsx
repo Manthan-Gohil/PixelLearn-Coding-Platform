@@ -5,10 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import { Terminal, Users, BookOpen, Zap } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import dynamic from "next/dynamic";
 import TypingText from "@/components/ui/TypingText";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Dynamic import to avoid SSR issues with Three.js
+const ParticleSphere = dynamic(() => import("@/components/ui/ParticleSphere"), {
+    ssr: false,
+    loading: () => null,
+});
 
 // Tilt card component
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -116,7 +123,10 @@ export default function HeroSection() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden edge-glow-left edge-glow-right">
+            {/* Three.js Particle Sphere */}
+            <ParticleSphere />
+
             {/* Dot Grid Background */}
             <div className="absolute inset-0 fb-dot-grid" />
 
@@ -128,11 +138,20 @@ export default function HeroSection() {
                 <h1
                     ref={headingRef}
                     className="text-5xl sm:text-7xl lg:text-[88px] font-extrabold text-white leading-[1.05] tracking-tight mb-8 opacity-0"
+                    style={{ perspective: '600px' }}
                 >
-                    AI Powered Learning
+                    {"AI Powered Learning".split(" ").map((word, i) => (
+                        <span key={i} className="split-word inline-block mr-[0.3em]" style={{ animationDelay: `${0.6 + i * 0.12}s` }}>
+                            {word}
+                        </span>
+                    ))}
                     <br />
-                    Platform for{" "}
-                    <span className="text-[#E6C212]">
+                    {"Platform for".split(" ").map((word, i) => (
+                        <span key={`b-${i}`} className="split-word inline-block mr-[0.3em]" style={{ animationDelay: `${1.0 + i * 0.12}s` }}>
+                            {word}
+                        </span>
+                    ))}{" "}
+                    <span className="text-[#E6C212] split-word inline-block" style={{ animationDelay: '1.3s' }}>
                         <TypingText 
                             texts={["React", "JavaScript", "Python", "TypeScript", "Node.js", "CSS", "HTML"]}
                             typingSpeed={80}

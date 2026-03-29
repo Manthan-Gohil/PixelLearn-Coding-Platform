@@ -1,9 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import GlowOrbs from "../ui/GlowOrbs";
 import FloatingParticles from "../ui/FloatingParticles";
+
+// Dynamic import to avoid SSR issues with canvas
+const MouseParticles = dynamic(() => import("../ui/MouseParticles"), {
+    ssr: false,
+    loading: () => null,
+});
 
 interface StandardLayoutProps {
     children: React.ReactNode;
@@ -18,7 +25,8 @@ interface StandardLayoutProps {
 
 /**
  * StandardLayout provides a consistent shell for most pages in PixelLearn.
- * When flowblockTheme is true, it wraps in a pure black Flowblock-style theme.
+ * When flowblockTheme is true, it wraps in a pure black Flowblock-style theme
+ * with interactive mouse particles in the background.
  */
 export default function StandardLayout({
     children,
@@ -33,6 +41,9 @@ export default function StandardLayout({
     if (flowblockTheme) {
         return (
             <main className={`min-h-screen flowblock-theme ${showNavbar ? "pt-18" : ""} ${className}`}>
+                {/* Interactive Mouse-Following Particles */}
+                <MouseParticles />
+
                 {showNavbar && <Navbar flowblockMode />}
 
                 {noContainer ? children : (

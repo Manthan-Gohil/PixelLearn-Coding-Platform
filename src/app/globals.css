@@ -866,3 +866,268 @@
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ===== WORLDQUANT-INSPIRED ANIMATIONS ===== */
+
+/* Infinite Marquee Scroll */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-marquee-scroll {
+  animation: marquee-scroll linear infinite;
+  will-change: transform;
+}
+
+/* Glitch Hover Effect */
+.glitch-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch-hover::before,
+.glitch-hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch-hover::before {
+  color: #00ffff;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.glitch-hover::after {
+  color: #E6C212;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+.glitch-hover:hover::before {
+  animation: glitch-top 0.3s ease-in-out;
+  opacity: 0.8;
+}
+
+.glitch-hover:hover::after {
+  animation: glitch-bottom 0.3s ease-in-out 0.05s;
+  opacity: 0.8;
+}
+
+@keyframes glitch-top {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-3px, -2px); }
+  40% { transform: translate(3px, 2px); }
+  60% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+}
+
+@keyframes glitch-bottom {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(3px, 2px); }
+  40% { transform: translate(-3px, -2px); }
+  60% { transform: translate(2px, -1px); }
+  80% { transform: translate(-2px, 1px); }
+}
+
+/* Edge Glow Effects */
+.edge-glow-left {
+  position: relative;
+}
+
+.edge-glow-left::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  background: linear-gradient(to right, rgba(0, 100, 255, 0.08), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.edge-glow-right {
+  position: relative;
+}
+
+.edge-glow-right::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  background: linear-gradient(to left, rgba(0, 200, 255, 0.06), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Split-Word Heading Animation */
+.split-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px) rotateX(-15deg);
+  animation: split-word-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center bottom;
+}
+
+@keyframes split-word-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+/* WorldQuant Expandable Feature Item */
+.wq-expand-item {
+  border-bottom: 1px solid #222;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+
+.wq-expand-item:hover {
+  background-color: rgba(230, 194, 18, 0.03);
+}
+
+.wq-expand-title {
+  font-size: clamp(1.5rem, 4vw, 3.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #333;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.1;
+}
+
+.wq-expand-item:hover .wq-expand-title {
+  color: #FFFFFF;
+  transform: translateX(12px);
+}
+
+.wq-expand-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease 0.1s,
+              padding 0.4s ease;
+  padding: 0 0 0 0;
+}
+
+.wq-expand-item:hover .wq-expand-content {
+  max-height: 200px;
+  opacity: 1;
+  padding: 16px 0 24px 0;
+}
+
+/* Horizontal rule accent for expanded item */
+.wq-expand-accent {
+  width: 0;
+  height: 2px;
+  background: #E6C212;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wq-expand-item:hover .wq-expand-accent {
+  width: 60px;
+}
+
+/* Numbered counter for expand items */
+.wq-expand-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #555;
+  transition: color 0.4s ease;
+}
+
+.wq-expand-item:hover .wq-expand-num {
+  color: #E6C212;
+}
+
+/* ===== PORTFOLIO-3 STACKING CARDS ===== */
+
+/* The outer card — gets pinned by GSAP ScrollTrigger */
+.p3-service-card {
+  position: relative;
+  min-height: 300px;
+}
+
+/* The inner card — gets animated upward (y) by GSAP scrub */
+.p3-card-inner {
+  position: relative;
+  will-change: transform;
+  width: calc(100vw - 4em);
+  max-width: 1400px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 2.5em;
+  display: flex;
+  gap: 3em;
+  border-radius: 2em;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+/* Left content area */
+.p3-card-content {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Right image/visual area */
+.p3-card-img {
+  flex: 1;
+  min-width: 280px;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+}
+
+.p3-card-img > div {
+  width: 100%;
+}
+
+/* Mobile: stack vertically, no pinning (handled by JS) */
+@media (max-width: 1000px) {
+  .p3-services {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    padding: 0 1em;
+  }
+
+  .p3-card-inner {
+    width: 100%;
+    min-height: 0;
+    flex-direction: column;
+    gap: 1.5em;
+    padding: 2em;
+    border-radius: 1.5em;
+  }
+
+  .p3-card-img {
+    display: none;
+  }
+}
+
+/* Smooth scroll for the page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Inner page stagger reveal base */
+.stagger-reveal-item {
+  opacity: 0;
+  transform: translateY(40px);
+}

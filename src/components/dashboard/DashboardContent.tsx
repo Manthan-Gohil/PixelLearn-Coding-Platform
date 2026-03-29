@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useApp } from "@/store";
 import { WEEKLY_ACTIVITY } from "@/services/data";
 import { useCoursesData } from "@/hooks/useCoursesData";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
 // Components
 import StatsCards from "./components/StatsCards";
@@ -19,6 +19,8 @@ export default function DashboardContent() {
         difficultyFilter: "all",
     });
     const headerRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 25, duration: 0.5 });
+    const statsRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 30, duration: 0.6, delay: 0.15 });
+    const gridRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 30, duration: 0.7, delay: 0.3 });
 
     const enrolledCourses = useMemo(
         () => allCourses.filter((c) => user.enrolledCourses.includes(c.id)),
@@ -60,12 +62,14 @@ export default function DashboardContent() {
             </div>
 
             {/* Stats Cards */}
-            <StatsCards
-                user={user}
-                totalExercisesCompleted={totalExercisesCompleted}
-            />
+            <div ref={statsRef}>
+                <StatsCards
+                    user={user}
+                    totalExercisesCompleted={totalExercisesCompleted}
+                />
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content Area (Tabs) */}
                 <DashboardTabs
                     user={user}
@@ -85,3 +89,4 @@ export default function DashboardContent() {
         </>
     );
 }
+
