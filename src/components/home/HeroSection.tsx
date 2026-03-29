@@ -138,20 +138,23 @@ export default function HeroSection() {
                 <h1
                     ref={headingRef}
                     className="text-5xl sm:text-7xl lg:text-[88px] font-extrabold text-white leading-[1.05] tracking-tight mb-8 opacity-0"
-                    style={{ perspective: '600px' }}
+                    style={{ perspective: '600px', minHeight: '2.2em' }}
                 >
-                    {"AI Powered Learning".split(" ").map((word, i) => (
+                    {"AI-Powered Coding".split(" ").map((word, i) => (
                         <span key={i} className="split-word inline-block mr-[0.3em]" style={{ animationDelay: `${0.6 + i * 0.12}s` }}>
                             {word}
                         </span>
                     ))}
                     <br />
-                    {"Platform for".split(" ").map((word, i) => (
+                    {"Excellence in".split(" ").map((word, i) => (
                         <span key={`b-${i}`} className="split-word inline-block mr-[0.3em]" style={{ animationDelay: `${1.0 + i * 0.12}s` }}>
                             {word}
                         </span>
                     ))}{" "}
-                    <span className="text-[#E6C212] split-word inline-block" style={{ animationDelay: '1.3s' }}>
+                    <span
+                        className="text-[#E6C212] split-word inline-block"
+                        style={{ animationDelay: '1.15s', minWidth: '10ch' }}
+                    >
                         <TypingText 
                             texts={["React", "JavaScript", "Python", "TypeScript", "Node.js", "CSS", "HTML"]}
                             typingSpeed={80}

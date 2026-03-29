@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
  * These match the --accent1/2/3 from portfolio-3 globals.css
  */
 const CARD_COLORS = [
-    { bg: "#ed6a5a", text: "#141414", muted: "#3a1a16", codeBg: "#d4564a", codeText: "#141414" },
+    { bg: "#00b4d8", text: "#141414", muted: "#3a1a16", codeBg: "#0096c7", codeText: "#141414" },
     { bg: "#f4f1bb", text: "#141414", muted: "#5a5830", codeBg: "#e8e5a0", codeText: "#141414" },
     { bg: "#9bc1bc", text: "#141414", muted: "#344745", codeBg: "#89b0ab", codeText: "#141414" },
     // If there's a 4th, use dark (--fg from portfolio-3)
@@ -26,14 +26,14 @@ const CARD_COLORS = [
 function CourseVisual({ index, theme }: { index: number; theme: typeof CARD_COLORS[0] }) {
     const snippets = [
         {
-            title: "app.py",
+            title: "main.tsx",
             lines: [
-                { text: "from flask import Flask", c: "#7c3aed" },
-                { text: "app = Flask(__name__)", c: theme.text },
+                { text: 'import React from "react";', c: "#2563eb" },
                 { text: "", c: "" },
-                { text: '@app.route("/")', c: "#16a34a" },
-                { text: "def hello():", c: "#2563eb" },
-                { text: '    return "Hello!"', c: "#ca8a04" },
+                { text: "export default function App() {", c: "#7c3aed" },
+                { text: "  return (", c: theme.text },
+                { text: "    <h1>PixelLearn</h1>", c: "#16a34a" },
+                { text: "  );", c: theme.text },
             ],
         },
         {
@@ -48,14 +48,14 @@ function CourseVisual({ index, theme }: { index: number; theme: typeof CARD_COLO
             ],
         },
         {
-            title: "main.tsx",
+            title: "app.py",
             lines: [
-                { text: 'import React from "react";', c: "#2563eb" },
+                { text: "from flask import Flask", c: "#7c3aed" },
+                { text: "app = Flask(__name__)", c: theme.text },
                 { text: "", c: "" },
-                { text: "export default function App() {", c: "#7c3aed" },
-                { text: "  return (", c: theme.text },
-                { text: "    <h1>PixelLearn</h1>", c: "#16a34a" },
-                { text: "  );", c: theme.text },
+                { text: '@app.route("/")', c: "#16a34a" },
+                { text: "def hello():", c: "#2563eb" },
+                { text: '    return "Hello!"', c: "#ca8a04" },
             ],
         },
     ];
