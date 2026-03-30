@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useApp } from "@/store";
 import { PREVIEW_DEBOUNCE_MS, PROCTOR_ALERT_FREQUENCY } from "@/constants/playground";
 import { generateFlowchart } from "@/utils/generateFlowchart";
-import { buildPreviewHtml, getExerciseNavigation, isFrontendLanguage } from "@/utils/playground";
+import { buildPreviewHtml, getExerciseNavigation, isFrontendLanguage, isMultiFileLanguage } from "@/utils/playground";
 import type { Chapter, Course, Exercise } from "@/types";
 import { PlaygroundEditorDidMount } from "@/types/playground";
 import { Loader2 } from "lucide-react";
@@ -74,6 +74,7 @@ function PlaygroundContent({
 
     const completed = exercise ? isExerciseCompleted(exercise.id) : false;
     const isFrontend = exercise ? isFrontendLanguage(exercise.language) : false;
+    const isMultiFile = exercise ? isMultiFileLanguage(exercise.language) : false;
 
     const exerciseFlowchart = useMemo(() => {
         if (!exercise) return null;
@@ -91,7 +92,7 @@ function PlaygroundContent({
             setCurrentHintIndex(0);
             setShowFlowchart(false);
 
-            if (isFrontendLanguage(exercise.language)) {
+            if (isMultiFileLanguage(exercise.language)) {
                 const initialFiles: Record<string, string> = {
                     [DEFAULT_REACT_ENTRY_FILE]: exercise.starterCode,
                 };
@@ -109,23 +110,23 @@ function PlaygroundContent({
     }, [exercise?.id]);
 
     useEffect(() => {
-        if (!isFrontend || !selectedFile) return;
+        if (!isMultiFile || !selectedFile) return;
         const content = files[selectedFile];
         if (typeof content === "string") {
             setCode(content);
         }
-    }, [files, selectedFile, isFrontend]);
+    }, [files, selectedFile, isMultiFile]);
 
     const entryFile = useMemo(() => {
         const keys = Object.keys(files);
-        if (!isFrontend || keys.length === 0) return "";
+        if (!isMultiFile || keys.length === 0) return "";
 
         const preferred = ["src/App.jsx", "App.jsx", "src/App.tsx", "App.tsx"];
         const found = preferred.find((file) => keys.includes(file));
         if (found) return found;
         if (selectedFile && keys.includes(selectedFile)) return selectedFile;
         return keys[0];
-    }, [files, isFrontend, selectedFile]);
+    }, [files, isMultiFile, selectedFile]);
 
     const updatePreview = useCallback((htmlCode: string, lang: string, sourceFiles?: Record<string, string>, previewEntryFile?: string) => {
         setPreviewHtml(buildPreviewHtml(htmlCode, lang, sourceFiles, previewEntryFile));
@@ -133,19 +134,24 @@ function PlaygroundContent({
 
     useEffect(() => {
         if (isFrontend && code) {
-            const timer = setTimeout(() => updatePreview(code, language, files, entryFile), PREVIEW_DEBOUNCE_MS);
+            // For multi-file React, pass files and entryFile for bundling
+            // For single-file HTML/CSS, just pass the code directly
+            const timer = setTimeout(
+                () => updatePreview(code, language, isMultiFile ? files : undefined, isMultiFile ? entryFile : undefined),
+                PREVIEW_DEBOUNCE_MS
+            );
             return () => clearTimeout(timer);
         }
-    }, [code, isFrontend, language, files, entryFile, updatePreview]);
+    }, [code, isFrontend, isMultiFile, language, files, entryFile, updatePreview]);
 
     const handleCodeChange = useCallback((updatedCode: string) => {
         setCode(updatedCode);
-        if (!isFrontend || !selectedFile) return;
+        if (!isMultiFile || !selectedFile) return;
         setFiles((prev) => ({
             ...prev,
             [selectedFile]: updatedCode,
         }));
-    }, [isFrontend, selectedFile]);
+    }, [isMultiFile, selectedFile]);
 
     const handleSelectFile = useCallback((filePath: string) => {
         setSelectedFile(filePath);
@@ -156,16 +162,16 @@ function PlaygroundContent({
     }, [files]);
 
     const handleCreateFolder = useCallback(() => {
-        if (!isFrontend) return;
+        if (!isMultiFile) return;
         const folderPath = window.prompt("Enter folder path (example: src/components)", "src/components");
         if (!folderPath) return;
         const normalized = folderPath.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
         if (!normalized) return;
         setFolders((prev) => (prev.includes(normalized) ? prev : [...prev, normalized]));
-    }, [isFrontend]);
+    }, [isMultiFile]);
 
     const handleCreateFile = useCallback(() => {
-        if (!isFrontend) return;
+        if (!isMultiFile) return;
         const filePathInput = window.prompt("Enter file path (example: src/Child.jsx)", "src/Child.jsx");
         if (!filePathInput) return;
 
@@ -264,7 +270,8 @@ function PlaygroundContent({
         if (!exercise || isRunning) return;
         setIsRunning(true); setOutput("");
         if (isFrontend) {
-            updatePreview(code, language, files, entryFile); setOutput("✓ Preview updated successfully");
+            updatePreview(code, language, isMultiFile ? files : undefined, isMultiFile ? entryFile : undefined);
+            setOutput("✓ Preview updated successfully");
             setIsRunning(false); return;
         }
         try {
@@ -290,7 +297,7 @@ function PlaygroundContent({
     const resetCode = useCallback(() => {
         if (!exercise) return;
 
-        if (isFrontend) {
+        if (isMultiFile) {
             const nextEntry = entryFile || DEFAULT_REACT_ENTRY_FILE;
             setFiles((prev) => ({
                 ...prev,
@@ -303,7 +310,7 @@ function PlaygroundContent({
         setOutput("");
         setInput("");
         setPreviewHtml("");
-    }, [exercise, isFrontend, entryFile]);
+    }, [exercise, isMultiFile, entryFile]);
 
     useEffect(() => {
         if (courseId && !user.enrolledCourses.includes(courseId)) enrollCourse(courseId);
@@ -328,7 +335,7 @@ function PlaygroundContent({
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
-                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={files} folders={folders} selectedFile={selectedFile} onSelectFile={handleSelectFile} onCreateFile={handleCreateFile} onCreateFolder={handleCreateFolder} isRunning={isRunning} completed={completed} isFrontend={isFrontend} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
+                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
                 {!isFrontend && (
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">

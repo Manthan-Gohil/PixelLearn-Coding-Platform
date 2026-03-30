@@ -1,10 +1,16 @@
-import { FRONTEND_LANGUAGES } from "@/constants/playground";
+import { FRONTEND_LANGUAGES, MULTI_FILE_LANGUAGES } from "@/constants/playground";
 import type { Exercise } from "@/types";
 import type { ExerciseNavigation } from "@/types/playground";
 
 export function isFrontendLanguage(language: string): boolean {
   return FRONTEND_LANGUAGES.includes(
     language.toLowerCase() as (typeof FRONTEND_LANGUAGES)[number],
+  );
+}
+
+export function isMultiFileLanguage(language: string): boolean {
+  return MULTI_FILE_LANGUAGES.includes(
+    language.toLowerCase() as (typeof MULTI_FILE_LANGUAGES)[number],
   );
 }
 

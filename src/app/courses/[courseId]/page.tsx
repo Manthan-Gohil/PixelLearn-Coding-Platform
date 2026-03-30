@@ -63,9 +63,17 @@ function CourseDetailContent({ courseId }: { courseId: string }) {
         <div className="lg:col-span-2 space-y-6">
           <div className="fb-card rounded-2xl overflow-hidden">
             <div className="h-48 bg-[#0f0f0f] flex items-center justify-center relative">
-              <span className="text-7xl group-hover:scale-125 transition-transform">
-                {getCategoryIcon(course.category)}
-              </span>
+              {course.thumbnail ? (
+                <img
+                  src={course.thumbnail}
+                  alt={course.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-7xl group-hover:scale-125 transition-transform">
+                  {getCategoryIcon(course.category)}
+                </span>
+              )}
               <div className="absolute top-4 right-4 flex gap-2">
                 {course.isPremium && (
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#E6C212] text-black">

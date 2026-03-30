@@ -21,10 +21,18 @@ export default function ExploreCoursesTab({ user, courses, enrollCourse }: Explo
                         key={course.id}
                         className="fb-card rounded-xl overflow-hidden hover:border-border-light transition-all group"
                     >
-                        <div className="h-32 bg-[#0f0f0f] flex items-center justify-center relative">
-                            <span className="text-4xl group-hover:scale-110 transition-transform">
-                                {getCategoryIcon(course.category, "🧮")}
-                            </span>
+                        <div className="h-32 bg-[#0f0f0f] flex items-center justify-center relative overflow-hidden">
+                            {course.thumbnail ? (
+                                <img
+                                    src={course.thumbnail}
+                                    alt={course.title}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                />
+                            ) : (
+                                <span className="text-4xl group-hover:scale-110 transition-transform">
+                                    {getCategoryIcon(course.category, "🧮")}
+                                </span>
+                            )}
                             {course.isPremium && (
                                 <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#E6C212] text-black">
                                     PRO

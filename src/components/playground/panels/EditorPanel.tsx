@@ -26,6 +26,7 @@ interface EditorPanelProps {
     isRunning: boolean;
     completed: boolean;
     isFrontend: boolean;
+    isMultiFile: boolean;
     showTheoryPanel: boolean;
     handleEditorDidMount: PlaygroundEditorDidMount;
     handleMarkComplete: () => void;
@@ -46,6 +47,7 @@ export default function EditorPanel({
     isRunning,
     completed,
     isFrontend,
+    isMultiFile,
     showTheoryPanel,
     handleEditorDidMount,
     handleMarkComplete,
@@ -123,7 +125,7 @@ export default function EditorPanel({
             </div>
 
             <div className="flex-1 min-h-0">
-                {isFrontend && files && selectedFile && onSelectFile && (
+                {isMultiFile && files && selectedFile && onSelectFile && (
                     <div className="border-b border-border bg-surface-alt/40 px-2 py-2">
                         <div className="flex items-center justify-between gap-2 mb-2">
                             <span className="text-[11px] uppercase tracking-wide text-text-muted font-semibold">Workspace</span>

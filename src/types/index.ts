@@ -60,7 +60,7 @@ export interface Course {
   shortDescription: string;
   category: string;
   difficulty: CourseDifficulty;
-  thumbnail: string;
+  thumbnail?: string | null;
   isPremium: boolean;
   totalXP: number;
   estimatedHours: number;
@@ -68,7 +68,7 @@ export interface Course {
   enrolledCount: number;
   rating: number;
   tags: string[];
-  createdAt: string;
+  createdAt: string | Date;
 }
 
 export interface Chapter {
@@ -89,13 +89,13 @@ export interface Exercise {
   description: string;
   theory: string;
   problemStatement: string;
-  inputExample: string;
-  outputExample: string;
+  inputExample?: string | null;
+  outputExample?: string | null;
   hints: string[];
   constraints: string[];
   starterCode: string;
   solution: string;
-  testCases: TestCase[];
+  testCases?: TestCase[] | null;
   xpReward: number;
   difficulty: ExerciseDifficulty;
   language: string;

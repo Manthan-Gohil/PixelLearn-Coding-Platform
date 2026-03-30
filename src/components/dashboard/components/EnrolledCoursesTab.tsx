@@ -43,8 +43,16 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                         href={`/courses/${course.id}`}
                         className="group fb-card rounded-xl p-5 flex items-center gap-5 hover:border-border-light transition-all"
                     >
-                        <div className="w-16 h-16 rounded-xl bg-[#0f0f0f] flex items-center justify-center text-3xl shrink-0 border border-border">
-                            {getCategoryIcon(course.category)}
+                        <div className="w-16 h-16 rounded-xl bg-[#0f0f0f] flex items-center justify-center text-3xl shrink-0 border border-border overflow-hidden">
+                            {course.thumbnail ? (
+                                <img
+                                    src={course.thumbnail}
+                                    alt={course.title}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                />
+                            ) : (
+                                getCategoryIcon(course.category)
+                            )}
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">

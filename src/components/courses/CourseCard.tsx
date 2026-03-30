@@ -32,9 +32,17 @@ export default function CourseCard({
       }}
     >
       <div className="h-44 bg-[#0f0f0f] flex items-center justify-center relative overflow-hidden">
-        <span className="text-6xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 ease-out">
-          {getCategoryIcon(course.category)}
-        </span>
+        {course.thumbnail ? (
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          />
+        ) : (
+          <span className="text-6xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 ease-out">
+            {getCategoryIcon(course.category)}
+          </span>
+        )}
         <div className="absolute inset-0 bg-linear-to-t from-surface/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute top-3 right-3 flex gap-2">
           {course.isPremium && (
