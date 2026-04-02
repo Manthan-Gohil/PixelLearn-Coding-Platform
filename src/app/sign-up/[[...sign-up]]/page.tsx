@@ -15,7 +15,7 @@ export default function SignUpPage() {
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-extrabold tracking-tight">
                         <span className="text-text-primary">PIXEL</span>
-                        <span className="gradient-text">LEARN</span>
+                        <span className="text-[#E6C212]">LEARN</span>
                     </h1>
                     <p className="text-text-muted text-sm mt-1">Start Your Coding Journey</p>
                 </div>

@@ -31,7 +31,7 @@ export default function Footer({ flowblockMode = false }: { flowblockMode?: bool
                                     <Code2 className="w-5 h-5 text-black" />
                                 </div>
                                 <span className="text-xl font-bold text-white tracking-tight">
-                                    PixelLearn
+                                    Pixel<span className="text-[#E6C212]">Learn</span>
                                 </span>
                             </Link>
                             <p className="text-sm text-[#71717A] max-w-xs leading-relaxed">
@@ -120,7 +120,7 @@ export default function Footer({ flowblockMode = false }: { flowblockMode?: bool
                                 <Code2 className="w-5 h-5 text-white" />
                             </div>
                             <span className="text-xl font-bold text-text-primary">
-                                Pixel<span className="gradient-text">Learn</span>
+                                Pixel<span className="text-[#E6C212]">Learn</span>
                             </span>
                         </Link>
                         <p className="text-text-secondary text-sm mb-6 max-w-xs leading-relaxed">
