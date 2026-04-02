@@ -12,13 +12,9 @@ import {
     Sparkles,
     Download,
 } from "lucide-react";
-import * as pdfjs from "pdfjs-dist";
 import { AI_ANALYSIS_STEPS } from "@/constants/ai-tools";
 import { useAIApi } from "@/hooks/useAIApi";
 import type { ResumeResult } from "@/types/ai-tools";
-
-// Set worker source for pdfjs-dist
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
 export default function ResumeAnalyser() {
     const { isLoading, callAI } = useAIApi();
@@ -32,6 +28,9 @@ export default function ResumeAnalyser() {
     const extractTextFromPDF = async (file: File) => {
         setIsParsing(true);
         try {
+            const pdfjs = await import("pdfjs-dist");
+            pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
             const arrayBuffer = await file.arrayBuffer();
             const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
             const pdf = await loadingTask.promise;
