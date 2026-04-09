@@ -70,7 +70,7 @@ pixellearn/
 ### 💻 Interactive Code Editor
 - **Monaco Editor** (VS Code engine) with syntax highlighting
 - **Multi-language Support**: Python, JavaScript, Java, C++, and more
-- **Real-time Code Execution** via Piston API (sandboxed)
+- **Real-time Code Execution** via Wandbox API
 - **Output Console** with error handling
 - **Code Reset** and exercise navigation
 
@@ -86,13 +86,6 @@ pixellearn/
 - **Career Q&A Agent**: Ask career questions, get detailed guidance
 - **Resume Analyzer**: ATS scoring, skills gap, improvement suggestions
 - **Career Roadmap Generator**: Step-by-step roadmap with milestones
-
-### 💰 SaaS Subscription
-- **Free Plan**: Basic courses, limited exercises
-- **Pro Plan** ($19/mo or $149/year): All courses, AI tools, unlimited exercises
-- **Feature Comparison Table**
-- **FAQ Section**
-- **Monthly/Yearly billing toggle**
 
 ### 🔐 Authentication & Authorization
 - Clerk-based authentication
@@ -136,7 +129,7 @@ npx prisma db seed
 | Styling | Tailwind CSS 4 |
 | Code Editor | Monaco Editor |
 | AI | Groq API (Llama 3.3 70B) |
-| Code Execution | Piston API (sandboxed) |
+| Code Execution | Wandbox API |
 | Icons | Lucide React |
 
 ## 📄 License
