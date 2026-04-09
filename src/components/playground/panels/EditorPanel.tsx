@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Loader2, RotateCcw, CheckCircle2, Play, Plus, FolderPlus, FileCode, Folder } from "lucide-react";
+import { Loader2, RotateCcw, CheckCircle2, Play, Plus, FolderPlus, FileCode, Folder, ArrowRightLeft } from "lucide-react";
 import type { PlaygroundEditorDidMount } from "@/types/playground";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -32,6 +32,7 @@ interface EditorPanelProps {
     handleMarkComplete: () => void;
     runCode: () => void;
     resetCode: () => void;
+    onConvertCode?: () => void;
 }
 
 export default function EditorPanel({
@@ -53,6 +54,7 @@ export default function EditorPanel({
     handleMarkComplete,
     runCode,
     resetCode,
+    onConvertCode,
 }: EditorPanelProps) {
     const selectedFileLower = (selectedFile || "").toLowerCase();
     const monacoLang = selectedFileLower.endsWith(".tsx")
@@ -98,6 +100,16 @@ export default function EditorPanel({
                         <RotateCcw className="w-3.5 h-3.5" />
                         Reset
                     </button>
+                    {onConvertCode && (
+                        <button
+                            onClick={onConvertCode}
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-[#00FFFF] bg-[#00FFFF]/5 border border-[#00FFFF]/20 hover:bg-[#00FFFF]/10 hover:border-[#00FFFF]/40 transition-all"
+                            title="Convert code to another language"
+                        >
+                            <ArrowRightLeft className="w-3.5 h-3.5" />
+                            Convert
+                        </button>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     {!completed && (

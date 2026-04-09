@@ -18,6 +18,7 @@ import OutputPanel from "@/components/playground/panels/OutputPanel";
 import PreviewPanel from "@/components/playground/panels/PreviewPanel";
 import PasteBlockedAlert from "@/components/playground/PasteBlockedAlert";
 import FlowchartHintModal from "@/components/playground/FlowchartHintModal";
+import CodeConverterModal from "@/components/playground/CodeConverterModal";
 
 const DEFAULT_REACT_ENTRY_FILE = "src/App.jsx";
 
@@ -49,6 +50,7 @@ function PlaygroundContent({
     const [showFlowchart, setShowFlowchart] = useState(false);
     const [tabSwitchCount, setTabSwitchCount] = useState(0);
     const editorRef = useRef<Parameters<PlaygroundEditorDidMount>[0] | null>(null);
+    const [showConverter, setShowConverter] = useState(false);
 
     useEffect(() => {
         fetch("/api/courses")
@@ -330,12 +332,13 @@ function PlaygroundContent({
                 </div>
             )}
             <FlowchartHintModal show={showFlowchart} onClose={() => setShowFlowchart(false)} exercise={exercise} flowchart={exerciseFlowchart} />
+            <CodeConverterModal show={showConverter} onClose={() => setShowConverter(false)} code={code} sourceLanguage={language} />
             <PlaygroundHeader courseId={courseId} courseTitle={course.title} exerciseTitle={exercise.title} completed={completed} exerciseXp={exercise.xpReward} showTheoryPanel={showTheoryPanel} setShowTheoryPanel={setShowTheoryPanel} prevExerciseId={prevExercise?.id} nextExerciseId={nextExercise?.id} exerciseIndex={exerciseIndex} totalExercises={allExercises.length} />
             <div className="flex-1 flex overflow-hidden">
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
-                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} />
+                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} />
                 {!isFrontend && (
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">
