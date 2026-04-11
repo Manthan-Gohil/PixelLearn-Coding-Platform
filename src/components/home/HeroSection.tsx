@@ -123,7 +123,7 @@ export default function HeroSection() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden edge-glow-left edge-glow-right">
+        <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-x-hidden edge-glow-left edge-glow-right">
             {/* Three.js Particle Sphere */}
             <ParticleSphere />
 
@@ -168,7 +168,7 @@ export default function HeroSection() {
                 {/* Subtitle */}
                 <p
                     ref={subtitleRef}
-                    className="fb-mono text-[15px] sm:text-[17px] text-[#A1A1AA] max-w-2xl leading-relaxed mb-10 opacity-0"
+                    className="fb-mono text-[14px] sm:text-[17px] text-[#A1A1AA] max-w-2xl leading-relaxed mb-10 opacity-0 break-words overflow-hidden w-full"
                 >
                     A complete coding environment with interactive courses, AI-powered career intelligence, and practice-first learning — built for developers who want to level up.
                 </p>
@@ -184,38 +184,38 @@ export default function HeroSection() {
                 </div>
 
                 {/* Stats Counters */}
-                <div ref={statsRef} className="grid grid-cols-3 gap-8 mb-24 max-w-xl opacity-0">
+                <div ref={statsRef} className="grid grid-cols-3 gap-3 sm:gap-8 mb-24 w-full max-w-xl opacity-0">
                     <div className="text-center">
-                        <div className="flex items-center justify-center gap-2 mb-1">
-                            <Users className="w-4 h-4 text-[#E6C212]" />
-                            <span className="text-2xl sm:text-3xl font-extrabold text-white fb-mono">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1">
+                            <Users className="w-3 h-3 sm:w-4 sm:h-4 text-[#E6C212] shrink-0" />
+                            <span className="text-lg sm:text-3xl font-extrabold text-white fb-mono">
                                 <AnimatedCounter value={10000} suffix="+" duration={2000} />
                             </span>
                         </div>
-                        <p className="text-xs text-[#71717A] uppercase tracking-wider fb-mono">Developers</p>
+                        <p className="text-[10px] sm:text-xs text-[#71717A] uppercase tracking-wider fb-mono">Developers</p>
                     </div>
                     <div className="text-center">
-                        <div className="flex items-center justify-center gap-2 mb-1">
-                            <BookOpen className="w-4 h-4 text-[#67e8f9]" />
-                            <span className="text-2xl sm:text-3xl font-extrabold text-white fb-mono">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1">
+                            <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-[#67e8f9] shrink-0" />
+                            <span className="text-lg sm:text-3xl font-extrabold text-white fb-mono">
                                 <AnimatedCounter value={50} suffix="+" duration={2000} />
                             </span>
                         </div>
-                        <p className="text-xs text-[#71717A] uppercase tracking-wider fb-mono">Courses</p>
+                        <p className="text-[10px] sm:text-xs text-[#71717A] uppercase tracking-wider fb-mono">Courses</p>
                     </div>
                     <div className="text-center">
-                        <div className="flex items-center justify-center gap-2 mb-1">
-                            <Zap className="w-4 h-4 text-[#4ade80]" />
-                            <span className="text-2xl sm:text-3xl font-extrabold text-white fb-mono">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1">
+                            <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-[#4ade80] shrink-0" />
+                            <span className="text-lg sm:text-3xl font-extrabold text-white fb-mono">
                                 <AnimatedCounter value={500} suffix="+" duration={2000} />
                             </span>
                         </div>
-                        <p className="text-xs text-[#71717A] uppercase tracking-wider fb-mono">Exercises</p>
+                        <p className="text-[10px] sm:text-xs text-[#71717A] uppercase tracking-wider fb-mono">Exercises</p>
                     </div>
                 </div>
 
                 {/* Video / Interactive Demo with Tilt */}
-                <div ref={videoRef} className="max-w-4xl mx-auto opacity-0">
+                <div ref={videoRef} className="w-full max-w-4xl mx-auto opacity-0 overflow-hidden">
                     <TiltCard className="relative">
                         {/* Glow behind card */}
                         <div className="absolute -inset-4 bg-[radial-gradient(ellipse,rgba(0,255,255,0.08)_0%,transparent_70%)] blur-2xl pointer-events-none" />

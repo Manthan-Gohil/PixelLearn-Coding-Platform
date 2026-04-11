@@ -339,9 +339,9 @@ export default function ResumeAnalyser() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-320px)] min-h-150">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-[calc(100vh-320px)] min-h-0">
                 {/* Left Side: Report */}
-                <div className="fb-card rounded-2xl overflow-hidden flex flex-col border border-border/50">
+                <div className="fb-card rounded-2xl overflow-hidden flex flex-col border border-border/50 md:col-span-1">
                     <div className="p-4 border-b border-border/50 bg-surface-alt/50 flex items-center justify-between">
                         <h3 className="font-semibold text-text-primary">Analysis Report</h3>
                         {resumeResult && (
@@ -355,7 +355,7 @@ export default function ResumeAnalyser() {
                     </div>
 
                     <div
-                        className="flex-1 overflow-y-auto p-6 space-y-8"
+                        className="flex-1 overflow-y-auto p-6 space-y-8 max-h-[60vh] lg:max-h-none"
                         onMouseEnter={() => { document.body.style.overflow = 'hidden'; }}
                         onMouseLeave={() => { document.body.style.overflow = ''; }}
                     >
@@ -628,9 +628,9 @@ export default function ResumeAnalyser() {
                     </div>
                 </div>
 
-                {/* Right Side: Preview */}
+                {/* Right Side: Preview — hidden on mobile, shown on md+ */}
                 <div
-                    className="fb-card rounded-2xl overflow-hidden flex flex-col border border-border/50"
+                    className="hidden md:flex fb-card rounded-2xl overflow-hidden flex-col border border-border/50 min-h-[300px] lg:min-h-0"
                     onMouseEnter={() => { document.body.style.overflow = 'hidden'; }}
                     onMouseLeave={() => { document.body.style.overflow = ''; }}
                 >
@@ -638,13 +638,35 @@ export default function ResumeAnalyser() {
                         <h3 className="font-semibold text-text-primary">Document Preview</h3>
                         <span className="text-xs text-text-muted">{resumeFile?.name || "No file selected"}</span>
                     </div>
-                    <div className="flex-1 bg-surface-dark relative">
+                    <div className="flex-1 bg-surface-dark relative overflow-hidden">
                         {resumePreviewUrl ? (
-                            <iframe
-                                src={resumePreviewUrl}
-                                className="w-full h-full border-none"
-                                title="Resume Preview"
-                            />
+                            <>
+                                {/* Desktop: use iframe for visual PDF preview */}
+                                <iframe
+                                    src={resumePreviewUrl}
+                                    className="w-full h-full border-none hidden md:block"
+                                    title="Resume Preview"
+                                />
+                                {/* Mobile: show extracted text to avoid iframe freeze */}
+                                <div className="md:hidden flex flex-col h-full overflow-hidden">
+                                    <div className="px-3 py-2 text-[10px] text-text-muted bg-surface-alt/60 border-b border-border/30 shrink-0 flex items-center gap-2">
+                                        <FileText className="w-3 h-3" />
+                                        PDF text content preview
+                                    </div>
+                                    <div className="flex-1 overflow-y-auto p-4">
+                                        {resumeText ? (
+                                            <pre className="text-xs text-text-secondary whitespace-pre-wrap break-words font-mono leading-relaxed">
+                                                {resumeText}
+                                            </pre>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center h-full text-center p-6 gap-3">
+                                                <Loader2 className="w-6 h-6 animate-spin text-[#E6C212]" />
+                                                <p className="text-sm text-text-muted">Extracting text...</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
                         ) : (
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
                                 <Upload className="w-12 h-12 text-text-muted mb-4 opacity-20" />

@@ -31,8 +31,7 @@ export default function TheoryPanel({
 }: TheoryPanelProps) {
     return (
         <div
-            className={`border-r border-border flex flex-col overflow-hidden transition-all duration-300 ${isFrontend ? "w-1/4" : "w-1/2"
-                }`}
+            className={`border-r border-border flex flex-col overflow-hidden transition-all duration-300 w-full ${isFrontend ? "lg:w-1/4" : "lg:w-1/2"}`}
         >
             {/* Panel Tabs */}
             <div className="flex items-center border-b border-border bg-surface-alt/50 shrink-0">

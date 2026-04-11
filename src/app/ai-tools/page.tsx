@@ -93,7 +93,7 @@ function AIToolsContent() {
             </div>
 
             {/* Tabs */}
-            <div ref={tabsRef} className="grid grid-cols-3 gap-4 mb-8">
+            <div ref={tabsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
                 {AI_TOOL_TABS.map((tab) => {
                     const Icon = tabIcons[tab.icon];
                     return (
@@ -110,16 +110,20 @@ function AIToolsContent() {
                                 e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
                             }}
                         >
-                            <Icon
-                                className={`w-6 h-6 mb-2 transition-all duration-300 ${activeTab === tab.id
-                                    ? "text-[#E6C212] scale-110"
-                                    : "text-text-muted"
-                                    }`}
-                            />
-                            <div className="font-semibold text-text-primary text-sm">
-                                {tab.label}
+                            <div className="flex sm:block items-center gap-3">
+                                <Icon
+                                    className={`w-6 h-6 sm:mb-2 transition-all duration-300 shrink-0 ${activeTab === tab.id
+                                        ? "text-[#E6C212] scale-110"
+                                        : "text-text-muted"
+                                        }`}
+                                />
+                                <div>
+                                    <div className="font-semibold text-text-primary text-sm">
+                                        {tab.label}
+                                    </div>
+                                    <div className="text-xs text-text-muted">{tab.description}</div>
+                                </div>
                             </div>
-                            <div className="text-xs text-text-muted">{tab.description}</div>
                         </button>
                     );
                 })}

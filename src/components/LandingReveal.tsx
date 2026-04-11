@@ -269,8 +269,8 @@ export default function LandingReveal() {
                         </span>
                     </div>
 
-                    <div className="flex items-center justify-center">
-                        <h1 className="text-7xl sm:text-9xl font-extrabold flex items-center justify-center tracking-tighter">
+                    <div className="flex items-center justify-center px-4">
+                        <h1 className="text-[11vw] sm:text-9xl font-extrabold flex items-center justify-center tracking-tighter">
                             {/* PIXEL */}
                             <div className="flex text-white py-2">
                                 {pixelChars.map((char, i) => (
@@ -299,8 +299,8 @@ export default function LandingReveal() {
             </div>
 
             {/* Bottom Status Panel */}
-            <div className="relative z-10 bg-black/60 border-t border-white/5 p-8 flex items-center justify-between backdrop-blur-2xl reveal-item">
-                <div className="flex items-center gap-10 text-[11px]">
+            <div className="relative z-10 bg-black/60 border-t border-white/5 px-4 py-4 sm:p-8 flex items-center justify-between backdrop-blur-2xl reveal-item">
+                <div className="flex items-center gap-4 sm:gap-10 text-[11px]">
                     <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-[#E6C212]/10 border border-[#E6C212]/20 shadow-inner">
                         <span className="w-2.5 h-2.5 rounded-full bg-[#4ade80] animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
                         <span className="text-[#E6C212] font-black tracking-[0.2em] uppercase">SYSTEM_READY</span>

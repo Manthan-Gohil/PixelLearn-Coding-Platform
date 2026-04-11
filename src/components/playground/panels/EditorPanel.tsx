@@ -78,23 +78,23 @@ export default function EditorPanel({
 
     return (
         <div
-            className={`flex flex-col overflow-hidden border-r border-border transition-all duration-300 ${isFrontend
+            className={`flex flex-col overflow-hidden border-r border-border transition-all duration-300 w-full ${isFrontend
                 ? showTheoryPanel
-                    ? "w-[38%]"
-                    : "w-1/2"
+                    ? "lg:w-[38%]"
+                    : "lg:w-1/2"
                 : showTheoryPanel
-                    ? "w-1/2"
-                    : "w-full"
+                    ? "lg:w-1/2"
+                    : "lg:w-full"
                 }`}
         >
-            <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
-                <div className="flex items-center gap-2">
-                    <div className="px-3 py-1 rounded-md bg-[#E6C212]/10 border border-[#E6C212]/30 text-[11px] font-bold text-[#E6C212] uppercase tracking-wider fb-mono">
+            <div className="flex items-center justify-between px-2 py-2 border-b border-border bg-surface-alt/50 shrink-0 overflow-x-auto gap-2">
+                <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="px-2 py-1 rounded-md bg-[#E6C212]/10 border border-[#E6C212]/30 text-[10px] font-bold text-[#E6C212] uppercase tracking-wider fb-mono whitespace-nowrap">
                         {language === "cpp" ? "C++" : language === "java" ? "Java" : language === "jsx" ? "React (JSX)" : language === "tsx" ? "React (TSX)" : language === "reactjs" ? "React (JS)" : language}
                     </div>
                     <button
                         onClick={resetCode}
-                        className="flex items-center gap-1 px-2 py-1 rounded text-xs text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 rounded text-xs text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors whitespace-nowrap shrink-0"
                         title="Reset code"
                     >
                         <RotateCcw className="w-3.5 h-3.5" />
@@ -103,7 +103,7 @@ export default function EditorPanel({
                     {onConvertCode && (
                         <button
                             onClick={onConvertCode}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-[#00FFFF] bg-[#00FFFF]/5 border border-[#00FFFF]/20 hover:bg-[#00FFFF]/10 hover:border-[#00FFFF]/40 transition-all"
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-[#00FFFF] bg-[#00FFFF]/5 border border-[#00FFFF]/20 hover:bg-[#00FFFF]/10 hover:border-[#00FFFF]/40 transition-all whitespace-nowrap shrink-0"
                             title="Convert code to another language"
                         >
                             <ArrowRightLeft className="w-3.5 h-3.5" />
@@ -111,11 +111,11 @@ export default function EditorPanel({
                         </button>
                     )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 shrink-0">
                     {!completed && (
                         <button
                             onClick={handleMarkComplete}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-success/30 text-success hover:bg-success/10 transition-all"
+                            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium border border-success/30 text-success hover:bg-success/10 transition-all whitespace-nowrap"
                         >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             Complete
@@ -124,7 +124,7 @@ export default function EditorPanel({
                     <button
                         onClick={runCode}
                         disabled={isRunning}
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#E6C212] text-black hover:bg-[#f0d030] disabled:opacity-50 transition-all shadow-lg shadow-black/30 fb-mono"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E6C212] text-black hover:bg-[#f0d030] disabled:opacity-50 transition-all shadow-lg shadow-black/30 fb-mono whitespace-nowrap shrink-0"
                     >
                         {isRunning ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />

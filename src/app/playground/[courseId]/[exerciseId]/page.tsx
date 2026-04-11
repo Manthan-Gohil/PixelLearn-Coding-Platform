@@ -49,6 +49,7 @@ function PlaygroundContent({
     const [showPasteAlert, setShowPasteAlert] = useState(false);
     const [showFlowchart, setShowFlowchart] = useState(false);
     const [tabSwitchCount, setTabSwitchCount] = useState(0);
+    const [mobilePanel, setMobilePanel] = useState<"theory" | "editor" | "output">("editor");
     const editorRef = useRef<Parameters<PlaygroundEditorDidMount>[0] | null>(null);
     const [showConverter, setShowConverter] = useState(false);
 
@@ -333,8 +334,10 @@ function PlaygroundContent({
             )}
             <FlowchartHintModal show={showFlowchart} onClose={() => setShowFlowchart(false)} exercise={exercise} flowchart={exerciseFlowchart} />
             <CodeConverterModal show={showConverter} onClose={() => setShowConverter(false)} code={code} sourceLanguage={language} />
-            <PlaygroundHeader courseId={courseId} courseTitle={course.title} exerciseTitle={exercise.title} completed={completed} exerciseXp={exercise.xpReward} showTheoryPanel={showTheoryPanel} setShowTheoryPanel={setShowTheoryPanel} prevExerciseId={prevExercise?.id} nextExerciseId={nextExercise?.id} exerciseIndex={exerciseIndex} totalExercises={allExercises.length} />
-            <div className="flex-1 flex overflow-hidden">
+            <PlaygroundHeader courseId={courseId} courseTitle={course.title} exerciseTitle={exercise.title} completed={completed} exerciseXp={exercise.xpReward} showTheoryPanel={showTheoryPanel} setShowTheoryPanel={setShowTheoryPanel} prevExerciseId={prevExercise?.id} nextExerciseId={nextExercise?.id} exerciseIndex={exerciseIndex} totalExercises={allExercises.length} mobilePanel={mobilePanel} setMobilePanel={setMobilePanel} isFrontend={isFrontend} />
+
+            {/* === DESKTOP LAYOUT (lg+): side-by-side panels === */}
+            <div className="hidden lg:flex flex-1 overflow-hidden">
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
@@ -361,6 +364,56 @@ function PlaygroundContent({
                     </div>
                 )}
                 {isFrontend && <PreviewPanel showTheoryPanel={showTheoryPanel} previewHtml={previewHtml} />}
+            </div>
+
+            {/* === MOBILE LAYOUT (< lg): full-screen panels with bottom tab bar === */}
+            <div className="flex lg:hidden flex-1 flex-col overflow-hidden">
+                {/* Panel display area - conditionally render to ensure Monaco gets correct dimensions */}
+                <div className="flex-1 overflow-hidden relative">
+                    {/* Theory Panel - conditionally mounted */}
+                    {mobilePanel === 'theory' && (
+                        <div className="absolute inset-0 flex overflow-hidden">
+                            <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
+                        </div>
+                    )}
+
+                    {/* Editor Panel - conditionally mounted so Monaco initializes with correct pixel dimensions */}
+                    {mobilePanel === 'editor' && (
+                        <div className="absolute inset-0 flex overflow-hidden">
+                            <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={false} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} />
+                        </div>
+                    )}
+
+                    {/* Output / Preview Panel - conditionally mounted */}
+                    {mobilePanel === 'output' && (
+                        <div className="absolute inset-0 flex overflow-hidden">
+                            {!isFrontend ? (
+                                <div className="flex-1 flex flex-col bg-surface-alt overflow-hidden">
+                                    <div className="flex-1 flex flex-col min-h-0">
+                                        <OutputPanel output={output} setOutput={setOutput} />
+                                        <div className="flex-1 flex flex-col border-t border-border min-h-0">
+                                            <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
+                                                <div className="flex items-center gap-2 text-xs text-text-muted">
+                                                    <Loader2 className="w-3.5 h-3.5" />
+                                                    Input (stdin)
+                                                </div>
+                                            </div>
+                                            <textarea
+                                                value={input}
+                                                onChange={(e) => setInput(e.target.value)}
+                                                placeholder="Enter program input here (if needed)..."
+                                                className="flex-1 w-full bg-transparent p-4 font-mono text-sm resize-none focus:outline-none text-text-secondary"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <PreviewPanel showTheoryPanel={false} previewHtml={previewHtml} />
+                            )}
+                        </div>
+                    )}
+                </div>
+
             </div>
         </div>
     );
