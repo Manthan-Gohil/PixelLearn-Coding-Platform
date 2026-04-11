@@ -8,7 +8,7 @@ function serializeUser(user: {
   email: string;
   name: string;
   avatar: string | null;
-  subscription: "free" | "pro";
+  subscription: string;
   xp: number;
   streak: number;
   referralCode: string;
