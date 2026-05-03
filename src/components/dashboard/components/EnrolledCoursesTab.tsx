@@ -64,6 +64,11 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                                         PRO
                                     </span>
                                 )}
+                                {progress.percentage === 100 && (
+                                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0 flex items-center gap-1">
+                                        🏆 Completed
+                                    </span>
+                                )}
                             </div>
                             <div className="flex items-center gap-4 text-xs text-text-muted mb-2">
                                 <span className="flex items-center gap-1">
@@ -78,7 +83,7 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                             {/* Progress Bar */}
                             <div className="w-full bg-surface-hover rounded-full h-2">
                                 <div
-                                    className="h-2 rounded-full bg-[#E6C212] transition-all duration-500"
+                                    className={`h-2 rounded-full transition-all duration-500 ${progress.percentage === 100 ? "bg-emerald-500" : "bg-[#E6C212]"}`}
                                     style={{
                                         width: `${progress.percentage}%`,
                                     }}
@@ -86,12 +91,25 @@ export default function EnrolledCoursesTab({ enrolledCourses, getUserProgress, s
                             </div>
                         </div>
                         <div className="text-right shrink-0">
-                            <div className="text-lg font-bold text-[#E6C212] fb-mono">
-                                {progress.percentage}%
-                            </div>
-                            <div className="text-xs text-text-muted">
-                                complete
-                            </div>
+                            {progress.percentage === 100 ? (
+                                <>
+                                    <div className="text-lg font-bold text-emerald-400 fb-mono">
+                                        ✓
+                                    </div>
+                                    <div className="text-xs text-emerald-400 font-medium">
+                                        Mastered
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="text-lg font-bold text-[#E6C212] fb-mono">
+                                        {progress.percentage}%
+                                    </div>
+                                    <div className="text-xs text-text-muted">
+                                        complete
+                                    </div>
+                                </>
+                            )}
                         </div>
                         <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-[#E6C212] transition-colors shrink-0" />
                     </Link>

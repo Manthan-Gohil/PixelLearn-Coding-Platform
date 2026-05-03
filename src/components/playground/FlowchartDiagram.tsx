@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
 import type { FlowchartEdge, FlowchartNode } from "@/types";
 
 interface FlowchartDiagramProps {
@@ -8,12 +8,20 @@ interface FlowchartDiagramProps {
     edges: FlowchartEdge[];
 }
 
-export default function FlowchartDiagram({
+export interface FlowchartDiagramHandle {
+    getCanvas: () => HTMLCanvasElement | null;
+}
+
+const FlowchartDiagram = forwardRef<FlowchartDiagramHandle, FlowchartDiagramProps>(function FlowchartDiagram({
     nodes,
     edges,
-}: FlowchartDiagramProps) {
+}, ref) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useImperativeHandle(ref, () => ({
+        getCanvas: () => canvasRef.current,
+    }));
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
@@ -235,4 +243,6 @@ export default function FlowchartDiagram({
             <canvas ref={canvasRef} className="block" />
         </div>
     );
-}
+});
+
+export default FlowchartDiagram;

@@ -10,6 +10,7 @@ import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import StatsCards from "./components/StatsCards";
 import DashboardTabs from "./components/DashboardTabs";
 import ActivitySidebar from "./components/ActivitySidebar";
+import CompletedCoursesSection from "./components/CompletedCoursesSection";
 
 export default function DashboardContent() {
     const { user, getUserProgress, enrollCourse } = useApp();
@@ -47,6 +48,14 @@ export default function DashboardContent() {
         []
     );
 
+    const completedCourses = useMemo(
+        () => enrolledCourses.filter((course) => {
+            const progress = getUserProgress(course.id, course);
+            return progress.total > 0 && progress.percentage === 100;
+        }),
+        [enrolledCourses, getUserProgress]
+    );
+
     return (
         <>
             {/* Header */}
@@ -68,6 +77,9 @@ export default function DashboardContent() {
                     totalExercisesCompleted={totalExercisesCompleted}
                 />
             </div>
+
+            {/* Completed Courses / Proficiencies */}
+            <CompletedCoursesSection completedCourses={completedCourses} />
 
             <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content Area (Tabs) */}

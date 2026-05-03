@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Loader2, RotateCcw, CheckCircle2, Play, Plus, FolderPlus, FileCode, Folder, ArrowRightLeft } from "lucide-react";
+import { Loader2, RotateCcw, CheckCircle2, Play, Plus, FolderPlus, FileCode, Folder, ArrowRightLeft, GitBranch } from "lucide-react";
 import type { PlaygroundEditorDidMount } from "@/types/playground";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -33,6 +33,7 @@ interface EditorPanelProps {
     runCode: () => void;
     resetCode: () => void;
     onConvertCode?: () => void;
+    onGenerateFlowchart?: () => void;
 }
 
 export default function EditorPanel({
@@ -55,6 +56,7 @@ export default function EditorPanel({
     runCode,
     resetCode,
     onConvertCode,
+    onGenerateFlowchart,
 }: EditorPanelProps) {
     const selectedFileLower = (selectedFile || "").toLowerCase();
     const monacoLang = selectedFileLower.endsWith(".tsx")
@@ -108,6 +110,16 @@ export default function EditorPanel({
                         >
                             <ArrowRightLeft className="w-3.5 h-3.5" />
                             Convert
+                        </button>
+                    )}
+                    {onGenerateFlowchart && (
+                        <button
+                            onClick={onGenerateFlowchart}
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-purple-400 bg-purple-400/5 border border-purple-400/20 hover:bg-purple-400/10 hover:border-purple-400/40 transition-all whitespace-nowrap shrink-0"
+                            title="Generate flowchart from your code"
+                        >
+                            <GitBranch className="w-3.5 h-3.5" />
+                            Flowchart
                         </button>
                     )}
                 </div>

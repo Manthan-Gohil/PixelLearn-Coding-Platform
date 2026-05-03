@@ -6,6 +6,7 @@ import { useApp } from "@/store";
 import { PREVIEW_DEBOUNCE_MS, PROCTOR_ALERT_FREQUENCY } from "@/constants/playground";
 import { generateFlowchart } from "@/utils/generateFlowchart";
 import { buildPreviewHtml, getExerciseNavigation, isFrontendLanguage, isMultiFileLanguage } from "@/utils/playground";
+import { isPythonVisualizationCode, runPythonWithPyodide } from "@/utils/pyodide-runner";
 import type { Chapter, Course, Exercise } from "@/types";
 import { PlaygroundEditorDidMount } from "@/types/playground";
 import { Loader2 } from "lucide-react";
@@ -19,6 +20,7 @@ import PreviewPanel from "@/components/playground/panels/PreviewPanel";
 import PasteBlockedAlert from "@/components/playground/PasteBlockedAlert";
 import FlowchartHintModal from "@/components/playground/FlowchartHintModal";
 import CodeConverterModal from "@/components/playground/CodeConverterModal";
+import CodeFlowchartModal from "@/components/playground/CodeFlowchartModal";
 
 const DEFAULT_REACT_ENTRY_FILE = "src/App.jsx";
 
@@ -35,6 +37,7 @@ function PlaygroundContent({
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState("");
     const [output, setOutput] = useState("");
+    const [plots, setPlots] = useState<string[]>([]);
     const [input, setInput] = useState("");
     const [isRunning, setIsRunning] = useState(false);
     const [showHints, setShowHints] = useState(false);
@@ -52,6 +55,7 @@ function PlaygroundContent({
     const [mobilePanel, setMobilePanel] = useState<"theory" | "editor" | "output">("editor");
     const editorRef = useRef<Parameters<PlaygroundEditorDidMount>[0] | null>(null);
     const [showConverter, setShowConverter] = useState(false);
+    const [showCodeFlowchart, setShowCodeFlowchart] = useState(false);
 
     useEffect(() => {
         fetch("/api/courses")
@@ -271,21 +275,47 @@ function PlaygroundContent({
 
     const runCode = useCallback(async () => {
         if (!exercise || isRunning) return;
-        setIsRunning(true); setOutput("");
+        setIsRunning(true); setOutput(""); setPlots([]);
+
+        // ── Browser preview (HTML / CSS / React) ──────────────────────────────
         if (isFrontend) {
             updatePreview(code, language, isMultiFile ? files : undefined, isMultiFile ? entryFile : undefined);
             setOutput("✓ Preview updated successfully");
             setIsRunning(false); return;
         }
+
+        // ── Python with visualization libraries → run in Pyodide (browser) ───
+        if (exercise.language === "python" && isPythonVisualizationCode(code)) {
+            try {
+                const result = await runPythonWithPyodide(
+                    code,
+                    input,
+                    (msg) => setOutput(msg), // live status in the output pane
+                );
+                setPlots(result.plots);
+                if (result.error) setOutput(result.error);
+                else if (result.output) setOutput(result.output);
+                else if (!result.plots.length) setOutput("(No output)");
+                else setOutput(""); // plots only — clear the status message
+            } catch {
+                setOutput("⚠ Pyodide execution failed.");
+            } finally {
+                setIsRunning(false);
+            }
+            return;
+        }
+
+        // ── All other languages → server-side execution ───────────────────────
         try {
             const response = await fetch("/api/execute", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ code, language: exercise.language, input }),
             });
             const result = await response.json();
+            if (result.plots && result.plots.length > 0) setPlots(result.plots);
             if (result.error && result.error.trim()) setOutput(result.error);
             else if (result.output !== undefined) setOutput(result.output);
-            else setOutput("(No output)");
+            else if (!result.plots?.length) setOutput("(No output)");
         } catch {
             setOutput("⚠ Execution service unavailable.");
         } finally {
@@ -334,6 +364,7 @@ function PlaygroundContent({
             )}
             <FlowchartHintModal show={showFlowchart} onClose={() => setShowFlowchart(false)} exercise={exercise} flowchart={exerciseFlowchart} />
             <CodeConverterModal show={showConverter} onClose={() => setShowConverter(false)} code={code} sourceLanguage={language} />
+            <CodeFlowchartModal show={showCodeFlowchart} onClose={() => setShowCodeFlowchart(false)} code={code} language={language} />
             <PlaygroundHeader courseId={courseId} courseTitle={course.title} exerciseTitle={exercise.title} completed={completed} exerciseXp={exercise.xpReward} showTheoryPanel={showTheoryPanel} setShowTheoryPanel={setShowTheoryPanel} prevExerciseId={prevExercise?.id} nextExerciseId={nextExercise?.id} exerciseIndex={exerciseIndex} totalExercises={allExercises.length} mobilePanel={mobilePanel} setMobilePanel={setMobilePanel} isFrontend={isFrontend} />
 
             {/* === DESKTOP LAYOUT (lg+): side-by-side panels === */}
@@ -341,12 +372,12 @@ function PlaygroundContent({
                 {showTheoryPanel && (
                     <TheoryPanel exercise={exercise} showTheory={showTheory} setShowTheory={setShowTheory} showHints={showHints} setShowHints={setShowHints} currentHintIndex={currentHintIndex} setCurrentHintIndex={setCurrentHintIndex} setShowFlowchart={setShowFlowchart} isFrontend={isFrontend} courseId={courseId} exerciseFlowchart={exerciseFlowchart} />
                 )}
-                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} />
+                <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={showTheoryPanel} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} onGenerateFlowchart={() => setShowCodeFlowchart(true)} />
                 {!isFrontend && (
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">
-                            <OutputPanel output={output} setOutput={setOutput} />
-                            <div className="flex-1 flex flex-col border-t border-border min-h-0">
+                            <OutputPanel output={output} setOutput={setOutput} plots={plots} />
+                            <div className="h-40 shrink-0 flex flex-col border-t border-border">
                                 <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
                                     <div className="flex items-center gap-2 text-xs text-text-muted">
                                         <Loader2 className="w-3.5 h-3.5" />
@@ -380,7 +411,7 @@ function PlaygroundContent({
                     {/* Editor Panel - conditionally mounted so Monaco initializes with correct pixel dimensions */}
                     {mobilePanel === 'editor' && (
                         <div className="absolute inset-0 flex overflow-hidden">
-                            <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={false} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} />
+                            <EditorPanel language={language} code={code} setCode={handleCodeChange} files={isMultiFile ? files : undefined} folders={isMultiFile ? folders : undefined} selectedFile={isMultiFile ? selectedFile : undefined} onSelectFile={isMultiFile ? handleSelectFile : undefined} onCreateFile={isMultiFile ? handleCreateFile : undefined} onCreateFolder={isMultiFile ? handleCreateFolder : undefined} isRunning={isRunning} completed={completed} isFrontend={isFrontend} isMultiFile={isMultiFile} showTheoryPanel={false} handleEditorDidMount={handleEditorDidMount} handleMarkComplete={handleMarkComplete} runCode={runCode} resetCode={resetCode} onConvertCode={() => setShowConverter(true)} onGenerateFlowchart={() => setShowCodeFlowchart(true)} />
                         </div>
                     )}
 
@@ -390,8 +421,8 @@ function PlaygroundContent({
                             {!isFrontend ? (
                                 <div className="flex-1 flex flex-col bg-surface-alt overflow-hidden">
                                     <div className="flex-1 flex flex-col min-h-0">
-                                        <OutputPanel output={output} setOutput={setOutput} />
-                                        <div className="flex-1 flex flex-col border-t border-border min-h-0">
+                                        <OutputPanel output={output} setOutput={setOutput} plots={plots} />
+                                        <div className="h-40 shrink-0 flex flex-col border-t border-border">
                                             <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
                                                 <div className="flex items-center gap-2 text-xs text-text-muted">
                                                     <Loader2 className="w-3.5 h-3.5" />

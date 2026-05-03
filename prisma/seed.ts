@@ -9,6 +9,7 @@ import { REACTJS_COURSE_ID, seedReactJsCourse } from "./seeds/seed-reactjs";
 import { HTML_COURSE_ID, seedHtmlCourse } from "./seeds/seed-html";
 import { CSS_COURSE_ID, seedCssCourse } from "./seeds/seed-css";
 import { JAVA_COURSE_ID, seedJavaCourse } from "./seeds/seed-java";
+import { PYTHON_COURSE_ID, seedPythonCourse } from "./seeds/seed-python";
 
 type TestCase = {
   input: string;
@@ -53,6 +54,7 @@ async function main() {
     JS_COURSE_ID_FROM_MODULE,
     REACTJS_COURSE_ID,
     JAVA_COURSE_ID,
+    PYTHON_COURSE_ID,
   ];
 
   const removedCourses = await prisma.course.deleteMany({
@@ -74,6 +76,7 @@ async function main() {
   await seedJsCourseFromModule();
   await seedReactJsCourse();
   await seedJavaCourse();
+  await seedPythonCourse();
   console.log("Seed completed successfully.");
 }
 
