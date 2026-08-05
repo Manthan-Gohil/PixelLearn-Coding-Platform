@@ -1,0 +1,19 @@
+services:
+  ai-service:
+    build: .
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      qdrant:
+        condition: service_started
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+volumes:
+  qdrant-data:
