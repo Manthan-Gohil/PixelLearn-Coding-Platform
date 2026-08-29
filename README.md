@@ -128,7 +128,7 @@ npx prisma db seed
 | Auth | Clerk |
 | Styling | Tailwind CSS 4 |
 | Code Editor | Monaco Editor |
-| AI | Groq API (Llama 3.3 70B) |
+| AI | Groq API (openai/gpt-oss-20b) |
 | Code Execution | Wandbox API |
 | Icons | Lucide React |
 

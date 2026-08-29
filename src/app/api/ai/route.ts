@@ -16,12 +16,16 @@ async function callGroqAPI(messages: { role: string; content: string }[]) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-20b",
         messages,
         temperature: 0.7,
         max_tokens: 4096,
       }),
     });
+
+    if (!res.ok) {
+      throw new Error(`Groq API returned status ${res.status}`);
+    }
 
     const data = await res.json();
     let content: string =

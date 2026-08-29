@@ -40,12 +40,17 @@ async function callGroq(messages: { role: string; content: string }[], temperatu
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-20b",
       messages,
       temperature,
       max_tokens: 4096,
     }),
   });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || `Groq API returned status ${res.status}`);
+  }
 
   const data = await res.json();
   let content: string =
@@ -159,9 +164,9 @@ ${code}`;
     }
 
     return NextResponse.json({ compatible: true, convertedCode: content });
-  } catch {
+  } catch (err: any) {
     return NextResponse.json(
-      { error: "Failed to convert code. Please try again." },
+      { error: err.message || "Failed to convert code. Please try again." },
       { status: 500 }
     );
   }

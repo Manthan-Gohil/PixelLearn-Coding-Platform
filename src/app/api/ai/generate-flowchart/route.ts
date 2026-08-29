@@ -70,7 +70,7 @@ ${code}`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-20b",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
@@ -79,6 +79,14 @@ ${code}`;
         max_tokens: 4096,
       }),
     });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return NextResponse.json(
+        { error: errorData.error?.message || `Groq API returned status ${res.status}` },
+        { status: res.status }
+      );
+    }
 
     const data = await res.json();
     let content: string =
@@ -107,6 +115,13 @@ ${code}`;
         { status: 500 }
       );
     }
+
+    // Normalize edges to support from/to format (in case the model output uses source/target)
+    flowchart.edges = flowchart.edges.map((edge: any) => ({
+      from: edge.from || edge.source,
+      to: edge.to || edge.target,
+      label: edge.label,
+    }));
 
     return NextResponse.json({ flowchart });
   } catch {
