@@ -1,5 +1,4 @@
-"use client";
-
+import { useRef, useEffect } from "react";
 import { BookOpen, Code2, GitBranch, EyeOff, Eye, Lightbulb } from "lucide-react";
 import type { Exercise, FlowchartEdge, FlowchartNode } from "@/types";
 
@@ -62,7 +61,7 @@ export default function TheoryPanel({
             </div>
 
             {/* Panel Content */}
-            <div className="flex-1 overflow-y-auto p-5">
+            <div className="flex-1 overflow-y-auto p-5 overscroll-contain">
                 {showTheory ? (
                     <div className="prose prose-invert prose-sm max-w-none">
                         <div className="mb-6">

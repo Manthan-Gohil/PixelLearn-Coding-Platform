@@ -669,7 +669,7 @@ export default function ExamInterfacePage() {
       {/* ── WORKSPACE SPLIT SCREEN ── */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT PANE: Problem Description & Inputs */}
-        <section className="w-full md:w-[45%] lg:w-[42%] border-r border-border flex flex-col bg-[#101010] overflow-y-auto">
+        <section className="w-full md:w-[45%] lg:w-[42%] border-r border-border flex flex-col bg-[#101010] overflow-y-auto overscroll-contain">
           {currentProblem ? (
             <div className="p-6 space-y-6">
               <div>

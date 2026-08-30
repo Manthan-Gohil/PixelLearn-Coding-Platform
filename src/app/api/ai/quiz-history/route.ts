@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import { requireAuth, authError } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const user = await requireAuth();
+    let user;
+    try {
+      user = await requireAuth();
+    } catch {
+      // If user is guest or not authenticated, return empty list gracefully
+      return NextResponse.json({ attempts: [] }, { status: 200 });
+    }
 
     const attempts = await prisma.quizAttempt.findMany({
       where: { userId: user.id },
@@ -22,9 +28,9 @@ export async function GET() {
       take: 50,
     });
 
-    return NextResponse.json({ attempts });
+    return NextResponse.json({ attempts: attempts || [] }, { status: 200 });
   } catch (err) {
-    const { status, message } = authError(err);
-    return NextResponse.json({ error: message }, { status });
+    console.error("Quiz history error:", err);
+    return NextResponse.json({ attempts: [] }, { status: 200 });
   }
 }

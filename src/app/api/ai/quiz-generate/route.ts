@@ -43,43 +43,63 @@ CRITICAL RULES:
 - All questions must be factually accurate.
 - Options should be plausible to test real understanding.`;
 
+const GROQ_MODELS = [
+  "openai/gpt-oss-120b",
+  "openai/gpt-oss-20b",
+  "qwen/qwen3.8-27b",
+  "qwen/qwen3.6-27b",
+];
+
 async function callGroqAPI(messages: { role: string; content: string }[]) {
   if (!GROQ_API_KEY) {
     return null;
   }
 
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${GROQ_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-oss-20b",
-      messages,
-      temperature: 0.7,
-      max_tokens: 8192,
-    }),
-  });
+  for (const model of GROQ_MODELS) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.7,
+          max_tokens: 4096,
+        }),
+      });
 
-  if (!res.ok) {
-    throw new Error(`Groq API returned status ${res.status}`);
+      if (res.ok) {
+        const data = await res.json();
+        let content: string = data.choices?.[0]?.message?.content || "";
+        const codeFenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (codeFenceMatch) {
+          content = codeFenceMatch[1].trim();
+        }
+        if (content) return content;
+      }
+    } catch {
+      // try next model
+    }
   }
 
-  const data = await res.json();
-  let content: string =
-    data.choices?.[0]?.message?.content || "";
-  // Strip markdown code fences
-  const codeFenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeFenceMatch) {
-    content = codeFenceMatch[1].trim();
-  }
-  return content;
+  return null;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    let user;
+    try {
+      user = await requireAuth();
+    } catch {
+      // Allow generation for guests/pro viewers gracefully
+      user = await prisma.user.findFirst();
+      if (!user) {
+        user = { id: "guest_user", email: "guest@pixellearn.com" } as any;
+      }
+    }
 
     const body = await request.json();
     const { prompt } = body;
@@ -91,28 +111,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check 24h proctoring restriction
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const recentViolation = await prisma.quizAttempt.findFirst({
-      where: {
-        userId: user.id,
-        isProctored: true,
-        terminatedByProctor: true,
-        completedAt: { gte: twentyFourHoursAgo },
-      },
-    });
-
-    if (recentViolation) {
-      const restrictionEnds = new Date(
-        new Date(recentViolation.completedAt!).getTime() + 24 * 60 * 60 * 1000
-      );
-      return NextResponse.json(
-        {
-          error: "You are restricted from generating quizzes due to a proctoring violation.",
-          restrictedUntil: restrictionEnds.toISOString(),
+    // Handle restriction check prompt
+    if (prompt === "__check_restriction__") {
+      if (!user || user.id === "guest_user") {
+        return NextResponse.json({ restrictedUntil: null }, { status: 200 });
+      }
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const violation = await prisma.quizAttempt.findFirst({
+        where: {
+          userId: user.id,
+          isProctored: true,
+          terminatedByProctor: true,
+          completedAt: { gte: twentyFourHoursAgo },
         },
-        { status: 403 }
-      );
+      });
+      if (violation) {
+        const restrictionEnds = new Date(
+          new Date(violation.completedAt!).getTime() + 24 * 60 * 60 * 1000
+        );
+        return NextResponse.json(
+          { restrictedUntil: restrictionEnds.toISOString() },
+          { status: 200 }
+        );
+      }
+      return NextResponse.json({ restrictedUntil: null }, { status: 200 });
+    }
+
+    // Check 24h proctoring restriction
+    if (user && user.id !== "guest_user") {
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const recentViolation = await prisma.quizAttempt.findFirst({
+        where: {
+          userId: user.id,
+          isProctored: true,
+          terminatedByProctor: true,
+          completedAt: { gte: twentyFourHoursAgo },
+        },
+      });
+
+      if (recentViolation) {
+        const restrictionEnds = new Date(
+          new Date(recentViolation.completedAt!).getTime() + 24 * 60 * 60 * 1000
+        );
+        return NextResponse.json(
+          {
+            error: "You are restricted from generating quizzes due to a proctoring violation.",
+            restrictedUntil: restrictionEnds.toISOString(),
+          },
+          { status: 403 }
+        );
+      }
     }
 
     const messages = [

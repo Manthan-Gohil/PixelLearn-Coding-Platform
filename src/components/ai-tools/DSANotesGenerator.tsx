@@ -166,7 +166,7 @@ export default function DSANotesGenerator() {
       .catch(() => {});
   }, []);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -231,10 +231,22 @@ export default function DSANotesGenerator() {
 
   const loadConversation = async (id: string) => {
     setActiveConvoId(id);
-    setMessages([]);
     setSidebarOpen(false);
-    // We don't have a "load messages" endpoint; messages load as user continues chatting
-    // The conversation context is maintained server-side
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`/api/ai/dsa-conversations?id=${id}`);
+      const data = await res.json();
+      if (data.conversation?.messages) {
+        setMessages(data.conversation.messages);
+      } else {
+        setMessages([]);
+      }
+    } catch {
+      setMessages([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const deleteConversation = async (id: string) => {
@@ -283,7 +295,7 @@ export default function DSANotesGenerator() {
           >
             <Plus className="w-4 h-4" /> New Chat
           </button>
-          <div className="flex-1 overflow-y-auto space-y-1">
+          <div className="flex-1 overflow-y-auto space-y-1 overscroll-contain">
             {conversations.map((c) => (
               <div
                 key={c.id}
@@ -319,7 +331,7 @@ export default function DSANotesGenerator() {
       {/* Main Chat Area */}
       <div className="flex-1 fb-card rounded-xl flex flex-col overflow-hidden">
         {/* Chat Header */}
-        <div className="p-4 border-b border-border flex items-center gap-3">
+        <div className="p-4 border-b border-border flex items-center gap-3 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-1.5 rounded-lg hover:bg-surface-hover transition-colors"
@@ -331,7 +343,7 @@ export default function DSANotesGenerator() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Code2 className="w-16 h-16 text-text-muted opacity-20 mb-4" />

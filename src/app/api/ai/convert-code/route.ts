@@ -32,37 +32,45 @@ function getLanguageLabel(lang: string): string {
   return LANGUAGE_NAMES[lang.toLowerCase()] || lang;
 }
 
+const GROQ_MODELS = [
+  "openai/gpt-oss-120b",
+  "openai/gpt-oss-20b",
+  "qwen/qwen3.8-27b",
+  "qwen/qwen3.6-27b",
+];
+
 async function callGroq(messages: { role: string; content: string }[], temperature = 0.3) {
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${GROQ_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-oss-20b",
-      messages,
-      temperature,
-      max_tokens: 4096,
-    }),
-  });
+  for (const model of GROQ_MODELS) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature,
+          max_tokens: 4096,
+        }),
+      });
 
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || `Groq API returned status ${res.status}`);
+      if (res.ok) {
+        const data = await res.json();
+        let content: string = data.choices?.[0]?.message?.content || "";
+        const codeFenceMatch = content.match(/```(?:\w+)?\s*([\s\S]*?)```/);
+        if (codeFenceMatch) {
+          content = codeFenceMatch[1].trim();
+        }
+        if (content) return content;
+      }
+    } catch {
+      // try next model
+    }
   }
 
-  const data = await res.json();
-  let content: string =
-    data.choices?.[0]?.message?.content || "";
-
-  // Strip markdown code fences
-  const codeFenceMatch = content.match(/```(?:\w+)?\s*([\s\S]*?)```/);
-  if (codeFenceMatch) {
-    content = codeFenceMatch[1].trim();
-  }
-
-  return content;
+  return "";
 }
 
 export async function POST(request: NextRequest) {

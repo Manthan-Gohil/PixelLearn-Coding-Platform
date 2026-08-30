@@ -63,39 +63,48 @@ RULES:
 Code:
 ${code}`;
 
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${GROQ_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-oss-20b",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        temperature: 0.2,
-        max_tokens: 4096,
-      }),
-    });
+    const GROQ_MODELS = [
+      "openai/gpt-oss-120b",
+      "openai/gpt-oss-20b",
+      "qwen/qwen3.8-27b",
+      "qwen/qwen3.6-27b",
+    ];
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      return NextResponse.json(
-        { error: errorData.error?.message || `Groq API returned status ${res.status}` },
-        { status: res.status }
-      );
-    }
+    let content = "";
+    for (const model of GROQ_MODELS) {
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${GROQ_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userMessage },
+            ],
+            temperature: 0.2,
+            max_tokens: 4096,
+          }),
+        });
 
-    const data = await res.json();
-    let content: string =
-      data.choices?.[0]?.message?.content || "";
-
-    // Strip markdown code fences
-    const codeFenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (codeFenceMatch) {
-      content = codeFenceMatch[1].trim();
+        if (res.ok) {
+          const data = await res.json();
+          let rawContent = data.choices?.[0]?.message?.content || "";
+          const codeFenceMatch = rawContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+          if (codeFenceMatch) {
+            rawContent = codeFenceMatch[1].trim();
+          }
+          if (rawContent) {
+            content = rawContent;
+            break;
+          }
+        }
+      } catch {
+        // try next model
+      }
     }
 
     let flowchart;

@@ -634,20 +634,6 @@ export default function QuizGenerator() {
   const [restriction, setRestriction] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check restriction on mount
-  useEffect(() => {
-    fetch("/api/ai/quiz-generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: "__check_restriction__" }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.restrictedUntil) setRestriction(d.restrictedUntil);
-      })
-      .catch(() => {});
-  }, []);
-
   const handleGenerate = useCallback(
     async (prompt: string, proctored: boolean) => {
       setIsLoading(true);

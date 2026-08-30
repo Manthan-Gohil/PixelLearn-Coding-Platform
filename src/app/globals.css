@@ -62,21 +62,37 @@
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--color-surface);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--color-border-light);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 999px;
+    border: 1px solid transparent;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-text-muted);
+    background: var(--color-primary);
+  }
+
+  /* Ensure smooth, isolated scrolling across all scroll containers */
+  .overflow-y-auto,
+  .overflow-y-scroll,
+  .overflow-auto,
+  .overflow-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Prevent code blocks and inner pre tags from trapping vertical wheel scroll */
+  pre, code, textarea {
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y !important;
   }
 }
 

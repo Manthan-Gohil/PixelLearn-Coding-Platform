@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Terminal, X, ImageIcon, Download, Maximize2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface OutputPanelProps {
@@ -129,7 +127,7 @@ export default function OutputPanel({ output, setOutput, plots = [] }: OutputPan
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-1 text-sm">
+            <div className="flex-1 overflow-y-auto p-4 space-y-1 text-sm overscroll-contain">
                 {isEmpty ? (
                     <span className="text-text-muted text-xs block text-center sm:text-left mt-2">
                         Click &quot;Run Code&quot; to see output here...
