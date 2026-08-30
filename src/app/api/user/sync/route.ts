@@ -8,6 +8,7 @@ function serializeUser(user: {
   email: string;
   name: string;
   avatar: string | null;
+  isAdmin: boolean;
   subscription: string;
   xp: number;
   streak: number;
@@ -27,6 +28,7 @@ function serializeUser(user: {
     email: user.email,
     name: user.name,
     avatar: user.avatar,
+    isAdmin: user.isAdmin,
     subscription: user.subscription,
     xp: user.xp,
     streak: user.streak,

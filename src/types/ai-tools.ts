@@ -1,8 +1,8 @@
 import type { ExperienceLevel } from "./index";
 
-export type AITabId = "career-qa" | "resume" | "roadmap";
+export type AITabId = "dsa-notes" | "quiz" | "resume" | "roadmap";
 
-export type AIToolTabIconName = "Brain" | "FileText" | "Rocket";
+export type AIToolTabIconName = "Code2" | "Trophy" | "FileText" | "Rocket";
 
 export interface AIToolTabConfig {
   id: AITabId;

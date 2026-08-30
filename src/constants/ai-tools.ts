@@ -3,10 +3,16 @@ import { COURSE_DIFFICULTIES } from "@/constants/courses";
 
 export const AI_TOOL_TABS: AIToolTabConfig[] = [
   {
-    id: "career-qa",
-    label: "Career Q&A",
-    icon: "Brain",
-    description: "Ask career questions",
+    id: "dsa-notes",
+    label: "DSA Notes",
+    icon: "Code2",
+    description: "Generate DSA interview notes",
+  },
+  {
+    id: "quiz",
+    label: "Quiz Generator",
+    icon: "Trophy",
+    description: "Generate AI-powered quizzes",
   },
   {
     id: "resume",

@@ -3,6 +3,7 @@ import { pythonStrategy } from "./python";
 import { cppStrategy } from "./cpp";
 import { cStrategy } from "./c";
 import { javaStrategy } from "./java";
+import { javascriptStrategy } from "./javascript";
 
 // ─── Language Registry ───────────────────────────────────────────────────────
 // Maps language identifiers (as received from the frontend) to their
@@ -29,6 +30,10 @@ registry.set("c", cStrategy);
 
 // ── Java ────────────────────────────────────────────────────────────────────
 registry.set("java", javaStrategy);
+
+// ── JavaScript (Node.js) ────────────────────────────────────────────────────
+registry.set("javascript", javascriptStrategy);
+registry.set("js", javascriptStrategy);
 
 /**
  * Retrieves the execution strategy for a given language identifier.

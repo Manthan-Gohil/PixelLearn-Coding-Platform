@@ -12,7 +12,8 @@ import {
 } from "@/constants/ai-tools";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import {
-    Brain,
+    Code2,
+    Trophy,
     FileText,
     Rocket,
     Sparkles,
@@ -23,13 +24,14 @@ import {
 import type { AITabId, AIToolTabIconName } from "@/types/ai-tools";
 
 // Components
-import CareerQA from "@/components/ai-tools/CareerQA";
+import DSANotesGenerator from "@/components/ai-tools/DSANotesGenerator";
+import QuizGenerator from "@/components/ai-tools/QuizGenerator";
 import ResumeAnalyser from "@/components/ai-tools/ResumeAnalyser";
 import RoadmapGenerator from "@/components/ai-tools/RoadmapGenerator";
 
 function AIToolsContent() {
     const { user } = useApp();
-    const [activeTab, setActiveTab] = useState<AITabId>("career-qa");
+    const [activeTab, setActiveTab] = useState<AITabId>("dsa-notes");
     const isPro = user.subscription === "pro";
 
     const headerRef = useScrollReveal<HTMLDivElement>({ direction: "up", distance: 30, duration: 0.6 });
@@ -40,8 +42,9 @@ function AIToolsContent() {
         duration: 0.5,
     });
 
-    const tabIcons: Record<AIToolTabIconName, typeof Brain> = {
-        Brain,
+    const tabIcons: Record<AIToolTabIconName, typeof Code2> = {
+        Code2,
+        Trophy,
         FileText,
         Rocket,
     };
@@ -84,16 +87,16 @@ function AIToolsContent() {
                     <Sparkles className="w-4 h-4 text-[#E6C212] animate-float-subtle" />
                     <span className="text-sm font-medium text-[#E6C212]">AI-Powered</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-                    AI Career <span className="text-[#E6C212]">Intelligence</span>
+            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
+                    AI <span className="text-[#E6C212]">Tools</span>
                 </h1>
                 <p className="text-text-secondary text-lg fb-mono">
-                    Get personalized career guidance, resume analysis, and roadmap generation
+                    DSA notes, quizzes, resume analysis, and career roadmaps
                 </p>
             </div>
 
             {/* Tabs */}
-            <div ref={tabsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+            <div ref={tabsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {AI_TOOL_TABS.map((tab) => {
                     const Icon = tabIcons[tab.icon];
                     return (
@@ -131,7 +134,8 @@ function AIToolsContent() {
 
             {/* Content with animation */}
             <div key={activeTab} className="animate-slide-up" style={{ animationDuration: "0.4s" }}>
-                {activeTab === "career-qa" && <CareerQA />}
+                {activeTab === "dsa-notes" && <DSANotesGenerator />}
+                {activeTab === "quiz" && <QuizGenerator />}
                 {activeTab === "resume" && <ResumeAnalyser />}
                 {activeTab === "roadmap" && <RoadmapGenerator />}
             </div>

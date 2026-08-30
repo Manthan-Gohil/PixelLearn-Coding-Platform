@@ -2,6 +2,7 @@
 export interface User {
   id: string;
   clerkId?: string;
+  isAdmin?: boolean;
   email: string;
   name: string;
   avatar?: string;

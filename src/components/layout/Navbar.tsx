@@ -9,6 +9,7 @@ import {
     BookOpen,
     Code2,
     Brain,
+    Trophy,
     Menu,
     X,
     Zap,
@@ -49,6 +50,7 @@ export default function Navbar({ flowblockMode = false }: { flowblockMode?: bool
         { href: "/dashboard", label: "Dashboard", icon: BookOpen },
         { href: "/courses", label: "Courses", icon: Code2 },
         { href: "/ai-tools", label: "AI Tools", icon: Brain },
+        { href: "/exams", label: "Exams", icon: Trophy },
         { href: "/pricing", label: "Pricing", icon: Crown },
     ];
 
@@ -179,6 +181,7 @@ export default function Navbar({ flowblockMode = false }: { flowblockMode?: bool
         { href: "/dashboard", label: "Dashboard", icon: BookOpen },
         { href: "/courses", label: "Courses", icon: Code2 },
         { href: "/ai-tools", label: "AI Tools", icon: Brain },
+        { href: "/exams", label: "Exams", icon: Trophy },
         { href: "/pricing", label: "Pricing", icon: Crown },
     ];
 
