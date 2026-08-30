@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
         title,
         description,
         duration: parseInt(duration),
+        isPublished: true,
       },
     });
 

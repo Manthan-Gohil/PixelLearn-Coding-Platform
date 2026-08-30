@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth, requireAdmin, authError } from "@/lib/auth";
+import { requireAuth, authError } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-// GET /api/exams/[examId]/results — get results (user sees own, admin sees all)
+// GET /api/exams/[examId]/results — get results
+// Returns candidate's own attempt & best submissions, plus if admin, all candidates' attempts
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ examId: string }> }
@@ -11,45 +12,13 @@ export async function GET(
     const user = await requireAuth();
     const { examId } = await params;
 
-    if (user.isAdmin) {
-      // Admin view — all attempts with submissions
-      const attempts = await prisma.examAttempt.findMany({
-        where: { examId },
-        include: {
-          user: {
-            select: { id: true, name: true, email: true, avatar: true },
-          },
-          submissions: {
-            include: {
-              problem: { select: { title: true, points: true } },
-            },
-            orderBy: { submittedAt: "desc" },
-          },
-        },
-        orderBy: { totalScore: "desc" },
-      });
-
-      return NextResponse.json({
-        attempts: attempts.map((a) => ({
-          ...a,
-          startedAt: a.startedAt.toISOString(),
-          deadline: a.deadline.toISOString(),
-          completedAt: a.completedAt?.toISOString() || null,
-          submissions: a.submissions.map((s) => ({
-            ...s,
-            submittedAt: s.submittedAt.toISOString(),
-          })),
-        })),
-      });
-    }
-
-    // User view — own attempt only
-    const attempt = await prisma.examAttempt.findUnique({
+    // 1. Fetch user's own attempt (if attempted)
+    const ownAttempt = await prisma.examAttempt.findUnique({
       where: { examId_userId: { examId, userId: user.id } },
       include: {
         submissions: {
           include: {
-            problem: { select: { title: true, points: true } },
+            problem: { select: { id: true, title: true, points: true, difficulty: true } },
           },
           orderBy: { submittedAt: "desc" },
         },
@@ -59,35 +28,40 @@ export async function GET(
       },
     });
 
-    if (!attempt) {
-      return NextResponse.json(
-        { error: "No attempt found" },
-        { status: 404 }
-      );
-    }
+    let formattedOwnAttempt = null;
+    let bestSubmissions: Array<{
+      problemId: string;
+      problemTitle: string;
+      problemPoints: number;
+      verdict: string;
+      score: number;
+      passedTests: number;
+      totalTests: number;
+      language: string;
+    }> = [];
 
-    // Get best submission per problem
-    const bestByProblem: Record<string, typeof attempt.submissions[0]> = {};
-    for (const s of attempt.submissions) {
-      if (!bestByProblem[s.problemId] || s.score > bestByProblem[s.problemId].score) {
-        bestByProblem[s.problemId] = s;
+    if (ownAttempt) {
+      const bestByProblem: Record<string, typeof ownAttempt.submissions[0]> = {};
+      for (const s of ownAttempt.submissions) {
+        if (!bestByProblem[s.problemId] || s.score > bestByProblem[s.problemId].score) {
+          bestByProblem[s.problemId] = s;
+        }
       }
-    }
 
-    return NextResponse.json({
-      attempt: {
-        id: attempt.id,
-        examTitle: attempt.exam.title,
-        examDuration: attempt.exam.duration,
-        totalScore: attempt.totalScore,
-        maxScore: attempt.maxScore,
-        startedAt: attempt.startedAt.toISOString(),
-        deadline: attempt.deadline.toISOString(),
-        completedAt: attempt.completedAt?.toISOString() || null,
-        terminatedByProctor: attempt.terminatedByProctor,
-        violations: attempt.violations,
-      },
-      bestSubmissions: Object.values(bestByProblem).map((s) => ({
+      formattedOwnAttempt = {
+        id: ownAttempt.id,
+        examTitle: ownAttempt.exam.title,
+        examDuration: ownAttempt.exam.duration,
+        totalScore: ownAttempt.totalScore,
+        maxScore: ownAttempt.maxScore,
+        startedAt: ownAttempt.startedAt.toISOString(),
+        deadline: ownAttempt.deadline.toISOString(),
+        completedAt: ownAttempt.completedAt?.toISOString() || null,
+        terminatedByProctor: ownAttempt.terminatedByProctor,
+        violations: ownAttempt.violations,
+      };
+
+      bestSubmissions = Object.values(bestByProblem).map((s) => ({
         problemId: s.problemId,
         problemTitle: s.problem.title,
         problemPoints: s.problem.points,
@@ -96,7 +70,45 @@ export async function GET(
         passedTests: s.passedTests,
         totalTests: s.totalTests,
         language: s.language,
-      })),
+      }));
+    }
+
+    // 2. If Admin, also fetch ALL candidates' attempts with submissions & user details
+    let allAttempts: Array<unknown> = [];
+    if (user.isAdmin) {
+      const attempts = await prisma.examAttempt.findMany({
+        where: { examId },
+        include: {
+          user: {
+            select: { id: true, name: true, email: true, avatar: true },
+          },
+          submissions: {
+            include: {
+              problem: { select: { id: true, title: true, points: true, difficulty: true } },
+            },
+            orderBy: { submittedAt: "desc" },
+          },
+        },
+        orderBy: { totalScore: "desc" },
+      });
+
+      allAttempts = attempts.map((a) => ({
+        ...a,
+        startedAt: a.startedAt.toISOString(),
+        deadline: a.deadline.toISOString(),
+        completedAt: a.completedAt?.toISOString() || null,
+        submissions: a.submissions.map((s) => ({
+          ...s,
+          submittedAt: s.submittedAt.toISOString(),
+        })),
+      }));
+    }
+
+    // Return unified payload
+    return NextResponse.json({
+      attempt: formattedOwnAttempt,
+      bestSubmissions,
+      attempts: user.isAdmin ? allAttempts : undefined,
     });
   } catch (err) {
     const { status, message } = authError(err);

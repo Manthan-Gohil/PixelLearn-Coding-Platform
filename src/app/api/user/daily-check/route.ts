@@ -23,6 +23,7 @@ function serializeUser(
     email: string;
     name: string;
     avatar: string | null;
+    isAdmin: boolean;
     subscription: "free" | "pro";
     xp: number;
     streak: number;
@@ -44,6 +45,7 @@ function serializeUser(
     email: user.email,
     name: user.name,
     avatar: user.avatar,
+    isAdmin: user.isAdmin,
     subscription: user.subscription,
     xp: user.xp,
     streak: user.streak,
@@ -80,6 +82,7 @@ async function getSerializedUserById(userId: string) {
     email: string;
     name: string;
     avatar: string | null;
+    isAdmin: boolean;
     subscription: "free" | "pro";
     xp: number;
     streak: number;

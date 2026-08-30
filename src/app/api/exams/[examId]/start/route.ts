@@ -23,7 +23,7 @@ export async function POST(
       },
     });
 
-    if (!exam || !exam.isPublished) {
+    if (!exam || (!exam.isPublished && !user.isAdmin)) {
       return NextResponse.json({ error: "Exam not found" }, { status: 404 });
     }
 

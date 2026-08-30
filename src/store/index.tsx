@@ -46,6 +46,8 @@ interface AppState {
     getUserProgress: (courseId: string, course?: Course) => { completed: number; total: number; percentage: number };
     isExerciseCompleted: (exerciseId: string) => boolean;
     updateSubscription: (plan: "free" | "pro") => void;
+    toggleAdmin: () => Promise<boolean>;
+    refreshUser: () => Promise<void>;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
@@ -96,27 +98,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 });
             }
 
-            setUser({
+            setUser((prev) => ({
                 ...EMPTY_USER,
-                id: dbUser.id,
+                id: dbUser.id || clerkUser.id || prev.id || "",
                 clerkId: clerkUser.id,
                 email: dbUser.email ?? clerkUser.primaryEmailAddress?.emailAddress ?? "",
                 name: dbUser.name ?? clerkUser.fullName ?? clerkUser.firstName ?? "Learner",
                 avatar: dbUser.avatar ?? clerkUser.imageUrl ?? "",
-                isAdmin: (dbUser as any).isAdmin ?? false,
-                subscription: dbUser.subscription ?? "free",
-                xp: dbUser.xp ?? 0,
-                streak: dbUser.streak ?? 0,
-                enrolledCourses: Array.isArray(dbUser.enrolledCourses) ? dbUser.enrolledCourses : [],
-                completedExercises: Array.isArray(dbUser.completedExercises) ? dbUser.completedExercises : [],
-                badges: normalizedBadges,
-                referralCode: dbUser.referralCode ?? "",
-                referralCount: dbUser.referralCount ?? 0,
-                lastStreakDate: dbUser.lastStreakDate ?? undefined,
-                lastDailyBonusDate: dbUser.lastDailyBonusDate ?? undefined,
-                createdAt: dbUser.createdAt ?? new Date().toISOString(),
+                isAdmin: typeof (dbUser as any).isAdmin === "boolean" ? (dbUser as any).isAdmin : prev.isAdmin,
+                subscription: dbUser.subscription ?? prev.subscription ?? "free",
+                xp: dbUser.xp ?? prev.xp ?? 0,
+                streak: dbUser.streak ?? prev.streak ?? 0,
+                enrolledCourses: Array.isArray(dbUser.enrolledCourses) ? dbUser.enrolledCourses : prev.enrolledCourses,
+                completedExercises: Array.isArray(dbUser.completedExercises) ? dbUser.completedExercises : prev.completedExercises,
+                badges: normalizedBadges.length > 0 ? normalizedBadges : prev.badges,
+                referralCode: dbUser.referralCode ?? prev.referralCode ?? "",
+                referralCount: dbUser.referralCount ?? prev.referralCount ?? 0,
+                lastStreakDate: dbUser.lastStreakDate ?? prev.lastStreakDate,
+                lastDailyBonusDate: dbUser.lastDailyBonusDate ?? prev.lastDailyBonusDate,
+                createdAt: dbUser.createdAt ?? prev.createdAt,
                 lastActive: dbUser.lastActive ?? new Date().toISOString(),
-            });
+            }));
 
             return true;
         },
@@ -444,6 +446,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }).catch(() => { });
     }, []);
 
+    const refreshUser = useCallback(async () => {
+        try {
+            const res = await fetch("/api/user/sync");
+            if (res.ok) {
+                const data = await res.json();
+                applySyncedUser(data);
+            }
+        } catch { }
+    }, [applySyncedUser]);
+
+    const toggleAdmin = useCallback(async () => {
+        try {
+            const res = await fetch("/api/user/toggle-admin", { method: "POST" });
+            if (res.ok) {
+                const data = await res.json();
+                setUser((prev) => ({ ...prev, isAdmin: !!data.isAdmin }));
+                return !!data.isAdmin;
+            }
+        } catch { }
+        return false;
+    }, []);
+
     return (
         <AppContext.Provider
             value={{
@@ -461,6 +485,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 getUserProgress,
                 isExerciseCompleted,
                 updateSubscription,
+                toggleAdmin,
+                refreshUser,
             }}
         >
             {children}
