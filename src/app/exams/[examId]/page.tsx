@@ -170,9 +170,10 @@ export default function ExamInterfacePage() {
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
   const [verdicts, setVerdicts] = useState<Record<string, string>>({});
 
-  // Proctoring: STRICT 1-TAB-SWITCH LIMIT
+  // Proctoring: STRICT 1-TAB-SWITCH LIMIT & ANTI-CHEAT
   const [violations, setViolations] = useState<{ type: string; timestamp: string }[]>([]);
   const [showWarning, setShowWarning] = useState(false);
+  const [showPasteAlert, setShowPasteAlert] = useState(false);
   const [proctorTerminated, setProctorTerminated] = useState(false);
   const [copiedExample, setCopiedExample] = useState<number | null>(null);
   const violationCount = useRef(0);
@@ -302,7 +303,7 @@ export default function ExamInterfacePage() {
     return () => clearInterval(interval);
   }, [deadline, handleComplete]);
 
-  // ── Strict Proctoring (Max 1 Warning, 2nd switch auto-terminates) ──
+  // ── Strict Proctoring (Max 1 Warning, 2nd switch auto-terminates) & Anti-Cheat ──
   useEffect(() => {
     const handleVisibility = () => {
       if (document.hidden && !completed.current) {
@@ -321,31 +322,72 @@ export default function ExamInterfacePage() {
       }
     };
 
-    // Prevent copy/paste and right click to block cheating
-    const blockCopyPaste = (e: ClipboardEvent) => {
-      if (!completed.current) {
+    // Prevent copy/paste/cut/drop and right click with capture phase (true)
+    const handleClipboard = (e: ClipboardEvent) => {
+      if (completed.current) return;
+      if (e.type === "paste") {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        setShowPasteAlert(true);
+        const v = { type: "paste_attempt", timestamp: new Date().toISOString() };
+        setViolations((prev) => [...prev, v]);
+      } else if (e.type === "copy" || e.type === "cut") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
       }
     };
 
-    const blockContextMenu = (e: MouseEvent) => {
-      if (!completed.current) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (completed.current) return;
+      if ((e.ctrlKey || e.metaKey) && (e.key === "v" || e.key === "V")) {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        setShowPasteAlert(true);
+        const v = { type: "paste_attempt", timestamp: new Date().toISOString() };
+        setViolations((prev) => [...prev, v]);
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "c" || e.key === "C" || e.key === "x" || e.key === "X")
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
       }
+    };
+
+    const handleDrop = (e: DragEvent) => {
+      if (completed.current) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      if (completed.current) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
-    document.addEventListener("copy", blockCopyPaste);
-    document.addEventListener("paste", blockCopyPaste);
-    document.addEventListener("cut", blockCopyPaste);
-    document.addEventListener("contextmenu", blockContextMenu);
+    document.addEventListener("copy", handleClipboard, true);
+    document.addEventListener("paste", handleClipboard, true);
+    document.addEventListener("cut", handleClipboard, true);
+    document.addEventListener("drop", handleDrop, true);
+    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("contextmenu", handleContextMenu, true);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
-      document.removeEventListener("copy", blockCopyPaste);
-      document.removeEventListener("paste", blockCopyPaste);
-      document.removeEventListener("cut", blockCopyPaste);
-      document.removeEventListener("contextmenu", blockContextMenu);
+      document.removeEventListener("copy", handleClipboard, true);
+      document.removeEventListener("paste", handleClipboard, true);
+      document.removeEventListener("cut", handleClipboard, true);
+      document.removeEventListener("drop", handleDrop, true);
+      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("contextmenu", handleContextMenu, true);
     };
   }, [handleComplete]);
 
@@ -455,26 +497,56 @@ export default function ExamInterfacePage() {
   const seconds = timeLeft % 60;
 
   return (
-    <div className="h-screen flex flex-col bg-[#0d0d0d] text-text-primary overflow-hidden font-sans select-none">
+    <div className="h-screen flex flex-col bg-[#0a0a0a] text-white overflow-hidden font-sans select-none">
+      {/* ── Anti-Cheat Paste Blocked Alert Modal ── */}
+      {showPasteAlert && (
+        <div className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#181818] border-2 border-yellow-500/80 text-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-in">
+            <div className="w-16 h-16 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center mx-auto shadow-inner">
+              <ShieldAlert className="w-8 h-8 text-[#E6C212]" />
+            </div>
+            <div>
+              <h3 className="text-xl font-extrabold text-white mb-2">
+                Pasting Code Is Disabled
+              </h3>
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                To guarantee assessment integrity and fair evaluation, copying and pasting external code into the test workspace is strictly prohibited. Please write your code manually.
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 text-xs font-semibold">
+              ⚠️ All clipboard and paste attempts are recorded in your proctoring audit log.
+            </div>
+            <button
+              onClick={() => setShowPasteAlert(false)}
+              className="w-full py-3 px-6 rounded-xl bg-[#E6C212] hover:bg-[#d4b20f] text-black font-extrabold text-sm transition-all shadow-lg active:scale-98 cursor-pointer"
+            >
+              I Understand, Continue Assessment
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Strict Proctor Warning (1st violation) ── */}
       {showWarning && (
-        <div className="fixed inset-0 z-[150] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="fb-card rounded-2xl p-8 max-w-md w-full text-center animate-slide-up border border-yellow-500/50 shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mx-auto mb-4">
-              <ShieldAlert className="w-8 h-8 text-yellow-400" />
+        <div className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#181818] border-2 border-yellow-500/80 rounded-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-in text-white">
+            <div className="w-16 h-16 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-8 h-8 text-[#E6C212]" />
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">
-              Proctoring Warning (1/1 Allowed)
-            </h3>
-            <p className="text-sm text-text-secondary mb-4 leading-relaxed">
-              Window blur or tab switch detected! Leaving the assessment tab is strictly prohibited.
-            </p>
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-xs mb-6 font-semibold">
-              ⚠️ Warning: Any further tab switch will immediately terminate and submit your assessment with a cheating violation!
+            <div>
+              <h3 className="text-xl font-extrabold text-white">
+                Proctoring Warning (1/1 Allowed)
+              </h3>
+              <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                Window blur or tab switch detected! Leaving the assessment workspace is strictly forbidden during a proctored exam.
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/40 text-red-200 text-xs font-semibold">
+              ⚠️ Final Warning: 1 tab switch logged. A 2nd tab switch will immediately auto-terminate and submit your exam!
             </div>
             <button
               onClick={() => setShowWarning(false)}
-              className="fb-btn-primary w-full justify-center text-sm py-2.5 font-bold"
+              className="w-full py-3 px-6 rounded-xl bg-[#E6C212] hover:bg-[#d4b20f] text-black font-extrabold text-sm transition-all shadow-lg active:scale-98 cursor-pointer"
             >
               I Understand & Return to Exam
             </button>
@@ -484,16 +556,24 @@ export default function ExamInterfacePage() {
 
       {/* ── Auto-Terminated Modal (2nd violation) ── */}
       {proctorTerminated && (
-        <div className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4">
-          <div className="fb-card rounded-2xl p-8 max-w-md w-full text-center space-y-4 border border-red-500 shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mx-auto">
-              <XCircle className="w-8 h-8 text-red-400" />
+        <div className="fixed inset-0 z-[300] bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#181818] border-2 border-red-500/90 rounded-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-in text-white">
+            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center mx-auto">
+              <XCircle className="w-9 h-9 text-red-400" />
             </div>
-            <h3 className="text-xl font-bold text-red-400">Exam Terminated</h3>
-            <p className="text-xs text-text-secondary">
-              Multiple tab switches detected. Your assessment has been auto-submitted and flagged for proctor review.
-            </p>
-            <Loader2 className="w-5 h-5 animate-spin text-red-400 mx-auto" />
+            <div>
+              <h3 className="text-2xl font-black text-red-400">Exam Terminated</h3>
+              <p className="text-xs text-neutral-200 mt-2 leading-relaxed">
+                Multiple tab switches were detected. Your assessment has been automatically terminated and submitted to the examiner with proctoring violation logs.
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200 text-xs font-semibold">
+              Submitting assessment & redirecting to results...
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-2 text-[#E6C212] text-xs font-bold font-mono">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Redirecting to submission results...</span>
+            </div>
           </div>
         </div>
       )}
@@ -796,6 +876,24 @@ export default function ExamInterfacePage() {
               language={MONACO_LANG_MAP[currentLang] || "plaintext"}
               theme="vs-dark"
               value={currentProblem ? codeMap[currentProblem.id] || "" : ""}
+              onMount={(editor, monaco) => {
+                editor.onKeyDown((e) => {
+                  if ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyV) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPasteAlert(true);
+                    const v = { type: "paste_attempt", timestamp: new Date().toISOString() };
+                    setViolations((prev) => [...prev, v]);
+                  }
+                  if (
+                    (e.ctrlKey || e.metaKey) &&
+                    (e.keyCode === monaco.KeyCode.KeyC || e.keyCode === monaco.KeyCode.KeyX)
+                  ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
+                });
+              }}
               onChange={(v) => {
                 if (currentProblem) {
                   setCodeMap((prev) => ({
@@ -816,6 +914,8 @@ export default function ExamInterfacePage() {
                 automaticLayout: true,
                 cursorBlinking: "smooth",
                 smoothScrolling: true,
+                contextmenu: false,
+                copyWithSyntaxHighlighting: false,
               }}
             />
           </div>
