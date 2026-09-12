@@ -203,8 +203,8 @@ function ExamsContent() {
                         <h3 className="text-lg font-bold text-text-primary group-hover:text-[#E6C212] transition-colors line-clamp-1">
                           {exam.title}
                         </h3>
-                        <span className="text-xs px-2 py-0.5 rounded bg-surface-alt text-text-muted shrink-0 flex items-center gap-1">
-                          <Shield className="w-3 h-3 text-[#E6C212]" /> Proctored
+                        <span className="text-xs px-2 py-0.5 rounded bg-surface-alt text-[#E6C212] shrink-0 flex items-center gap-1 border border-[#E6C212]/20">
+                          <Shield className="w-3 h-3 text-[#E6C212]" /> Full-Screen Proctored
                         </span>
                       </div>
 

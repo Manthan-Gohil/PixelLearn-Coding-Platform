@@ -25,6 +25,10 @@ import {
   Sparkles,
   Zap,
   ShieldAlert,
+  Lock,
+  Key,
+  EyeOff,
+  Maximize,
 } from "lucide-react";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -170,20 +174,63 @@ export default function ExamInterfacePage() {
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
   const [verdicts, setVerdicts] = useState<Record<string, string>>({});
 
-  // Proctoring: STRICT 1-TAB-SWITCH LIMIT & ANTI-CHEAT
+  // Proctoring: STRICT FULL-SCREEN & TAB-SWITCH PASSWORD LOCK
   const [violations, setViolations] = useState<{ type: string; timestamp: string }[]>([]);
-  const [showWarning, setShowWarning] = useState(false);
   const [showPasteAlert, setShowPasteAlert] = useState(false);
-  const [proctorTerminated, setProctorTerminated] = useState(false);
   const [copiedExample, setCopiedExample] = useState<number | null>(null);
   const violationCount = useRef(0);
   const completed = useRef(false);
+
+  // Full-screen state & enforcement
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [requiresFullscreenModal, setRequiresFullscreenModal] = useState(true);
+
+  // Tab switch termination with password
+  const [tabSwitchLocked, setTabSwitchLocked] = useState(false);
+  const [tabSwitchTime, setTabSwitchTime] = useState<string | null>(null);
+  const [terminationPassword, setTerminationPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isTerminating, setIsTerminating] = useState(false);
+
+  // ── Helper: Exit fullscreen safely ──
+  const exitExamFullscreen = async () => {
+    try {
+      if (typeof document !== "undefined" && document.fullscreenElement) {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        }
+      }
+    } catch {}
+  };
+
+  // ── Helper: Request fullscreen ──
+  const requestExamFullscreen = async () => {
+    try {
+      const elem = document.documentElement as any;
+      if (elem.requestFullscreen) {
+        await elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        await elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        await elem.msRequestFullscreen();
+      }
+      setIsFullscreen(true);
+      setRequiresFullscreenModal(false);
+    } catch (err) {
+      console.warn("Fullscreen request error:", err);
+      setRequiresFullscreenModal(false);
+    }
+  };
 
   // ── Auto-submit on completion / proctor termination ──
   const handleComplete = useCallback(
     async (terminated: boolean) => {
       if (completed.current) return;
       completed.current = true;
+
+      await exitExamFullscreen();
 
       try {
         await fetch(`/api/exams/${examId}/complete`, {
@@ -200,6 +247,19 @@ export default function ExamInterfacePage() {
     },
     [examId, violations, router]
   );
+
+  // ── Handle password termination on tab switch ──
+  const handlePasswordTermination = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const normalized = terminationPassword.trim().toUpperCase();
+    if (normalized !== "TERMINATE" && normalized !== "PROCTOR2026" && normalized !== "QUIT") {
+      setPasswordError("Invalid passkey. Type 'TERMINATE' to confirm termination or enter the supervisor password.");
+      return;
+    }
+    setPasswordError("");
+    setIsTerminating(true);
+    await handleComplete(true);
+  };
 
   // ── Initialize exam attempt ──
   useEffect(() => {
@@ -303,22 +363,42 @@ export default function ExamInterfacePage() {
     return () => clearInterval(interval);
   }, [deadline, handleComplete]);
 
-  // ── Strict Proctoring (Max 1 Warning, 2nd switch auto-terminates) & Anti-Cheat ──
+  // ── Strict Proctoring: Fullscreen Enforcement & Tab-Switch Lock with Password ──
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.hidden && !completed.current) {
+      if (document.hidden && !completed.current && !loading) {
         violationCount.current++;
+        const nowIso = new Date().toLocaleTimeString();
+        setTabSwitchTime(nowIso);
         const v = { type: "tab_switch", timestamp: new Date().toISOString() };
         setViolations((prev) => [...prev, v]);
+        setTabSwitchLocked(true);
+      }
+    };
 
-        if (violationCount.current >= 2) {
-          // 2nd tab switch = IMMEDIATE TERMINATION
-          setProctorTerminated(true);
-          handleComplete(true);
-        } else {
-          // 1st tab switch = FINAL WARNING
-          setShowWarning(true);
-        }
+    const handleBlur = () => {
+      if (!completed.current && !loading) {
+        violationCount.current++;
+        const nowIso = new Date().toLocaleTimeString();
+        setTabSwitchTime((prev) => prev || nowIso);
+        const v = { type: "window_blur", timestamp: new Date().toISOString() };
+        setViolations((prev) => [...prev, v]);
+        setTabSwitchLocked(true);
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      const inFs = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement
+      );
+      setIsFullscreen(inFs);
+      if (!inFs && !completed.current && !loading) {
+        const v = { type: "fullscreen_exit", timestamp: new Date().toISOString() };
+        setViolations((prev) => [...prev, v]);
+        setRequiresFullscreenModal(true);
       }
     };
 
@@ -373,6 +453,9 @@ export default function ExamInterfacePage() {
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("blur", handleBlur);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
     document.addEventListener("copy", handleClipboard, true);
     document.addEventListener("paste", handleClipboard, true);
     document.addEventListener("cut", handleClipboard, true);
@@ -382,6 +465,9 @@ export default function ExamInterfacePage() {
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("blur", handleBlur);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
       document.removeEventListener("copy", handleClipboard, true);
       document.removeEventListener("paste", handleClipboard, true);
       document.removeEventListener("cut", handleClipboard, true);
@@ -389,7 +475,7 @@ export default function ExamInterfacePage() {
       document.removeEventListener("keydown", handleKeyDown, true);
       document.removeEventListener("contextmenu", handleContextMenu, true);
     };
-  }, [handleComplete]);
+  }, [handleComplete, loading]);
 
   const handleRun = async () => {
     const problem = problems[activeProblem];
@@ -526,54 +612,132 @@ export default function ExamInterfacePage() {
         </div>
       )}
 
-      {/* ── Strict Proctor Warning (1st violation) ── */}
-      {showWarning && (
-        <div className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#181818] border-2 border-yellow-500/80 rounded-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-in text-white">
-            <div className="w-16 h-16 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-8 h-8 text-[#E6C212]" />
+      {/* ── Fullscreen Pre-Flight Security Gate Modal ── */}
+      {requiresFullscreenModal && !tabSwitchLocked && (
+        <div className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#181818] border-2 border-[#E6C212]/80 text-white rounded-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-5 shadow-2xl animate-scale-in">
+            <div className="w-16 h-16 rounded-full bg-[#E6C212]/20 border border-[#E6C212]/50 flex items-center justify-center mx-auto shadow-inner">
+              <Maximize className="w-8 h-8 text-[#E6C212]" />
             </div>
             <div>
-              <h3 className="text-xl font-extrabold text-white">
-                Proctoring Warning (1/1 Allowed)
-              </h3>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6C212]/10 border border-[#E6C212]/30 text-[#E6C212] text-xs font-semibold mb-2">
+                <Shield className="w-3.5 h-3.5" /> Full-Screen Proctored Exam
+              </div>
+              <h2 className="text-2xl font-black text-white">
+                Enter Proctored Assessment
+              </h2>
               <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
-                Window blur or tab switch detected! Leaving the assessment workspace is strictly forbidden during a proctored exam.
+                To guarantee test integrity, this exam must be taken in <strong className="text-white">Full-Screen Mode</strong>.
+                You will not be able to view browser tabs or external applications.
               </p>
             </div>
-            <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/40 text-red-200 text-xs font-semibold">
-              ⚠️ Final Warning: 1 tab switch logged. A 2nd tab switch will immediately auto-terminate and submit your exam!
+
+            <div className="text-left space-y-2.5 bg-black/60 border border-white/10 rounded-xl p-4 text-xs text-neutral-300 font-medium">
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-yellow-500/20 text-[#E6C212] flex items-center justify-center shrink-0 mt-0.5 font-bold">1</div>
+                <span><strong>Full-Screen Lock:</strong> The exam will occupy your entire display to prevent external tab assistance.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">2</div>
+                <span><strong>Zero-Tolerance Tab Switching:</strong> Switching tabs or minimizing the browser will immediately lock and terminate your exam.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">3</div>
+                <span><strong>Password Termination:</strong> In case of a tab switch, you will be required to enter the termination password to submit the session.</span>
+              </div>
             </div>
+
             <button
-              onClick={() => setShowWarning(false)}
-              className="w-full py-3 px-6 rounded-xl bg-[#E6C212] hover:bg-[#d4b20f] text-black font-extrabold text-sm transition-all shadow-lg active:scale-98 cursor-pointer"
+              onClick={requestExamFullscreen}
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#E6C212] to-[#d4b20f] hover:brightness-110 text-black font-extrabold text-sm transition-all shadow-xl active:scale-98 cursor-pointer flex items-center justify-center gap-2"
             >
-              I Understand & Return to Exam
+              <Maximize2 className="w-4 h-4" />
+              <span>Enter Full-Screen & Start Assessment</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* ── Auto-Terminated Modal (2nd violation) ── */}
-      {proctorTerminated && (
-        <div className="fixed inset-0 z-[300] bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#181818] border-2 border-red-500/90 rounded-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-in text-white">
-            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center mx-auto">
-              <XCircle className="w-9 h-9 text-red-400" />
+      {/* ── Strict Tab-Switch Password Termination Modal ── */}
+      {tabSwitchLocked && (
+        <div className="fixed inset-0 z-[350] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="bg-[#141414] border-2 border-red-500 rounded-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-5 shadow-2xl shadow-red-950/50 animate-scale-in text-white">
+            <div className="w-16 h-16 rounded-full bg-red-500/20 border-2 border-red-500/60 flex items-center justify-center mx-auto animate-pulse">
+              <ShieldAlert className="w-9 h-9 text-red-400" />
             </div>
+
             <div>
-              <h3 className="text-2xl font-black text-red-400">Exam Terminated</h3>
-              <p className="text-xs text-neutral-200 mt-2 leading-relaxed">
-                Multiple tab switches were detected. Your assessment has been automatically terminated and submitted to the examiner with proctoring violation logs.
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-bold mb-2">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-400" /> Proctor Security Alert
+              </div>
+              <h2 className="text-2xl font-black text-red-400">
+                Exam Session Locked & Terminated
+              </h2>
+              <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                An unauthorized tab switch or window departure was detected{tabSwitchTime ? ` at ${tabSwitchTime}` : ""}.
+                Leaving the proctored assessment workspace is strictly prohibited.
               </p>
             </div>
-            <div className="p-3 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200 text-xs font-semibold">
-              Submitting assessment & redirecting to results...
+
+            {/* Notification Bar */}
+            <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs font-semibold text-left flex items-center gap-2.5">
+              <EyeOff className="w-5 h-5 text-red-400 shrink-0" />
+              <div>
+                <p className="font-bold text-red-300">Violation Audit Record Logged</p>
+                <p className="text-[11px] text-neutral-300 font-mono mt-0.5">
+                  Action: Tab Switch / Focus Loss | Status: Flagged for Invigilator Review
+                </p>
+              </div>
             </div>
-            <div className="flex items-center justify-center gap-2 pt-2 text-[#E6C212] text-xs font-bold font-mono">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Redirecting to submission results...</span>
-            </div>
+
+            {/* Password input form */}
+            <form onSubmit={handlePasswordTermination} className="space-y-3.5 text-left pt-1">
+              <div>
+                <label className="block text-xs font-bold text-neutral-200 mb-1.5 flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5 text-[#E6C212]" />
+                  <span>Enter Termination Password:</span>
+                </label>
+                <input
+                  type="password"
+                  value={terminationPassword}
+                  onChange={(e) => {
+                    setTerminationPassword(e.target.value);
+                    setPasswordError("");
+                  }}
+                  placeholder="Type 'TERMINATE' or enter supervisor password..."
+                  disabled={isTerminating}
+                  className="w-full px-4 py-2.5 bg-black/80 border border-border rounded-xl text-xs font-mono text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500 transition-colors"
+                  autoFocus
+                />
+                <p className="text-[11px] text-neutral-400 mt-1 font-mono">
+                  Tip: Type <span className="text-[#E6C212] font-bold">TERMINATE</span> to acknowledge violation and finalize submission.
+                </p>
+              </div>
+
+              {passwordError && (
+                <div className="p-2.5 rounded-lg bg-red-900/40 border border-red-500/40 text-red-300 text-xs font-medium">
+                  {passwordError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isTerminating || !terminationPassword.trim()}
+                className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:opacity-50 text-white font-extrabold text-xs transition-all shadow-lg active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {isTerminating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Submitting Violation & Finalizing Assessment...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>Confirm Password & Terminate Exam</span>
+                  </>
+                )}
+              </button>
+            </form>
           </div>
         </div>
       )}
@@ -597,7 +761,7 @@ export default function ExamInterfacePage() {
               {examTitle}
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E6C212]/10 text-[#E6C212] font-semibold border border-[#E6C212]/30 flex items-center gap-1">
-              <Shield className="w-3 h-3" /> Proctored (1 Tab Switch Max)
+              <Shield className="w-3 h-3" /> Full-Screen Proctored
             </span>
           </div>
         </div>
@@ -640,6 +804,17 @@ export default function ExamInterfacePage() {
 
         {/* Right: Timer & Finish Action */}
         <div className="flex items-center gap-3">
+          {!isFullscreen && (
+            <button
+              onClick={requestExamFullscreen}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-yellow-500/20 text-[#E6C212] border border-yellow-500/40 text-xs font-semibold hover:bg-yellow-500/30 transition-colors animate-pulse"
+              title="Re-enter Full-Screen Mode"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Full-Screen</span>
+            </button>
+          )}
+
           <div
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-sm font-bold border transition-colors ${
               timeLeft < 300
