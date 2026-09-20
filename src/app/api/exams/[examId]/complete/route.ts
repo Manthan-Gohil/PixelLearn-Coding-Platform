@@ -11,7 +11,7 @@ export async function POST(
     const user = await requireAuth();
     const { examId } = await params;
     const body = await request.json().catch(() => ({}));
-    const { terminatedByProctor = false, violations = [] } = body;
+    const { terminatedByProctor = false, violations = [], cognitiveTelemetry = {} } = body;
 
     const attempt = await prisma.examAttempt.findUnique({
       where: { examId_userId: { examId, userId: user.id } },
@@ -31,9 +31,17 @@ export async function POST(
       );
     }
 
-    // Merge any new violations with existing
+    // Merge any new violations and cognitive telemetry with existing
     const existingViolations = (attempt.violations as Array<unknown>) || [];
     const allViolations = [...existingViolations, ...violations];
+
+    if (cognitiveTelemetry && Object.keys(cognitiveTelemetry).length > 0) {
+      allViolations.push({
+        type: "cognitive_telemetry",
+        timestamp: new Date().toISOString(),
+        stats: cognitiveTelemetry,
+      });
+    }
 
     const updated = await prisma.examAttempt.update({
       where: { id: attempt.id },

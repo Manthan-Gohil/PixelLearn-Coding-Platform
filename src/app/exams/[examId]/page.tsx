@@ -29,7 +29,14 @@ import {
   Key,
   EyeOff,
   Maximize,
+  Camera,
+  Mic,
+  Video,
+  Volume2,
+  UserCheck,
 } from "lucide-react";
+import { useExamProctor } from "@/hooks/useExamProctor";
+import ExamProctorHUD from "@/components/exams/ExamProctorHUD";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -225,6 +232,8 @@ export default function ExamInterfacePage() {
   };
 
   // ── Auto-submit on completion / proctor termination ──
+  const questionStatsRef = useRef<Record<string, unknown>>({});
+
   const handleComplete = useCallback(
     async (terminated: boolean) => {
       if (completed.current) return;
@@ -239,6 +248,7 @@ export default function ExamInterfacePage() {
           body: JSON.stringify({
             terminatedByProctor: terminated,
             violations,
+            cognitiveTelemetry: questionStatsRef.current,
           }),
         });
       } catch {}
@@ -259,6 +269,39 @@ export default function ExamInterfacePage() {
     setPasswordError("");
     setIsTerminating(true);
     await handleComplete(true);
+  };
+
+  const currentProblem = problems[activeProblem];
+
+  // ── AI Video, Audio, Head Pose & Expression Proctoring Hook ──
+  const {
+    stream: proctorStream,
+    hasPermission: cameraPermission,
+    permissionError: cameraError,
+    requestMediaPermissions,
+    videoElementRef,
+    audioLevel,
+    currentExpression,
+    isLookingAway,
+    isFaceDetected,
+    activeWarning: proctorWarning,
+    questionStats,
+  } = useExamProctor({
+    activeQuestionId: currentProblem?.id,
+    activeQuestionTitle: currentProblem?.title,
+    isExamActive: !loading && !tabSwitchLocked && !completed.current,
+    onViolation: useCallback((v: { type: string; timestamp: string; details?: string }) => {
+      setViolations((prev) => [...prev, v]);
+    }, []),
+  });
+
+  useEffect(() => {
+    questionStatsRef.current = questionStats;
+  }, [questionStats]);
+
+  const handleLaunchProctoredExam = async () => {
+    await requestMediaPermissions();
+    await requestExamFullscreen();
   };
 
   // ── Initialize exam attempt ──
@@ -577,7 +620,6 @@ export default function ExamInterfacePage() {
     );
   }
 
-  const currentProblem = problems[activeProblem];
   const currentLang = langMap[currentProblem?.id] || "cpp";
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -612,47 +654,56 @@ export default function ExamInterfacePage() {
         </div>
       )}
 
-      {/* ── Fullscreen Pre-Flight Security Gate Modal ── */}
+      {/* ── Fullscreen & Camera/Audio Pre-Flight Security Gate Modal ── */}
       {requiresFullscreenModal && !tabSwitchLocked && (
         <div className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-[#181818] border-2 border-[#E6C212]/80 text-white rounded-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-5 shadow-2xl animate-scale-in">
             <div className="w-16 h-16 rounded-full bg-[#E6C212]/20 border border-[#E6C212]/50 flex items-center justify-center mx-auto shadow-inner">
-              <Maximize className="w-8 h-8 text-[#E6C212]" />
+              <Shield className="w-8 h-8 text-[#E6C212]" />
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6C212]/10 border border-[#E6C212]/30 text-[#E6C212] text-xs font-semibold mb-2">
-                <Shield className="w-3.5 h-3.5" /> Full-Screen Proctored Exam
+                <Camera className="w-3.5 h-3.5" /> AI Audio, Video & Full-Screen Proctor
               </div>
               <h2 className="text-2xl font-black text-white">
                 Enter Proctored Assessment
               </h2>
               <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
-                To guarantee test integrity, this exam must be taken in <strong className="text-white">Full-Screen Mode</strong>.
-                You will not be able to view browser tabs or external applications.
+                To guarantee academic integrity, this exam operates in <strong className="text-white">Full-Screen Mode</strong> with continuous <strong className="text-white">Camera & Microphone Monitoring</strong>.
               </p>
             </div>
 
             <div className="text-left space-y-2.5 bg-black/60 border border-white/10 rounded-xl p-4 text-xs text-neutral-300 font-medium">
               <div className="flex items-start gap-2.5">
                 <div className="w-5 h-5 rounded-md bg-yellow-500/20 text-[#E6C212] flex items-center justify-center shrink-0 mt-0.5 font-bold">1</div>
-                <span><strong>Full-Screen Lock:</strong> The exam will occupy your entire display to prevent external tab assistance.</span>
+                <span><strong>Full-Screen Lock:</strong> The exam will occupy your entire screen. Browser tabs and external windows are blocked.</span>
               </div>
               <div className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-md bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">2</div>
-                <span><strong>Zero-Tolerance Tab Switching:</strong> Switching tabs or minimizing the browser will immediately lock and terminate your exam.</span>
+                <div className="w-5 h-5 rounded-md bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">2</div>
+                <span><strong>Webcam & Audio Capture:</strong> Your camera and microphone remain active throughout. Background voice and head movement are monitored in real time.</span>
               </div>
               <div className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-md bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">3</div>
-                <span><strong>Password Termination:</strong> In case of a tab switch, you will be required to enter the termination password to submit the session.</span>
+                <div className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">3</div>
+                <span><strong>Facial Expression Analytics:</strong> Real-time AI tracks your cognitive state (Tensed ⚡, Relaxed 🌿, Focused 🎯) for each problem.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">4</div>
+                <span><strong>Zero-Tolerance Tab Switching:</strong> Switching tabs or minimizing immediately freezes the exam and prompts for the supervisor termination password.</span>
               </div>
             </div>
 
+            {cameraError && (
+              <div className="p-2.5 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-xs text-left">
+                ⚠️ {cameraError}
+              </div>
+            )}
+
             <button
-              onClick={requestExamFullscreen}
+              onClick={handleLaunchProctoredExam}
               className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#E6C212] to-[#d4b20f] hover:brightness-110 text-black font-extrabold text-sm transition-all shadow-xl active:scale-98 cursor-pointer flex items-center justify-center gap-2"
             >
               <Maximize2 className="w-4 h-4" />
-              <span>Enter Full-Screen & Start Assessment</span>
+              <span>Enable Camera/Mic, Enter Full-Screen & Begin</span>
             </button>
           </div>
         </div>
@@ -1298,6 +1349,19 @@ export default function ExamInterfacePage() {
           </div>
         </section>
       </div>
+
+      {/* ── Live Picture-in-Picture Audio, Video & Facial Expression Proctor HUD ── */}
+      {!loading && !requiresFullscreenModal && !tabSwitchLocked && (
+        <ExamProctorHUD
+          stream={proctorStream}
+          videoElementRef={videoElementRef}
+          audioLevel={audioLevel}
+          currentExpression={currentExpression}
+          isLookingAway={isLookingAway}
+          isFaceDetected={isFaceDetected}
+          activeWarning={proctorWarning}
+        />
+      )}
     </div>
   );
 }
