@@ -7,7 +7,51 @@ import {
   DOCKER_CPU_LIMIT,
   DOCKER_NETWORK,
   DOCKER_PIDS_LIMIT,
+  DOCKER_MAX_CONCURRENT,
 } from "./config";
+
+// ─── Concurrency Queue ───────────────────────────────────────────────────────
+// Limits how many Docker containers run simultaneously. When 50+ students execute
+// code at once, excess requests wait safely in queue instead of crashing the server (OOM).
+let activeContainers = 0;
+const waitingQueue: Array<() => void> = [];
+
+function acquireSlot(): Promise<void> {
+  return new Promise((resolve) => {
+    if (activeContainers < DOCKER_MAX_CONCURRENT) {
+      activeContainers++;
+      resolve();
+    } else {
+      waitingQueue.push(() => {
+        activeContainers++;
+        resolve();
+      });
+    }
+  });
+}
+
+function releaseSlot(): void {
+  activeContainers--;
+  if (waitingQueue.length > 0 && activeContainers < DOCKER_MAX_CONCURRENT) {
+    const next = waitingQueue.shift();
+    if (next) next();
+  }
+}
+
+/**
+ * On Linux/EC2, files created by root inside Docker containers cannot be deleted
+ * by the non-root Node.js process (EACCES). Passing the host process's UID/GID
+ * ensures that all generated files belong to the host user running Node.js.
+ * On Windows, process.getuid is undefined and this returns [].
+ */
+function getHostUserArgs(): string[] {
+  const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
+  const gid = typeof process.getgid === "function" ? process.getgid() : undefined;
+  if (uid !== undefined && gid !== undefined) {
+    return ["--user", `${uid}:${gid}`, "-e", "HOME=/tmp"];
+  }
+  return [];
+}
 
 // ─── Docker Executor ─────────────────────────────────────────────────────────
 // The single point of contact with Docker. All container interactions go
@@ -153,9 +197,23 @@ export class DockerExecutor {
     jobDir: string,
     stdin: string,
   ): Promise<ExecutionResult> {
+    await acquireSlot();
+    try {
+      return await DockerExecutor.executeInternal(strategy, jobDir, stdin);
+    } finally {
+      releaseSlot();
+    }
+  }
+
+  private static async executeInternal(
+    strategy: LanguageStrategy,
+    jobDir: string,
+    stdin: string,
+  ): Promise<ExecutionResult> {
     const startTime = Date.now();
     const dockerMountPath = toDockerPath(jobDir);
     const containerWorkdir = "/code";
+    const userArgs = getHostUserArgs();
 
     // ── Step 1: Compilation (if needed) ─────────────────────────────────────
     if (strategy.buildCommands && strategy.buildCommands.length > 0) {
@@ -163,6 +221,7 @@ export class DockerExecutor {
         const buildArgs = [
           "run",
           "--rm",
+          ...userArgs,
           // Resource limits apply during compilation too
           `--memory=${DOCKER_MEMORY_LIMIT}`,
           `--cpus=${DOCKER_CPU_LIMIT}`,
@@ -207,6 +266,7 @@ export class DockerExecutor {
       "run",
       "--rm",
       "-i", // Keep stdin open so we can pipe user input
+      ...userArgs,
       // Resource limits
       `--memory=${DOCKER_MEMORY_LIMIT}`,
       `--cpus=${DOCKER_CPU_LIMIT}`,

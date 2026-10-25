@@ -49,3 +49,21 @@ export const DOCKER_PIDS_LIMIT = 64;
  */
 export const PLOT_START_MARKER = "__PIXELLEARN_PLOT_START__";
 export const PLOT_END_MARKER = "__PIXELLEARN_PLOT_END__";
+
+/**
+ * Maximum concurrent Docker executions allowed simultaneously.
+ * Queues excess jobs to prevent OOM crashes on servers with limited RAM.
+ * Default is 4 (safe for 1GB-4GB EC2 instances with 50+ students).
+ */
+export const DOCKER_MAX_CONCURRENT = parseInt(
+  process.env.DOCKER_MAX_CONCURRENT || "4",
+  10,
+);
+
+/**
+ * Optional remote runner service URL.
+ * When set, Runner forwards executions via HTTP instead of running Docker locally.
+ * Allows decoupling frontend (e.g. Vercel) from Docker runner (e.g. EC2).
+ */
+export const CODE_RUNNER_URL = process.env.CODE_RUNNER_URL || "";
+export const CODE_RUNNER_SECRET = process.env.CODE_RUNNER_SECRET || "";

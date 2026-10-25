@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import { DockerExecutor } from "./DockerExecutor";
 import { getStrategy, getSupportedLanguages } from "./languages/registry";
-import { JOBS_DIR } from "./config";
+import { JOBS_DIR, CODE_RUNNER_URL, CODE_RUNNER_SECRET } from "./config";
 import type { RunnerResult } from "./types";
 
 // ─── Runner ──────────────────────────────────────────────────────────────────
@@ -11,6 +11,7 @@ import type { RunnerResult } from "./types";
 // that the API route needs to interact with.
 //
 // Lifecycle for each execution:
+//   0. If CODE_RUNNER_URL is set, forward execution via HTTP (hybrid Vercel + EC2)
 //   1. Validate the language and retrieve its strategy
 //   2. Check that Docker is available
 //   3. Create a UUID-named job directory
@@ -40,6 +41,58 @@ export class Runner {
     code: string,
     stdin: string = "",
   ): Promise<RunnerResult> {
+    // ── 0. Optional Remote Runner Forwarding ───────────────────────────────
+    // When deployed on serverless (e.g., Vercel) where Docker cannot run,
+    // setting CODE_RUNNER_URL proxies the execution directly to your EC2 instance.
+    if (CODE_RUNNER_URL) {
+      try {
+        const endpoint = CODE_RUNNER_URL.endsWith("/execute")
+          ? CODE_RUNNER_URL
+          : `${CODE_RUNNER_URL.replace(/\/+$/, "")}/api/execute`;
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(CODE_RUNNER_SECRET ? { "x-runner-secret": CODE_RUNNER_SECRET } : {}),
+          },
+          body: JSON.stringify({ language, code, input: stdin }),
+          signal: AbortSignal.timeout(15_000),
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          return {
+            stdout: "",
+            stderr: `Runner service error (${res.status}): ${errText || res.statusText}`,
+            exitCode: 1,
+            executionTime: 0,
+            success: false,
+          };
+        }
+
+        const data = await res.json();
+        return {
+          stdout: data.output || data.stdout || "",
+          stderr: data.error || data.stderr || "",
+          exitCode: data.exitCode ?? (data.success ? 0 : 1),
+          executionTime: data.executionTime || 0,
+          success: Boolean(data.success),
+          plots: data.plots || [],
+          timedOut: Boolean(data.timedOut),
+        };
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        return {
+          stdout: "",
+          stderr: `Failed to connect to execution runner (${CODE_RUNNER_URL}): ${errorMsg}`,
+          exitCode: 1,
+          executionTime: 0,
+          success: false,
+        };
+      }
+    }
+
     // ── 1. Resolve language strategy ──────────────────────────────────────
     const strategy = getStrategy(language);
     if (!strategy) {
