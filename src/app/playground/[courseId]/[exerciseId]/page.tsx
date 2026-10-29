@@ -16,6 +16,7 @@ import PlaygroundHeader from "@/components/playground/PlaygroundHeader";
 import TheoryPanel from "@/components/playground/panels/TheoryPanel";
 import EditorPanel from "@/components/playground/panels/EditorPanel";
 import OutputPanel from "@/components/playground/panels/OutputPanel";
+import InputPanel from "@/components/playground/panels/InputPanel";
 import PreviewPanel from "@/components/playground/panels/PreviewPanel";
 import PasteBlockedAlert from "@/components/playground/PasteBlockedAlert";
 import FlowchartHintModal from "@/components/playground/FlowchartHintModal";
@@ -93,7 +94,7 @@ function PlaygroundContent({
         if (exercise) {
             setLanguage(exercise.language);
             setOutput("");
-            setInput("");
+            setInput(exercise.inputExample ?? "");
             setPreviewHtml("");
             setShowHints(false);
             setCurrentHintIndex(0);
@@ -277,6 +278,15 @@ function PlaygroundContent({
         if (!exercise || isRunning) return;
         setIsRunning(true); setOutput(""); setPlots([]);
 
+        // On narrow screens the editor and console are separate panels — switch
+        // to the console so the user actually sees the result of the run.
+        if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+            setMobilePanel("output");
+        }
+
+        // Values typed in the stdin panel are piped to the program when it runs.
+        const programInput = input;
+
         // ── Browser preview (HTML / CSS / React) ──────────────────────────────
         if (isFrontend) {
             updatePreview(code, language, isMultiFile ? files : undefined, isMultiFile ? entryFile : undefined);
@@ -289,7 +299,7 @@ function PlaygroundContent({
             try {
                 const result = await runPythonWithPyodide(
                     code,
-                    input,
+                    programInput,
                     (msg) => setOutput(msg), // live status in the output pane
                 );
                 setPlots(result.plots);
@@ -309,13 +319,17 @@ function PlaygroundContent({
         try {
             const response = await fetch("/api/execute", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code, language: exercise.language, input }),
+                body: JSON.stringify({ code, language: exercise.language, input: programInput }),
             });
             const result = await response.json();
             if (result.plots && result.plots.length > 0) setPlots(result.plots);
-            if (result.error && result.error.trim()) setOutput(result.error);
-            else if (result.output !== undefined) setOutput(result.output);
-            else if (!result.plots?.length) setOutput("(No output)");
+
+            const outputText = typeof result.output === "string" ? result.output.trim() : "";
+            const errorText = typeof result.error === "string" ? result.error.trim() : "";
+
+            if (errorText) setOutput(errorText);
+            else if (outputText) setOutput(result.output);
+            else if (!result.plots?.length) setOutput("(No output) — the program finished without printing anything.");
         } catch {
             setOutput("⚠ Execution service unavailable.");
         } finally {
@@ -341,7 +355,7 @@ function PlaygroundContent({
 
         setCode(exercise.starterCode);
         setOutput("");
-        setInput("");
+        setInput(exercise.inputExample ?? "");
         setPreviewHtml("");
     }, [exercise, isMultiFile, entryFile]);
 
@@ -377,20 +391,7 @@ function PlaygroundContent({
                     <div className="w-[30%] flex flex-col border-l border-border bg-surface-alt">
                         <div className="flex-1 flex flex-col min-h-0">
                             <OutputPanel output={output} setOutput={setOutput} plots={plots} />
-                            <div className="h-40 shrink-0 flex flex-col border-t border-border">
-                                <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
-                                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                                        <Loader2 className="w-3.5 h-3.5" />
-                                        Input (stdin)
-                                    </div>
-                                </div>
-                                <textarea
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    placeholder="Enter program input here (if needed)..."
-                                    className="flex-1 w-full bg-transparent p-4 font-mono text-sm resize-none focus:outline-none text-text-secondary"
-                                />
-                            </div>
+                            <InputPanel value={input} onChange={setInput} example={exercise.inputExample} />
                         </div>
                     </div>
                 )}
@@ -422,20 +423,7 @@ function PlaygroundContent({
                                 <div className="flex-1 flex flex-col bg-surface-alt overflow-hidden">
                                     <div className="flex-1 flex flex-col min-h-0">
                                         <OutputPanel output={output} setOutput={setOutput} plots={plots} />
-                                        <div className="h-40 shrink-0 flex flex-col border-t border-border">
-                                            <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-alt/50 shrink-0">
-                                                <div className="flex items-center gap-2 text-xs text-text-muted">
-                                                    <Loader2 className="w-3.5 h-3.5" />
-                                                    Input (stdin)
-                                                </div>
-                                            </div>
-                                            <textarea
-                                                value={input}
-                                                onChange={(e) => setInput(e.target.value)}
-                                                placeholder="Enter program input here (if needed)..."
-                                                className="flex-1 w-full bg-transparent p-4 font-mono text-sm resize-none focus:outline-none text-text-secondary"
-                                            />
-                                        </div>
+                                        <InputPanel value={input} onChange={setInput} example={exercise.inputExample} />
                                     </div>
                                 </div>
                             ) : (

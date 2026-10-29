@@ -92,7 +92,7 @@ export default function EditorPanel({
             <div className="flex items-center justify-between px-2 py-2 border-b border-border bg-surface-alt/50 shrink-0 overflow-x-auto gap-2">
                 <div className="flex items-center gap-1.5 shrink-0">
                     <div className="px-2 py-1 rounded-md bg-[#E6C212]/10 border border-[#E6C212]/30 text-[10px] font-bold text-[#E6C212] uppercase tracking-wider fb-mono whitespace-nowrap">
-                        {language === "cpp" ? "C++" : language === "java" ? "Java" : language === "jsx" ? "React (JSX)" : language === "tsx" ? "React (TSX)" : language === "reactjs" ? "React (JS)" : language}
+                        {language === "c" ? "C" : language === "cpp" ? "C++" : language === "java" ? "Java" : language === "jsx" ? "React (JSX)" : language === "tsx" ? "React (TSX)" : language === "reactjs" ? "React (JS)" : language}
                     </div>
                     <button
                         onClick={resetCode}

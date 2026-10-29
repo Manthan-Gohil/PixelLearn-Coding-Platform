@@ -129,6 +129,10 @@ function spawnAsync(
       stderr += chunk.toString();
     });
 
+    // Docker may close the pipe early (e.g. daemon unavailable). Without an
+    // error listener that emits an unhandled EPIPE and crashes the request.
+    proc.stdin.on("error", () => {});
+
     // Send stdin data (user input) then close the stream
     if (options.stdinData) {
       proc.stdin.write(options.stdinData);

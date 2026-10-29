@@ -10,4 +10,6 @@ export const CATEGORY_ICONS: Record<string, string> = {
     "Web Development": "🌐",
     React: "⚛️",
     DSA: "🧮",
+    Programming: "💻",
+    C: "🔹",
 };
